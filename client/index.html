@@ -1,0 +1,315 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <title>
+            Blood on the Clocktower
+        </title>
+        <meta charset="UTF-8">
+        <style>
+          body {
+            margin: 0;
+            overflow: hidden;
+          }
+        </style>
+    </head>
+
+
+    <body>
+    
+    <div id="alertBox" style="visibility: hidden;">
+        <div>
+            <div>
+            </div>
+        </div>
+        <div>
+            <input/>
+        </div>
+        <div>
+            <div>Ok</div>
+        </div>
+        <div>
+            <div>Yes</div>
+            <div>No</div>
+        </div>
+        <div>
+            <div>Ok</div>
+            <div>Cancel</div>
+        </div>
+    </div>
+    
+    <div id="square">
+
+        <div id="game" style="visibility: hidden;">
+            <img id="editionIcon">
+            </img>
+        
+            <div id="cancelSelect">Cancel</div>
+            <div id="info"></div>
+            
+            <div id="reminderMenu">
+            </div>
+            
+            <div id="tokenMenu">
+            </div>
+            
+            <div id="editionMenu">
+                <div>
+                    <div>
+                    </div>
+                </div>
+                <div>
+                    <label for="editionUploadBtn">Upload JSON</label>
+                    <div>Cancel</div>
+                    <input type="file" id="editionUploadBtn" accept=".json" hidden></input>
+                </div>
+            </div>
+            
+            <div id="tokens">
+            </div>
+            
+            <div id="names">
+            </div>
+            
+            <div id="reminders">
+            </div>
+            
+            <div id="deathTokens">
+            </div>
+            
+            <div id="yesVotes">
+            </div>
+            
+            <div id="noVotes">
+            </div>
+            
+            <div id="socketIcons">
+            </div>
+            
+            <div id="deadVotes">
+            </div>
+            
+            <div id="nightReminders">
+            </div>
+            
+            <div id="clock">
+                <div id="hands">
+                    <img src="assets/other/clock-small.png"></img>
+                    <img src="assets/other/clock-big.png"></img>
+                </div>
+                <div id="clockButtons">
+                    <div id="playerClockButtons">
+                        <div>Vote No</div>
+                        <div>Vote Yes</div>
+                    </div>
+                    <div id="hostClockButtons">
+                        <div>Start Vote</div>
+                        <div>Cancel</div>
+                        <div>Reset Vote</div>
+                        <div>Finish</div>
+                    </div>
+                </div>
+                <div id="clockVoteInfo">
+                    <span></span>
+                    <img src="assets/other/minus.png"></img>
+                    <span></span>
+                    <img src="assets/other/plus.png"></img>
+                    <span></span>
+                </div>
+            </div>
+
+            <div id="nightActionMenu">
+                <div>
+                    <div>Adjust the Night Action</div>
+                </div>
+                <div>
+                    <div>Players to Show</div>
+                    <div><img src="assets/other/minus.png"></img><span>0</span><img src="assets/other/plus.png"></img></div>
+                </div>
+                <div>
+                    <div>Characters to Show</div>
+                    <div><img src="assets/other/minus.png"></img><span>0</span><img src="assets/other/plus.png"></img></div>
+                </div>
+                <div>   
+                    <div>Players to Pick</div>
+                    <div><img src="assets/other/minus.png"></img><span>0</span><img src="assets/other/plus.png"></img></div>
+                </div>
+                <div>    
+                    <div>Characters to Pick</div>
+                    <div><img src="assets/other/minus.png"></img><span>0</span><img src="assets/other/plus.png"></img></div>
+                </div>
+                <div>
+                    <div>Player Restrictions</div>
+                    <div>Cancelable</div>
+                    <div>Not Yourself</div>
+                    <div>Alive</div>
+                    <div>Dead</div>
+                </div>
+                <div>
+                    <div>Character Restrictions</div>
+                    <div>Cancelable</div>
+                    <div>Traveler</div>
+                    <div>Townsfolk</div>
+                    <div>Outsider</div>
+                    <div>Minion</div>
+                    <div>Demon</div>
+                </div>
+                <div>    
+                    <div>Show Grimoire</div>
+                </div>
+                <div>    
+                    <div>Info Prompt (&lt;&gt; for where the info goes)</div>
+                    <input placeholder="You learn <>.">
+                </div>
+                <div>
+                    <div>Finish</div><div>Cancel</div>
+                </div>
+            </div>
+        </div>
+        
+        <div id="gameMenu" style="visibility: hidden;">
+            <div>Host</div>
+            <div>Play</div>
+        </div>
+    </div>
+    
+    <div id="nonSquare" style="visibility: hidden;">
+        
+        <div id="infoHoverBox">
+            <div></div>
+        </div>
+        
+        <div id="hostMenu">
+            <div>
+                <div>Nomination</div>
+                <div>Free Nomination</div>
+                <div>Change Character</div>
+                <div>Add Reminder</div>
+                <div>Kill/Revive</div>
+                <div>Night Action 1</div>
+                <div>Night Action 2</div>
+                <div>Night Action 3</div>
+                <div>Night Action 4</div>
+                <div>Night Action 5</div>
+                <div>Night Action 6</div>
+                <div>Night Action 7</div>
+                <div>Night Action 8</div>
+                <div>Night Action 9</div>
+                <div>Night Action 10</div>
+                <div>Night Action 11</div>
+                <div>Night Action 12</div>
+                <div>Night Action 13</div>
+                <div>Night Action 14</div>
+                <div>Night Action 15</div>
+                <div>Night Action 16</div>
+                <div>Night Action 17</div>
+                <div>Night Action 18</div>
+                <div>Night Action 19</div>
+                <div>Night Action 20</div>
+            </div>
+            <div>
+                <div>Rename</div>
+                <div>Move Player</div>
+                <div>Swap Seats</div>
+                <div>Kick</div>
+                <div>Remove</div>
+            </div>
+            
+        </div>
+
+        <div id="playerMenu">
+            <div>
+                <div>Nominate</div>
+                <div>Change Character</div>
+                <div>Add Reminder</div>
+            </div>
+            <div>
+                <div>Vacate</div>
+            </div>
+        </div>
+        
+        <div id="demonBluffs">
+            <div>Demon Bluffs</div>
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+        
+        <div id="HUD">
+            <div id="infoHUD">
+                <div><img src="assets/other/settings_cog.png"></img>  Information</div>
+            
+                <div id="channelID">Channel: </div>
+                
+                <div id="hostConnected">Host Connected</div>
+
+                <div id="dayPhase">Phase: Night</div>
+                
+                <div id="currentEdition">Edition:</div>
+                
+                <div id="aliveVoteInfo"></div>
+
+                <div id="characterSplit"></div>
+                
+            </div>
+            
+            <div id="actionHUD">
+                <div>Actions  <img src="assets/other/settings_cog.png"></img></div>
+            
+                <div id="refresh">Refresh</div>
+                
+                <div id="openReferenceSheet">Open Reference Sheet</div>
+                
+                <div id="leaveGame">Leave Game</div>
+                
+                <div id="addPlayer">Add Player</div>
+                
+                <div id="finishGame">End Game</div>
+                
+                <div id="revealGrimoire">Reveal Grimoire</div>
+                
+                <div id="chooseCharacters">Choose Characters</div>
+                
+                <div id="shufflePlayers">Shuffle Players</div>
+                
+                <div id="syncCharacters">Characters' Synced</div>
+                
+                <div id="changeEdition">Change Edition</div>
+                
+                <div id="changePhase">Change Phase</div>
+                
+            </div>
+        </div>
+        
+        <div id="gameLog">
+            <div></div>
+            <div><img src="assets/other/settings_cog.png"></img>  Log</div>
+        </div>
+    </div>
+    
+    
+
+
+    <script src="http://evabs.soc.srcf.net/socket.io/socket.io.js">
+    </script>
+    <script src="scripts/main.js">
+    </script>
+    <script src="scripts/style.js">
+    </script>
+    <script src="scripts/reSize.js">
+    </script>
+    <script src="scripts/setup.js">
+    </script>
+    <script src="scripts/socket_on.js">
+    </script>
+    <script src="scripts/reDraw.js">
+    </script>
+    <script src="scripts/size_definitions.js">
+    </script>
+    
+    <script>
+        main()
+    </script>
+    
+    </body>
+    
+</html>
