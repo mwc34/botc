@@ -311,10 +311,10 @@ function nightAlert(night_action, reverse_name = false) {
         msg += 'Auto Response from Client<br>'
     }
     if (client_type && !reverse_name || !client_type && reverse_name) {
-        msg += getPlayerBySeatID(night_action.seat_id).name + ' says: '
+        msg += `<span style="color: ${getLogPlayerColour()}">${getPlayerBySeatID(night_action.seat_id).name}</span> says: `
     }
     else {
-        msg += 'The Host says: '
+        msg += `<span style="color: ${getLogPlayerColour()}">The Host</span> says: `
     }
     
     msg += night_action.name + '<br>'
@@ -328,12 +328,12 @@ function nightAlert(night_action, reverse_name = false) {
             }
             else if (name == 'Players') {
                 for (let i of info[t]) {
-                    msg += getPlayerBySeatID(i).name + ', '
+                    msg += `<span style="color: ${getLogPlayerColour()}">${getPlayerBySeatID(i).name}</span>` + ', '
                 }
             }
             else if (name == 'Characters') {
                 for (let i of info[t]) {
-                    msg += getCharacterFromID(i).name + ', '
+                    msg += `<span style="color: ${getLogCharacterColour()}">${getCharacterFromID(i).name}</span>` + ', '
                 }
             }
             msg = msg.slice(0, -2) + '<br>'

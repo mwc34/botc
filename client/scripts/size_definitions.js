@@ -334,3 +334,11 @@ function getLogNominationColour() {
 function getLogDefaultColour() {
     return 'rgba(240, 240, 240, 0.8)'
 }
+
+function getLogPlayerColour() {
+    return 'rgba(240, 0, 0, 0.8)'
+}
+
+function getLogCharacterColour() {
+    return 'rgba(0, 125, 0, 0.8)'
+}

@@ -149,7 +149,7 @@ socket.on('character update', (character_update) => {
     setSSPlayerInfo(sspi)
     player.synced = true
     if (player.seat_id == your_seat_id) {
-        let text = 'Your character has changed to: ' + (!player.character ? 'Empty' : getCharacterFromID(player.character).name)
+        let text = 'Your character has changed to: ' + (!player.character ? 'Empty' : `<span style="color: ${getLogCharacterColour()}">${getCharacterFromID(player.character).name}</span>`)
         alert_box_info.push({'text' : text,
                              'func' : () => {
                                  appendLog(null, text)
@@ -169,10 +169,10 @@ socket.on('character update', (character_update) => {
 socket.on('alive update', (alive_update) => {
     let player = getPlayerBySeatID(alive_update.seat_id)
     if (player.alive && !alive_update.alive) {
-        appendLog(null, player.name + " died")
+        appendLog(null, `<span style="color: ${getLogPlayerColour()}">${player.name}</span>` + " died")
     }
     else if (!player.alive && alive_update.alive) {
-        appendLog(null, player.name + " was revived")
+        appendLog(null, `<span style="color: ${getLogPlayerColour()}">${player.name}</span>` + " was revived")
     }
     
     player.alive = alive_update.alive
