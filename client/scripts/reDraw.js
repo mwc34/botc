@@ -120,10 +120,30 @@ function reDrawDeathTokens() {
 }
 
 function reDrawVotes() {
+    let clock_info = game_state.clock_info
+    let progress = 0
+    if (clock_info.nominator != null && clock_info.nominatee != null) {
+        if (clock_info.start_time != null) {
+            progress = Math.min(1, ((new Date()).getTime() - clock_info.start_time) / (game_state.player_info.length * clock_info.interval))
+        }
+    }
+
+            
+            
+    
+            
     for (let i=0; i < max_players; i++) {
+        let temp = 0
+        if (clock_info.nominatee) {
+            temp = (i - getPlayerBySeatID(clock_info.nominatee).seat + game_state.player_info.length) % game_state.player_info.length
+            if (temp == 0) {
+                temp = game_state.player_info.length
+            }
+        }
+
         for (let j=0; j < 2; j++) {
             let vote_icon = (j ? yes_votes : no_votes).children[i]
-            if (i < game_state.player_info.length && game_state.clock_info.active && j == getPlayerBySeat(i).voting) {
+            if (i < game_state.player_info.length && game_state.clock_info.active && j == getPlayerBySeat(i).voting && ((progress >= temp/game_state.player_info.length && clock_info.start_time) || j)) {
                 vote_icon.style.visibility = ''
             }
             else {
@@ -659,6 +679,7 @@ function reDrawTokenMenu() {
 }
 
 function reDrawClock() {
+    reDrawVotes()
     let clock_info = game_state.clock_info
     // Total clock
     clock.style.visibility = (clock_info.active) ? '' : 'hidden'
@@ -696,7 +717,7 @@ function reDrawClock() {
             if (temp == 0) {
                 temp = game_state.player_info.length
             }
-            if (p.voting && progress >= temp/game_state.player_info.length) {
+            if (p.voting && (progress >= temp/game_state.player_info.length || !clock_info.start_time)) {
                 votes.push(p.name)
             }
             if (p.alive && (!p.character || getCharacterFromID(p.character).team != 'traveler')) {

@@ -6,8 +6,6 @@ const io = require('socket.io')(server, {
     pingTimeout: 10000,
 })
 
-console.log('Server Loaded')
-
 const fs = require("fs")
 const path = require("path")
 
@@ -788,6 +786,6 @@ io.on('connection', (socket) => {
 })
 
 // Listen
-
+console.log('Server Loaded')
 // server.listen('~/myapp/web.sock')
 server.listen('40457')

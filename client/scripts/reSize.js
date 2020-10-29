@@ -75,6 +75,7 @@ function reSizeClock() {
     clock_vote_info.style.height = 4 * getClockButtonHeight() + 'px'
     clock_vote_info.style.fontSize = getClockButtonFontSize() + 'px'
     clock_vote_info.style.borderWidth = getBorderSize() + 'px'
+    clock_vote_info.style.padding = getBorderSize() + 'px'
     clock_vote_info.style.borderRadius = `0px 0px ${r}px ${r}px`
     clock_vote_info.children[1].width = clock_vote_info.children[1].height = getClockButtonFontSize()
     clock_vote_info.children[3].width = clock_vote_info.children[3].height = getClockButtonFontSize()

@@ -67,7 +67,6 @@ function styleClock() {
     // clock_vote_info.style.justifyContent = 'center'
     // clock_vote_info.style.alignItems = 'center'
     clock_vote_info.style.backgroundColor = getBackgroundColour()
-    clock_vote_info.style.padding = getBorderSize() + 'px'
     clock_vote_info.style.color = getFontColour()
     clock_vote_info.style.borderColor = getBorderColour()
     
