@@ -149,10 +149,10 @@ socket.on('character update', (character_update) => {
     setSSPlayerInfo(sspi)
     player.synced = true
     if (player.seat_id == your_seat_id) {
-        let text = 'Your character has changed to: ' + (!player.character ? 'Empty' : `<span style="color: ${getLogCharacterColour()}">${getCharacterFromID(player.character).name}</span>`)
+        let text = getLogDefaultStyle('Your character has changed to: ' + (!player.character ? 'Empty' : getLogCharacterStyle(getCharacterFromID(player.character).name)))
         alert_box_info.push({'text' : text,
                              'func' : () => {
-                                 appendLog(null, text)
+                                 appendLog(text)
                                  reDrawTokens()
                                  reDrawNightReminders()
                                  reDrawHUD()
@@ -169,10 +169,10 @@ socket.on('character update', (character_update) => {
 socket.on('alive update', (alive_update) => {
     let player = getPlayerBySeatID(alive_update.seat_id)
     if (player.alive && !alive_update.alive) {
-        appendLog(null, `<span style="color: ${getLogPlayerColour()}">${player.name}</span>` + " died")
+        appendLog(getLogDefaultStyle(getLogPlayerStyle(player.name) + " died"))
     }
     else if (!player.alive && alive_update.alive) {
-        appendLog(null, `<span style="color: ${getLogPlayerColour()}">${player.name}</span>` + " was revived")
+        appendLog(getLogDefaultStyle(getLogPlayerStyle(player.name) + " was revived"))
     }
     
     player.alive = alive_update.alive
@@ -224,7 +224,7 @@ socket.on('finish vote update', () => {
     for (let player of game_state.player_info) {
         if (player.voting) {
             votes++
-            vote_names += player.name + ', '
+            vote_names += `<span style="${getLogPlayerStyle()}">${player.name}</span>` + ', '
         }
     }
     if (votes) {
@@ -232,13 +232,15 @@ socket.on('finish vote update', () => {
     }
     
     let clock_info = game_state.clock_info
-    appendLog(2, (
-        getPlayerBySeatID(clock_info.nominator).name 
+    appendLog(getLogNominationStyle(
+        getLogPlayerStyle(getPlayerBySeatID(clock_info.nominator).name) 
         + (clock_info.free ? " free" : "") 
         + " nominated " 
-        + getPlayerBySeatID(clock_info.nominatee).name 
+        + getLogPlayerStyle(getPlayerBySeatID(clock_info.nominatee).name)  
         + " and got " + votes + " vote" + (votes == 1 ? '' : "s")
         + (votes ? " from " + vote_names : ".")))
+        
+        
     for (let player of game_state.player_info) {
         if (!player.alive && player.dead_vote && player.voting && !clock_info.free) {
             player.dead_vote = false
@@ -284,7 +286,7 @@ socket.on('cancel vote update', () => {
 
 socket.on('phase update', (day_phase) => {
     game_state.day_phase = day_phase
-    appendLog(0, `Phase change to ${day_phase == true ? 'day' : 'night'}`)
+    appendLog(getLogPhaseStyle(`Phase change to ${day_phase == true ? 'day' : 'night'}`))
     // Wipe nominations
     for (let player of game_state.player_info) {
         player.nominated = false
@@ -324,15 +326,15 @@ socket.on('group night action update', (group_night_action) => {
 
 socket.on('night action', (night_action) => {
     if (client_type) {
-        let msg = nightAlert(night_action)
-        appendLog(1, 'Received Night Action:<br>' + msg)
+        let msg = getLogNightActionStyle('Received Night Action from ' + getLogPlayerStyle(getPlayerBySeatID(night_action_info.seat_id).name) + ':<br>' + nightAlert(night_action))
+        appendLog(msg)
         alert_box_info.push({'text' : msg})
         alert_box.check()
     }
     else {
         let timer = (new Date()).getTime()
-        let msg = nightAlert(night_action)
-        appendLog(1, 'Received Night Action:<br>' + msg)
+        let msg = getLogNightActionStyle('Received Night Action from ' + getLogPlayerStyle('The Host') + ':<br>' + nightAlert(night_action))
+        appendLog(msg)
         alert_box_info.push({'text' : msg, 'func' : () => {
             if (night_action.name == 'Demon Info') {
                 game_state.demon_bluffs = night_action.info.characters
@@ -477,10 +479,10 @@ socket.on('connect', () => {
     
     if (sessionStorage.log) {
         setLog(sessionStorage.log)
-        appendLog(null, 'Reconnected')
+        appendLog(getLogDefaultStyle('Reconnected'))
     }
     else {
-        appendLog(null, 'Connected')
+        appendLog(getLogDefaultStyle('Connected'))
     }
     
     

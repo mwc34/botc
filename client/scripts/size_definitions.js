@@ -319,26 +319,38 @@ function getFontFamily() {
     return 'Trebuchet MS'
 }
 
-function getLogPhaseColour() {
-    return 'rgba(67, 244, 108, 0.8)'
+function getLogPhaseStyle(msg) {
+    return `<span style="${
+        'color: rgba(67, 244, 108, 0.8);'
+    }">${msg}</span>`
 }
 
-function getLogNightActionColour() {
-    return 'rgba(89, 203, 241, 0.8)'
+function getLogNightActionStyle(msg) {
+    return `<span style="${
+        'color: rgba(89, 203, 241, 0.8);'
+    }">${msg}</span>`
 }
 
-function getLogNominationColour() {
-    return 'rgba(240, 120, 0, 0.8)'
+function getLogNominationStyle(msg) {
+    return `<span style="${
+        'color: rgba(240, 120, 0, 0.8);'
+    }">${msg}</span>`
 }
 
-function getLogDefaultColour() {
-    return 'rgba(240, 240, 240, 0.8)'
+function getLogDefaultStyle(msg) {
+    return `<span style="${
+        'color: rgba(240, 240, 240, 0.8);'
+    }">${msg}</span>`
 }
 
-function getLogPlayerColour() {
-    return 'rgba(240, 0, 0, 0.8)'
+function getLogPlayerStyle(msg) {
+    return `<span style="${
+        'color: rgba(240, 0, 0, 0.8);'
+    }">${msg}</span>`
 }
 
-function getLogCharacterColour() {
-    return 'rgba(0, 125, 0, 0.8)'
+function getLogCharacterStyle(msg) {
+    return `<span style="${
+        'color: rgba(0, 240, 0, 0.8);'
+    }">${msg}</span>`
 }

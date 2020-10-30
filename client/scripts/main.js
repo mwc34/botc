@@ -146,7 +146,7 @@ var night_action_info = {
                 }
             }
             if (client_type || (to_send.info.players.length > 0 || to_send.info.characters.length > 0 || to_send.info.info.length > 0)) {
-                appendLog(1, 'Sent Night Action:<br>' + nightAlert(to_send, true))
+            appendLog(getLogNightActionStyle(`Sent Night Action to ${getLogPlayerStyle(client_type ? getPlayerBySeatID(night_action_info.seat_id).name : 'The Host')}:<br>` + nightAlert(to_send, true)))
             }   
             
             socket.emit('night action', channel_id, to_send)
@@ -311,10 +311,10 @@ function nightAlert(night_action, reverse_name = false) {
         msg += 'Auto Response from Client<br>'
     }
     if (client_type && !reverse_name || !client_type && reverse_name) {
-        msg += `<span style="color: ${getLogPlayerColour()}">${getPlayerBySeatID(night_action.seat_id).name}</span> says: `
+        msg += getLogPlayerStyle(getPlayerBySeatID(night_action.seat_id).name) + ' says: '
     }
     else {
-        msg += `<span style="color: ${getLogPlayerColour()}">The Host</span> says: `
+        msg += getLogPlayerStyle('The Host') + ' says: '
     }
     
     msg += night_action.name + '<br>'
@@ -328,12 +328,12 @@ function nightAlert(night_action, reverse_name = false) {
             }
             else if (name == 'Players') {
                 for (let i of info[t]) {
-                    msg += `<span style="color: ${getLogPlayerColour()}">${getPlayerBySeatID(i).name}</span>` + ', '
+                    msg += getLogPlayerStyle(getPlayerBySeatID(i).name) + ', '
                 }
             }
             else if (name == 'Characters') {
                 for (let i of info[t]) {
-                    msg += `<span style="color: ${getLogCharacterColour()}">${getCharacterFromID(i).name}</span>` + ', '
+                    msg += getLogCharacterStyle(getCharacterFromID(i).name) + ', '
                 }
             }
             msg = msg.slice(0, -2) + '<br>'
@@ -581,25 +581,11 @@ function setLog(content) {
     sessionStorage.log = game_log.children[0].innerHTML
 }
 
-function appendLog(type, msg) {
+function appendLog(msg) {
     if (game_log.children[0].innerHTML.length > 0) {
         game_log.children[0].innerHTML += '<br><br>'
     }
-    let colour = null
-    switch (type) {
-        case 0:
-            colour = getLogPhaseColour()
-            break
-        case 1:
-            colour = getLogNightActionColour()
-            break
-        case 2:
-            colour = getLogNominationColour()
-            break
-        default:
-            colour = getLogDefaultColour()
-    }
-    game_log.children[0].innerHTML += `<span style="color:${colour};">${msg}</span>`
+    game_log.children[0].innerHTML += msg
     sessionStorage.log = game_log.children[0].innerHTML
 }
 
