@@ -168,7 +168,7 @@ function setupMenu() {
         if (!token_menu_info.active) {
             token_menu_info.choices = 1
             token_menu_info.type = 1
-            token_menu_info.valid_teams = []
+            token_menu_info.valid_teams = client_type ? [] : ['extra', 'townsfolk', 'outsider', 'minion', 'demon']
             token_menu_info.selected = []
             token_menu_info.active = true
             reDrawTokenMenu()
