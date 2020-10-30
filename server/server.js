@@ -66,11 +66,6 @@ function copy(state) {
     return JSON.parse(JSON.stringify(new_state))
 }
 
-// Check if a valid character id
-function checkCharacterID(c) {
-    return true
-}
-
 // Emit to all sockets in channel
 function channelEmit(channel_id, eventName, msg, emitToHost = true) {
     let state = game_states[channel_id]
@@ -310,13 +305,35 @@ io.on('connection', (socket) => {
     socket.on('character update', (channel_id, character_update) => {
         if (channel_id in game_states && socket.id == game_states[channel_id].host_socket_id) {
             let player = getPlayerBySeatID(game_states[channel_id], character_update.seat_id)
-            if (player != null && checkCharacterID(character_update.character)) {
-                player.character = character_update.character
-                for (let i of [player.socket_id, game_states[channel_id].host_socket_id]) {
-                    if (i != null) {
-                        io.to(i).emit('character update', {'seat_id' : player.seat_id, 'character' : player.character})
-                    }
+            let c = getCharacterFromID(game_states[channel_id], character_update.character)
+            if (player != null && (c || !character_update.character)) {
+                // If turning into traveler
+                if (c && c.team == 'traveler') {
+                    player.character = character_update.character || null
+                    channelEmit(channel_id, 'character update', {'seat_id' : player.seat_id, 'character' : player.character})
                 }
+                else {
+                    // Use to be a traveler
+                    if (player.character && getCharacterFromID(game_states[channel_id], player.character).team == 'traveler') {
+                        player.character = character_update.character || null
+                        for (let p of game_states[channel_id].player_info) {
+                            if (p.socket_id != null && player.socket_id != p.socket_id) {
+                                io.to(p.socket_id).emit('character update', {'seat_id' : player.seat_id, 'character' : null})
+                            }
+                        }
+                        for (let spectator of game_states[channel_id].spectators) {
+                            io.to(spectator).emit('character update', {'seat_id' : player.seat_id, 'character' : null})
+                        }
+                    }
+                    else {
+                        player.character = character_update.character || null
+                    }
+                    for (let i of [player.socket_id, game_states[channel_id].host_socket_id]) {
+                        if (i != null) {
+                            io.to(i).emit('character update', {'seat_id' : player.seat_id, 'character' : player.character})
+                        }
+                    }
+                } 
             }
         }
     })

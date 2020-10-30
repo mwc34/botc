@@ -144,6 +144,7 @@ socket.on('name update', (name_update) => {
 socket.on('character update', (character_update) => {
     let player = getPlayerBySeatID(character_update.seat_id)
     player.character = character_update.character
+    console.log(player, player.character)
     let sspi = getSSPlayerInfo()
     sspi[player.seat_id].character = player.character
     setSSPlayerInfo(sspi)
