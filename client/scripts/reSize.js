@@ -700,7 +700,7 @@ function reSizeAlertBox() {
             div.children[j].style.fontSize = getAlertBoxFontSize() + 'px'
             div.children[j].style.borderWidth = w/2 + 'px'
             div.children[j].style.padding = getAlertBoxPadding() + 'px'
-            if (i > 0) {
+            if (i > 1) {
                 div.children[j].style.height = getAlertBoxRowHeight() + 'px'
                 div.children[j].style.lineHeight = getAlertBoxRowHeight() + 'px'
             }

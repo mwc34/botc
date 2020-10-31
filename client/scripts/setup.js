@@ -10,7 +10,7 @@ function setup() {
     document.onkeydown = (key) => {
         // Close Alert Box
         if (alert_box.style.visibility == '') {
-            if (key.key == 'Enter') {
+            if (key.key == 'Enter' && !key.shiftKey) {
                 for (let i=2; i<5; i++) {
                     if (alert_box.children[i].style.display == 'flex') {
                         alert_box.children[i].children[0].onclick()
@@ -1209,9 +1209,12 @@ function setupAddPlayer() {
                 alert_box_info.push({
                     'text' : 'Enter the new name',
                     'type' : 'prompt',
+                    'multi_line' : true,
                     'func' : (res) => {
                         if (res) {
-                            socket.emit('add update', channel_id, res)
+                            for (let name of res.split('\n')) {
+                                socket.emit('add update', channel_id, name)
+                            }
                         }
                         reDrawHUD()
                     }
@@ -1587,6 +1590,14 @@ function setupAlertBox() {
                 // Prompt
                 case "prompt":
                     alert_box.children[1].children[0].value = ''
+                    if (alert_box_info[0].multi_line) {
+                        alert_box.children[1].children[0].style.lineHeight = ''
+                        alert_box.children[1].children[0].style.height = ''
+                    }
+                    else {
+                        alert_box.children[1].children[0].style.height = getAlertBoxRowHeight() + 'px'
+                        alert_box.children[1].children[0].style.lineHeight = getAlertBoxRowHeight() + 'px'
+                    }
                     alert_box.children[1].style.display = 'flex'
                     alert_box.children[2].style.display = 'none'
                     alert_box.children[3].style.display = 'none'
@@ -1605,6 +1616,14 @@ function setupAlertBox() {
                 alert_box.children[1].children[0].focus()
                 alert_box.children[1].children[0].select()
             }
+        }
+    }
+    
+    // Text Area
+    alert_box.children[1].children[0].style.resize = 'none'
+    alert_box.children[1].children[0].oninput = () => {
+        if (!alert_box_info[0].multi_line) {
+            alert_box.children[1].children[0].value = alert_box.children[1].children[0].value.replace('\n', '')
         }
     }
     
@@ -1632,7 +1651,7 @@ function setupAlertBox() {
         }
     }
     
-    // Confirm
+    // Prompt
     for (let i=0; i<2; i++) {
         alert_box.children[4].children[i].onclick = () => {
             let f = alert_box_info[0].func
