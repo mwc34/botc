@@ -1127,6 +1127,7 @@ function setupCancelSelect() {
                 }
                 token_click_type = 0
                 reDrawHUD()
+                reDrawTokens()
             }
             else {
                 alert_box_info.push({'text' : 'Night Action Cancelled', 'func' : () => {

@@ -485,7 +485,7 @@
                "cancel"
             ],
             "in_characters":3,
-            "character_restrictions":["townsfolk","outsider"]
+            "character_restrictions":["townsfolk","outsider","out_of_play"]
          }
       ]
    },
@@ -1032,7 +1032,7 @@
                "cancel"
             ],
             "in_characters":3,
-            "character_restrictions":["townsfolk","outsider"]
+            "character_restrictions":["townsfolk","outsider","out_of_play"]
          }
       ]
    },
@@ -1062,7 +1062,7 @@
                "cancel"
             ],
             "in_characters":3,
-            "character_restrictions":["townsfolk","outsider"]
+            "character_restrictions":["townsfolk","outsider","out_of_play"]
          }
       ]
    },
@@ -1092,7 +1092,7 @@
                "cancel"
             ],
             "in_characters":3,
-            "character_restrictions":["townsfolk","outsider"]
+            "character_restrictions":["townsfolk","outsider","out_of_play"]
          }
       ]
    },
@@ -1123,7 +1123,7 @@
                "cancel"
             ],
             "in_characters":3,
-            "character_restrictions":["townsfolk","outsider"]
+            "character_restrictions":["townsfolk","outsider","out_of_play"]
          }
       ]
    },
@@ -1649,7 +1649,7 @@
                "cancel"
             ],
             "in_characters":3,
-            "character_restrictions":["townsfolk","outsider"]
+            "character_restrictions":["townsfolk","outsider","out_of_play"]
          }
       ]
    },
@@ -1680,7 +1680,7 @@
                "cancel"
             ],
             "in_characters":3,
-            "character_restrictions":["townsfolk","outsider"]
+            "character_restrictions":["townsfolk","outsider","out_of_play"]
          }
       ]
    },
@@ -1710,7 +1710,7 @@
                "cancel"
             ],
             "in_characters":3,
-            "character_restrictions":["townsfolk","outsider"]
+            "character_restrictions":["townsfolk","outsider","out_of_play"]
          }
       ]
    },
@@ -1739,7 +1739,7 @@
                "cancel"
             ],
             "in_characters":3,
-            "character_restrictions":["townsfolk","outsider"]
+            "character_restrictions":["townsfolk","outsider","out_of_play"]
          }
       ]
    },
@@ -2216,7 +2216,7 @@
                "cancel"
             ],
             "in_characters":3,
-            "character_restrictions":["townsfolk","outsider"]
+            "character_restrictions":["townsfolk","outsider","out_of_play"]
          }
       ]
    },
