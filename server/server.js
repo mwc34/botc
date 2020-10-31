@@ -39,10 +39,10 @@ const getAllFiles = function(dirPath, arrayOfFiles) {
   return arrayOfFiles
 }
 
-for (let page of getAllFiles('/home/mwc34/evabs/public_html/')) {
-    page = page.replace('/home/mwc34/evabs/public_html','')
+for (let page of getAllFiles('/home/societies/evabs/public_html/')) {
+    page = page.replace('/home/societies/evabs/public_html','')
     app.get(page, (req, res) => {
-        res.sendFile('/home/mwc34/evabs/public_html' + page)
+        res.sendFile('/home/societies/evabs/public_html' + page)
     })
 }
 
@@ -160,9 +160,9 @@ const max_players = 20
 
 // Roles json
 
-var roles = JSON.parse(fs.readFileSync('/home/mwc34/evabs/public_html/roles.json', 'utf8'));
+var roles = JSON.parse(fs.readFileSync('/home/societies/evabs/public_html/roles.json', 'utf8'));
 
-var editions = JSON.parse(fs.readFileSync('/home/mwc34/evabs/public_html/editions.json', 'utf8'));
+var editions = JSON.parse(fs.readFileSync('/home/societies/evabs/public_html/editions.json', 'utf8'));
 
 // Game Data, one for each channel id
 
