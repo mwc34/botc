@@ -55,7 +55,7 @@ const max_players = 20
 const max_reminders = 5
 const deselected_opacity = 0.5
 const roles_by_id = {}
-const socket = io('http://evabs.soc.srcf.net')
+const socket = io('https://evabs.soc.srcf.net')
 
 var size = Math.min(window.innerWidth, window.innerHeight)
 var game_state = {
