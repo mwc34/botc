@@ -170,6 +170,7 @@ function setupMenu() {
             token_menu_info.type = 1
             token_menu_info.valid_teams = client_type ? [] : ['extra', 'townsfolk', 'outsider', 'minion', 'demon']
             token_menu_info.selected = []
+            token_menu_info.out_of_play = false
             token_menu_info.active = true
             reDrawTokenMenu()
         }
@@ -882,6 +883,7 @@ function setupTokens() {
                                 if (token_menu_info.valid_teams.length == 0) {
                                     token_menu_info.valid_teams = ['traveler', 'townsfolk', 'outsider', 'minion', 'demon']
                                 }
+                                token_menu_info.out_of_play = night_action_info.character_restrictions.includes("out_of_play")
                                 token_menu_info.active = true
                                 reDrawTokenMenu()
                                 
@@ -1114,6 +1116,7 @@ function setupCancelSelect() {
                     if (token_menu_info.valid_teams.length == 0) {
                         token_menu_info.valid_teams = ['traveler', 'townsfolk', 'outsider', 'minion', 'demon']
                     }
+                    token_menu_info.out_of_play = night_action_info.character_restrictions.includes("out_of_play")
                     token_menu_info.active = true
                     reDrawTokenMenu()
                     
@@ -1265,6 +1268,7 @@ function setupChooseCharacters() {
                 token_menu_info.choices = game_state.player_info.length
                 token_menu_info.valid_teams = ['townsfolk', 'outsider', 'minion', 'demon']
                 token_menu_info.selected = []
+                token_menu_info.out_of_play = false
                 token_menu_info.active = true
                 reDrawTokenMenu()
             }

@@ -404,7 +404,7 @@ function reDrawTokenMenu() {
         lengths = [1, 5]
         for (let k=0; k < teams.length; k++) {
             let team = token_menu.children[5 + k]
-            let ids = getTeamIDs(game_state.edition, teams[k])
+            let ids = getTeamIDs(game_state.edition, teams[k], token_menu_info.out_of_play)
             if ((token_menu_info.valid_teams.length == 0 || token_menu_info.valid_teams.includes(teams[k])) && ids.length > 0) {
                 while (ids.length > lengths[k]) {
                     ids.pop()
@@ -457,7 +457,7 @@ function reDrawTokenMenu() {
         }
         
         // Townsfolk
-        ids = getTeamIDs(game_state.edition, 'townsfolk')
+        ids = getTeamIDs(game_state.edition, 'townsfolk', token_menu_info.out_of_play)
         if ((token_menu_info.valid_teams.length == 0 || token_menu_info.valid_teams.includes('townsfolk')) && ids.length > 0) {
             while (ids.length > 13) {
                 ids.pop()
@@ -515,7 +515,7 @@ function reDrawTokenMenu() {
         teams = ['outsider', 'minion', 'demon']
         for (let k=0; k<3; k++) {
             let team = token_menu.children[9 + k]
-            let ids = getTeamIDs(game_state.edition, teams[k])
+            let ids = getTeamIDs(game_state.edition, teams[k], token_menu_info.out_of_play)
             if ((token_menu_info.valid_teams.length == 0 || token_menu_info.valid_teams.includes(teams[k])) && ids.length > 0) {
                 while (ids.length > 4) {
                     ids.pop()

@@ -88,6 +88,7 @@ var token_menu_info = {
     'valid_teams' : [], // Empty is all - travelers / townsfolk / outsiders / minions / demons
     'active' : false, // Active or not
     'selected' : [], // Tokens selected
+    'out_of_play' : false, // Only out of play
 }
 
 const default_night_action = [
@@ -204,7 +205,7 @@ function getPlayerByCharacter(character) {
     return null
 }
 
-function getTeamIDs(edition, team) {
+function getTeamIDs(edition, team, out_of_play = false) {
     let ids = []
     if (team == 'extra') {
         ids = [null]
@@ -215,6 +216,22 @@ function getTeamIDs(edition, team) {
             ids = JSON.parse(JSON.stringify(e.characters[team]))
         }
     }
+    
+    if (out_of_play) {
+        let in_play = []
+        for (let p of game_state.player_info) {
+            if (p.character && !in_play.includes(p.character) {
+                in_play.push(p.character)
+            }
+        }
+        
+        for (let i=ids.length-1; i >= 0; i--) {
+            if (in_play.includes(ids[i])) {
+                ids.splice(i, 1)
+            }
+        }
+    }
+    
     return ids
 }
 
@@ -400,6 +417,7 @@ function nightActionAnimation() {
                     if (token_menu_info.valid_teams.length == 0) {
                         token_menu_info.valid_teams = ['traveler', 'townsfolk', 'outsider', 'minion', 'demon']
                     }
+                    token_menu_info.out_of_play = night_action_info.character_restrictions.includes("out_of_play")
                     token_menu_info.active = true
                     reDrawTokenMenu()
                     nightActionAnimation()
@@ -508,6 +526,7 @@ function continueNightAction(night_action, prompt) {
             if (token_menu_info.valid_teams.length == 0) {
                 token_menu_info.valid_teams = ['traveler', 'townsfolk', 'outsider', 'minion', 'demon']
             }
+            token_menu_info.out_of_play = night_action_info.character_restrictions.includes("out_of_play")
             token_menu_info.active = true
             reDrawTokenMenu()
             nightActionAnimation()
@@ -558,6 +577,7 @@ function afterInfoNightAction(night_action, timer, res) {
         if (token_menu_info.valid_teams.length == 0) {
             token_menu_info.valid_teams = ['traveler', 'townsfolk', 'outsider', 'minion', 'demon']
         }
+        token_menu_info.out_of_play = night_action_info.character_restrictions.includes("out_of_play")
         token_menu_info.active = true
         reDrawTokenMenu()
         nightActionAnimation()
