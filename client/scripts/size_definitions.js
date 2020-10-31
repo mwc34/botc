@@ -321,19 +321,19 @@ function getFontFamily() {
 
 function getLogPhaseStyle(msg) {
     return `<span style="${
-        'color: rgba(67, 244, 108, 0.8);'
+        'color: rgba(116, 180, 255, 0.8);'
     }">${msg}</span>`
 }
 
 function getLogNightActionStyle(msg) {
     return `<span style="${
-        'color: rgba(89, 203, 241, 0.8);'
+        'color: rgba(191, 255, 216, 0.8);'
     }">${msg}</span>`
 }
 
 function getLogNominationStyle(msg) {
     return `<span style="${
-        'color: rgba(240, 120, 0, 0.8);'
+        'color: rgba(255, 204, 190, 0.8);'
     }">${msg}</span>`
 }
 
@@ -345,12 +345,12 @@ function getLogDefaultStyle(msg) {
 
 function getLogPlayerStyle(msg) {
     return `<span style="${
-        'color: rgba(240, 0, 0, 0.8);'
+        'color: rgba(151, 241, 255, 0.8);'
     }">${msg}</span>`
 }
 
 function getLogCharacterStyle(msg) {
     return `<span style="${
-        'color: rgba(0, 240, 0, 0.8);'
+        'color: rgba(220, 210, 255, 0.8);'
     }">${msg}</span>`
 }

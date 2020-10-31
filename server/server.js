@@ -46,6 +46,10 @@ for (let page of getAllFiles('/home/societies/evabs/public_html/')) {
     })
 }
 
+app.get('reference_sheet', (req, res) => {
+    console.log(req.
+})
+
 // Useful functions
 
 
