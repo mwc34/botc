@@ -120,18 +120,6 @@ socket.on('add update', (player) => {
     setSSPlayerInfo(sspi)
     reSizePlayers()
     reDrawPlayers()
-    if (client_type) {
-        alert_box_info.push({
-            'text' : 'Enter the new name',
-            'type' : 'prompt',
-            'func' : (res) => {
-                if (res) {
-                    socket.emit('name update', channel_id, {'seat_id' : player.seat_id, 'name' : res})
-                }
-            }
-        })
-        alert_box.check()
-    }
     reDrawHUD()
 })
 

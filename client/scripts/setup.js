@@ -1205,7 +1205,19 @@ function setupAddPlayer() {
             alert_box.check()
         }
         else if (!game_state.clock_info.active && !getMenuOpen()) {
-            socket.emit('add update', channel_id)
+            if (client_type) {
+                alert_box_info.push({
+                    'text' : 'Enter the new name',
+                    'type' : 'prompt',
+                    'func' : (res) => {
+                        if (res) {
+                            socket.emit('add update', channel_id, res)
+                        }
+                        reDrawHUD()
+                    }
+                })
+                alert_box.check()
+            }
         }
     }
 }

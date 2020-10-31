@@ -275,12 +275,15 @@ io.on('connection', (socket) => {
     })
     
     // Add update
-    socket.on('add update', (channel_id) => {
+    socket.on('add update', (channel_id, name) => {
         if (channel_id in game_states && socket.id == game_states[channel_id].host_socket_id && !game_states[channel_id].clock_info.active && game_states[channel_id].player_info.length < max_players) {
             let state = game_states[channel_id]
             let player = copy(base_player_info)
             player.seat = state.player_info.length
             player.seat_id = state.next_seat_id
+            if (name) {
+                player.name = name
+            }
             state.next_seat_id++
             state.player_info.push(player)
             channelEmit(channel_id, 'add update', player)
