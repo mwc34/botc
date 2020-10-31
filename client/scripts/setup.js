@@ -1593,10 +1593,12 @@ function setupAlertBox() {
                     if (alert_box_info[0].multi_line) {
                         alert_box.children[1].children[0].style.lineHeight = ''
                         alert_box.children[1].children[0].style.height = ''
+                        alert_box.children[1].children[0].style.resize = ''
                     }
                     else {
                         alert_box.children[1].children[0].style.height = getAlertBoxRowHeight() + 'px'
                         alert_box.children[1].children[0].style.lineHeight = getAlertBoxRowHeight() + 'px'
+                        alert_box.children[1].children[0].style.resize = 'none'
                     }
                     alert_box.children[1].style.display = 'flex'
                     alert_box.children[2].style.display = 'none'
@@ -1620,7 +1622,6 @@ function setupAlertBox() {
     }
     
     // Text Area
-    alert_box.children[1].children[0].style.resize = 'none'
     alert_box.children[1].children[0].oninput = () => {
         if (!alert_box_info[0].multi_line) {
             alert_box.children[1].children[0].value = alert_box.children[1].children[0].value.replace('\n', '')
