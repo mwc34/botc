@@ -282,7 +282,10 @@ io.on('connection', (socket) => {
             player.seat = state.player_info.length
             player.seat_id = state.next_seat_id
             if (name) {
-                player.name = name
+                // Name available
+                if (getPlayerByName(game_states[channel_id], name) == null) {
+                    player.name = name
+                }
             }
             state.next_seat_id++
             state.player_info.push(player)
