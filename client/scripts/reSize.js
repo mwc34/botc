@@ -493,6 +493,7 @@ function reSizeHUD() {
         
         for (let j=0; j < menu.childElementCount; j++) {
             let row = menu.children[j]
+            row.style.visibility = menu.children[1].style.visibility
             row.style.top = j * getHUDRowHeight() + 'px'
             row.style.height = getHUDRowHeight() + 'px'
             row.style.left = getHUDMargin() + 'px'
