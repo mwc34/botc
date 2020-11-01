@@ -604,10 +604,14 @@ function setLog(content) {
 }
 
 function appendLog(msg) {
+    let at_bottom = game_log.children[0].scrollTop == game_log.children[0].scrollTopMax
     if (game_log.children[0].innerHTML.length > 0) {
         game_log.children[0].innerHTML += '<br><br>'
     }
     game_log.children[0].innerHTML += msg
+    if (at_bottom) {
+        game_log.children[0].scrollTop = game_log.children[0].scrollTopMax
+    }
     sessionStorage.log = game_log.children[0].innerHTML
 }
 
