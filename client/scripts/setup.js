@@ -1207,7 +1207,7 @@ function setupAddPlayer() {
         else if (!game_state.clock_info.active && !getMenuOpen()) {
             if (client_type) {
                 alert_box_info.push({
-                    'text' : 'Enter the new name',
+                    'text' : 'Enter the new name(s)',
                     'type' : 'prompt',
                     'multi_line' : true,
                     'func' : (res) => {
@@ -1623,7 +1623,7 @@ function setupAlertBox() {
     
     // Text Area
     alert_box.children[1].children[0].oninput = () => {
-        if (!alert_box_info[0].multi_line) {
+        if (alert_box_info.length > 0 && !alert_box_info[0].multi_line) {
             alert_box.children[1].children[0].value = alert_box.children[1].children[0].value.replace('\n', '')
         }
     }

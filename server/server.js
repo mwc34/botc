@@ -46,8 +46,9 @@ for (let page of getAllFiles('/home/societies/evabs/public_html/')) {
     })
 }
 
-app.get('reference_sheet', (req, res) => {
-    console.log(req.
+app.get('/reference_sheet', (req, res) => {
+    console.log(req.query)
+    res.send("hi")
 })
 
 // Useful functions
@@ -379,6 +380,13 @@ io.on('connection', (socket) => {
     // New Edition update
     socket.on('new edition', (channel_id, edition) => {
         if (channel_id in game_states && socket.id == game_states[channel_id].host_socket_id) {
+            let edition = {
+                'id' : edition.id, 
+                'name' : edition.name, 
+                'characters' : edition.characters, 
+                'icon' : edition.icon, 
+                'reference_sheet' : false
+            }
             let valid = edition.id && edition.name && edition.characters.constructor == Object && edition.icon
             if (valid) {
                 // Check unique

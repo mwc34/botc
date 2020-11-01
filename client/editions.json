@@ -3,6 +3,7 @@
       "id":"tb",
       "name":"Trouble Brewing",
       "icon":"assets/editions/tb.png",
+      "reference_sheet":true,
       "characters":{
          "traveler":[
             "scapegoat",
@@ -47,6 +48,7 @@
       "id":"bmr",
       "name":"Bad Moon Rising",
       "icon":"assets/editions/bmr.png",
+      "reference_sheet":true,
       "characters":{
          "traveler":[
             "apprentice",
@@ -94,6 +96,7 @@
       "id":"snv",
       "name":"Sects & Violets",
       "icon":"assets/editions/snv.png",
+      "reference_sheet":true,
       "characters":{
          "traveler":[
             "butcher",
@@ -141,6 +144,7 @@
       "id":"luf",
       "name":"Laissez un Faire",
       "icon":"assets/editions/luf.png",
+      "reference_sheet":true,
       "characters":{
          "townsfolk":[
             "balloonist",

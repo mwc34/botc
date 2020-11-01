@@ -727,7 +727,7 @@ function reDrawClock() {
         }
         let vote_names = ''
         for (let v of votes) {
-            vote_names += v + ', '
+            vote_names += getLogPlayerStyle(v) + ', '
         }
         if (votes.length > 0) {
             vote_names = vote_names.slice(0, -2)
@@ -737,16 +737,17 @@ function reDrawClock() {
         }
         
         // Clock Vote Info
-        clock_vote_info.children[0].innerHTML = (
-            getPlayerBySeatID(clock_info.nominator).name
-            + (clock_info.free ? ' free' : '') + ' nominated ' + getPlayerBySeatID(clock_info.nominatee).name
-            + '<br>'
-            + votes.length + ' vote' + (votes.length != 1 ? 's' : '') + ' in favour (majority is ' + Math.ceil(alive/2) + ')<br>'
-        );
-        clock_vote_info.children[0].innerHTML += clock_info.start_time ? '' : 'Vote time is '
-        let t = clock_info.interval/1000
-        clock_vote_info.children[2].innerHTML = t == 0.5 ? '½' : t
-        clock_vote_info.children[4].innerHTML = clock_info.start_time ? vote_names + ' voted YES' : ' seconds per player'
+        let t = `${getLogPlayerStyle(getPlayerBySeatID(clock_info.nominator).name)}${
+            (clock_info.free ? ' free' : '')} nominated ${
+            getLogPlayerStyle(getPlayerBySeatID(clock_info.nominatee).name)}<br>${
+            votes.length} vote${(votes.length != 1 ? 's' : '')} in favour (majority is ${Math.ceil(alive/2)})<br>${
+            clock_info.start_time ? '' : 'Vote time is '}`
+        console.log(t)
+        clock_vote_info.children[0].innerHTML = getLogNominationStyle(t)
+
+        t = clock_info.interval/1000
+        clock_vote_info.children[2].innerHTML = getLogNominationStyle(t == 0.5 ? '½' : t)
+        clock_vote_info.children[4].innerHTML = getLogNominationStyle(clock_info.start_time ? vote_names + ' voted YES' : ' seconds per player')
         
         if (!client_type || clock_info.start_time) {
             clock_vote_info.children[1].style.display = 'none'

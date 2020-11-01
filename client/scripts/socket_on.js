@@ -286,6 +286,9 @@ socket.on('phase update', (day_phase) => {
 
 socket.on('edition update', (edition) => {
     game_state.edition = edition
+    if (client_type && !edition.reference_sheet) {
+        open_reference_sheet.innerHTML = 'Load Reference Sheet'
+    }
     reDraw()
 })
 
