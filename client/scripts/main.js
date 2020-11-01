@@ -57,7 +57,7 @@ const max_reminders = 5
 const deselected_opacity = 0.5
 const roles_by_id = {}
 const socket = io('https://evabs.soc.srcf.net', {autoConnect: false})
-
+Notification.requestPermission()
 var size = Math.min(window.innerWidth, window.innerHeight)
 var game_state = {
     'host_socket_id' : null,
@@ -120,7 +120,7 @@ var night_action_info = {
     'seat_id' : your_seat_id,
     'func' : () => {
         night_action_info.start_time = null
-        if (getPlayerBySeat(night_action_info.seat_id).socket_id) {
+        if (!client_type || getPlayerBySeatID(night_action_info.seat_id).socket_id) {
             
             
             if (client_type && night_action_info.name == 'Demon Info') {

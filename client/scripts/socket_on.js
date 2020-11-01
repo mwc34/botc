@@ -212,7 +212,7 @@ socket.on('finish vote update', () => {
     for (let player of game_state.player_info) {
         if (player.voting) {
             votes++
-            vote_names += `<span style="${getLogPlayerStyle()}">${player.name}</span>` + ', '
+            vote_names += getLogPlayerStyle(player.name) + ', '
         }
     }
     if (votes) {
@@ -325,12 +325,13 @@ socket.on('group night action update', (group_night_action) => {
 
 socket.on('night action', (night_action) => {
     if (client_type) {
-        let msg = getLogNightActionStyle('Received Night Action from ' + getLogPlayerStyle(getPlayerBySeatID(night_action_info.seat_id).name) + ':<br>' + nightAlert(night_action))
+        let msg = getLogNightActionStyle('Received Night Action from ' + getLogPlayerStyle(getPlayerBySeatID(night_action.seat_id).name) + ':<br>' + nightAlert(night_action))
         appendLog(msg)
         alert_box_info.push({'text' : msg})
         alert_box.check()
     }
     else {
+        new Notification("BOTCT: [game]", { "body":"Information for stuff" });
         let timer = (new Date()).getTime()
         let msg = getLogNightActionStyle('Received Night Action from ' + getLogPlayerStyle('The Host') + ':<br>' + nightAlert(night_action))
         appendLog(msg)

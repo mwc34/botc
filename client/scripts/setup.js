@@ -189,9 +189,17 @@ function setupMenu() {
     
     // Kill / Revive
     host_menu.children[0].children[4].onclick = () => {
-        host_menu.style.visibility = 'hidden'
-        let player = getPlayerBySeatID(token_selected_seat_id)
-        socket.emit('alive update', channel_id, {'seat_id' : token_selected_seat_id, 'alive' : !player.alive})
+        if (client_type && game_state.day_phase) {
+            host_menu.style.visibility = 'hidden'
+            let player = getPlayerBySeatID(token_selected_seat_id)
+            socket.emit('alive update', channel_id, {'seat_id' : token_selected_seat_id, 'alive' : !player.alive})
+        }
+        else {
+            alert_box_info.push({
+                'text' : 'You can\'t kill/revive during the night'
+            })
+            alert_box.check()
+        }
     }
     
     // Move player
