@@ -741,7 +741,6 @@ function reDrawClock() {
             getLogPlayerStyle(getPlayerBySeatID(clock_info.nominatee).name)}<br>${
             votes.length} vote${(votes.length != 1 ? 's' : '')} in favour (majority is ${Math.ceil(alive/2)})<br>${
             clock_info.start_time ? '' : 'Vote time is '}`
-        console.log(t)
         clock_vote_info.children[0].innerHTML = getLogNominationStyle(t)
 
         t = clock_info.interval/1000
