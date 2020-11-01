@@ -50,12 +50,11 @@ const edition_menu = document.getElementById('editionMenu')
 const edition_icon = document.getElementById('editionIcon')
 const reveal_grimoire = document.getElementById('revealGrimoire')
 const urlParams = new URLSearchParams(window.location.search);
-const pre_loaded_images = []
 const max_players = 20
 const max_reminders = 5
 const deselected_opacity = 0.5
 const roles_by_id = {}
-const socket = io('https://evabs.soc.srcf.net')
+const socket = io('https://evabs.soc.srcf.net', {autoConnect: false})
 
 var size = Math.min(window.innerWidth, window.innerHeight)
 var game_state = {
@@ -652,4 +651,5 @@ function main() {
     setup()
     style()
     reSize()
+    socket.open()
 }
