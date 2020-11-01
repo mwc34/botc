@@ -549,6 +549,7 @@ function afterInfoNightAction(night_action, timer, res) {
     night_action_info.time = time_left / ((night_action.players > 0) + (night_action.characters > 0))
     night_action_info.seat_id = your_seat_id
     night_action_info.players = []
+    night_action_info.info = []
     night_action_info.group = night_action.group
     night_action_info.confirm = res
     night_action_info.timed_out = false
