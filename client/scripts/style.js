@@ -323,6 +323,8 @@ function styleHUD() {
             row.style.fontFamily = getFontFamily()
             row.style.userSelect = 'none'
             row.style.textAlign = ['left', 'right'][i]
+            row.style.overflow = 'hidden'
+            row.style.wordBreak = 'break-all'
             if (i) {
                 addHover(menu.children[j])
             }
