@@ -380,16 +380,17 @@ function setupTokenMenu() {
             reDrawTokenMenu()
             switch (token_menu_info.type) {
                 case 0:
-                    let t = Math.min(token_menu_info.selected.length, game_state.player_info.length)
-                    for (let i=0; i < t; i++) {
+                    for (let i=0; i < game_state.player_info.length; i++) {
                         let player = getPlayerBySeat(i)
-                        let c = token_menu_info.selected.splice(Math.floor(Math.random() * token_menu_info.selected.length), 1)[0]
-                        if (player.character != c) {
-                            player.character = c
-                            player.synced = false
-                            let sspi = getSSPlayerInfo()
-                            sspi[player.seat_id].character = player.character
-                            setSSPlayerInfo(sspi)
+                        if (token_menu_info.selected.length > 0 && (!player.character || getCharacterFromID(player.character).team != 'traveler')) {
+                            let c = token_menu_info.selected.splice(Math.floor(Math.random() * token_menu_info.selected.length), 1)[0]
+                            if (player.character != c) {
+                                player.character = c
+                                player.synced = false
+                                let sspi = getSSPlayerInfo()
+                                sspi[player.seat_id].character = player.character
+                                setSSPlayerInfo(sspi)
+                            }
                         }
                     }
                     reDrawTokens()
@@ -1279,9 +1280,15 @@ function setupChooseCharacters() {
     choose_characters.style.position = 'absolute'
     choose_characters.onclick = () => {
         if (!game_state.clock_info.active && !getMenuOpen()) {
-            if (game_state.player_info.length >= 5) {
+            let traveler_count = 0
+            for (let p of game_state.player_info) {
+                if (p.character && getCharacterFromID(p.character).team == 'traveler') {
+                    traveler_count++
+                }
+            }
+            if (game_state.player_info.length - traveler_count >= 5) {
                 token_menu_info.type = 0
-                token_menu_info.choices = game_state.player_info.length
+                token_menu_info.choices = game_state.player_info.length - traveler_count
                 token_menu_info.valid_teams = ['townsfolk', 'outsider', 'minion', 'demon']
                 token_menu_info.selected = []
                 token_menu_info.out_of_play = false
@@ -1289,7 +1296,7 @@ function setupChooseCharacters() {
                 reDrawTokenMenu()
             }
             else {
-                alert_box_info.push({'text' : "You need at least 5 players"})
+                alert_box_info.push({'text' : "You need at least 5 non traveler players"})
                 alert_box.check()
             }
         }
