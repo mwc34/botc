@@ -723,7 +723,6 @@ function reDrawClock() {
             if (p.alive && (!p.character || getCharacterFromID(p.character).team != 'traveler')) {
                 alive++
             }
-
         }
         let vote_names = ''
         for (let v of votes) {
@@ -781,11 +780,22 @@ function reDrawHUD() {
     current_edition.innerHTML = 'Edition: ' + (t ? t.name : '')
     
     character_split.innerHTML = 'Split: '
-    let temp = player_split[game_state.player_info.length - 5]
+    let traveler_count = 0
+    for (let p of game_state.player_info) {
+        if (p.character && getCharacterFromID(p.character).team == 'traveler') {
+            traveler_count++
+        }
+    }
+    let temp = player_split[game_state.player_info.length - traveler_count - 5]
     for (let key in temp) {
         character_split.innerHTML += temp[key] + ', '
     }
-    character_split.innerHTML = character_split.innerHTML.slice(0, -2)
+    if (game_state.player_info.length - traveler_count >= 5) {
+        character_split.innerHTML = character_split.innerHTML.slice(0, -2)
+        if (traveler_count) {
+            character_split.innerHTML += `, ${traveler_count}`
+        }
+    }
     
     let alive_count = 0
     let vote_count = 0
