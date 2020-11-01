@@ -47,8 +47,31 @@ for (let page of getAllFiles('/home/societies/evabs/public_html/')) {
 }
 
 app.get('/reference_sheet', (req, res) => {
-    console.log(req.query)
-    res.send("hi")
+    let channel_id = req.query.channel_id
+    let edition_id = req.query.edition_id
+    if (channel_id in game_states && edition_id) {
+        let edition = null
+        for (let e of game_states[channel_id].editions) {
+            if (e.id == edition_id) {
+                edition = e
+                break
+            }
+        }
+        if (edition && edition.reference_sheet) {
+            // Custom
+            if (edition.id in game_states[channel_id].edition_reference_sheets) {
+                let pdfData = game_states[channel_id].edition_reference_sheets[edition.id]
+                res.writeHead(200, {
+                'Content-Length': Buffer.byteLength(pdfData),
+                'Content-Type': 'application/pdf'})
+                //'Content-disposition': 'attachment;filename=test.pdf',})
+                .end(pdfData);
+            }
+            else {
+                res.sendFile(`/home/societies/evabs/public_html/reference_sheets/${edition.id}.pdf`)
+            }
+        }
+    }
 })
 
 // Useful functions
@@ -94,6 +117,7 @@ function censorState(state, socket_id) {
     delete state.spectators
     delete state.night_actions
     delete state.roles_by_id
+    delete state.edition_reference_sheets
     state.group_night_action = {'name' : null, 'data' : {}}
     for (let player of state.player_info) {
         if (player.socket_id != socket_id && state.host_socket_id != socket_id) {
@@ -178,6 +202,7 @@ const base_state = {
     'spectators' : [],
     'night_actions' : {},
     'roles_by_id' : {},
+    'edition_reference_sheets' : {},
     'group_night_action' : {
         'name' : null,
         'data' : {}, // seat_id : {'players' : []}
@@ -377,10 +402,29 @@ io.on('connection', (socket) => {
         }
     })
     
+    // Edition Reference Sheet Update
+    socket.on('reference sheet update', (channel_id, edition_id, reference_sheet) => {
+        if (channel_id in game_states && socket.id == game_states[channel_id].host_socket_id) {
+            let edition = null
+            for (let e of game_states[channel_id].editions) {
+                if (e.id == edition_id) {
+                    edition = e
+                }
+            }
+            if (edition && !edition.reference_sheet) {
+                edition.reference_sheet = Boolean(reference_sheet)
+                if (edition.reference_sheet) {
+                    game_states[channel_id].edition_reference_sheets[edition.id] = reference_sheet
+                    channelEmit(channel_id, 'reference sheet update', {'id' : edition.id, 'reference_sheet' : edition.reference_sheet})
+                }
+            }
+        }
+    })
+    
     // New Edition update
     socket.on('new edition', (channel_id, edition) => {
         if (channel_id in game_states && socket.id == game_states[channel_id].host_socket_id) {
-            let edition = {
+            edition = {
                 'id' : edition.id, 
                 'name' : edition.name, 
                 'characters' : edition.characters, 
@@ -393,7 +437,6 @@ io.on('connection', (socket) => {
                 for (let e of game_states[channel_id].editions) {
                     if (e.id == edition.id || e.name == edition.name) {
                         valid = false
-                        console.log(edition.id, edition.name)
                     }
                 }
                 if (valid) {

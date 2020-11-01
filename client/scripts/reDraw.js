@@ -779,6 +779,13 @@ function reDrawHUD() {
     let t = getEditionFromID(game_state.edition)
     current_edition.innerHTML = 'Edition: ' + (t ? t.name : '')
     
+    if (client_type && !getEditionFromID(game_state.edition).reference_sheet) {
+        open_reference_sheet.innerHTML = 'Load Reference Sheet'
+    }
+    else {
+        open_reference_sheet.innerHTML = 'Open Reference Sheet'
+    }
+    
     character_split.innerHTML = 'Split: '
     let traveler_count = 0
     for (let p of game_state.player_info) {

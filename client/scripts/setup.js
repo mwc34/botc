@@ -1192,8 +1192,36 @@ function setupOpenReferenceSheet() {
     open_reference_sheet.style.position = 'absolute'
     open_reference_sheet.style.visibility = 'inherit'
     open_reference_sheet.onclick = () => {
-        if (getEditionFromID(game_state.edition).icon != "assets/editions/custom.png") {
-            window.open('reference_sheets/' + game_state.edition + '.pdf')
+        // Load
+        if (client_type && !getEditionFromID(game_state.edition).reference_sheet) {
+            let input = document.createElement('input')
+            input.type = 'file'
+            input.accept=".pdf"
+            
+            input.onchange = (event) => {
+                if(!window.FileReader) return; // Browser is not compatible
+
+                var reader = new FileReader();
+
+                reader.onload = (evt) => {
+                    if(evt.target.readyState != 2) return;
+                    if(evt.target.error) {
+                        alert('Error while reading file');
+                        return;
+                    }
+
+                    let filecontent = evt.target.result;
+                    
+                    socket.emit('reference sheet update', channel_id, game_state.edition, filecontent)
+                };
+
+                reader.readAsArrayBuffer(event.target.files[0]);
+            };
+            console.log(input)
+            input.click()
+        }
+        else {
+            window.open(`reference_sheet?channel_id=${channel_id}&edition_id=${game_state.edition}`)
         }
     }
 }

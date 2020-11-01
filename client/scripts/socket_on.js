@@ -132,7 +132,6 @@ socket.on('name update', (name_update) => {
 socket.on('character update', (character_update) => {
     let player = getPlayerBySeatID(character_update.seat_id)
     player.character = character_update.character
-    console.log(player, player.character)
     let sspi = getSSPlayerInfo()
     sspi[player.seat_id].character = player.character
     setSSPlayerInfo(sspi)
@@ -286,10 +285,12 @@ socket.on('phase update', (day_phase) => {
 
 socket.on('edition update', (edition) => {
     game_state.edition = edition
-    if (client_type && !edition.reference_sheet) {
-        open_reference_sheet.innerHTML = 'Load Reference Sheet'
-    }
     reDraw()
+})
+
+socket.on('reference sheet update', (reference_sheet_update) => {
+    getEditionFromID(reference_sheet_update.id).reference_sheet = reference_sheet_update.reference_sheet
+    reDrawHUD()
 })
 
 socket.on('new edition', (edition) => {
