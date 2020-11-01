@@ -1201,7 +1201,7 @@ function setupOpenReferenceSheet() {
     open_reference_sheet.style.visibility = 'inherit'
     open_reference_sheet.onclick = () => {
         // Load
-        if (client_type && !getEditionFromID(game_state.edition).reference_sheet) {
+        if (client_type && !getEditionFromID(game_state.edition).reference_sheet && !getMenuOpen()) {
             let input = document.createElement('input')
             input.type = 'file'
             input.accept=".pdf"
@@ -1375,7 +1375,7 @@ function setupChangeEdition() {
 function setupShufflePlayers() {
     shuffle_players.style.position = 'absolute'
     shuffle_players.onclick = () => {
-        if (!getMenuOpen() && !game_state.clock_info.active) {
+        if (!getMenuOpen() && !game_state.clock_info.active && client_type) {
             let new_seats = {}
             let to_choose = [...Array(game_state.player_info.length).keys()]
             for (let i=0; i < game_state.player_info.length; i++) {
