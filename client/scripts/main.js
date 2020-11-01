@@ -643,8 +643,11 @@ function requestSitDown() {
 }
 
 function preloadImage(url) {
-    pre_loaded_images.push(document.createElement('img'))
-    pre_loaded_images[pre_loaded_images.length - 1].src = url
+    var preImg = document.createElement('link')
+    preImg.href = url
+    preImg.rel = 'preload'
+    preImg.as = 'image'
+    document.head.appendChild(preImg)
 }
 
 function main() {
