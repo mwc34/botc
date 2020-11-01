@@ -222,6 +222,7 @@ const base_state = {
         'free' : false,
     },
     'day_phase' : false,
+    'nominations_open' : false,
 }
 
 const base_player_info = {
@@ -480,6 +481,17 @@ io.on('connection', (socket) => {
         }
     })
     
+    // Open Nominations Update
+    socket.on('open nominations update', (channel_id, open_update) => {
+        let state = game_states[channel_id]
+        if (state && socket.id == state.host_socket_id) {
+            if (state.day_phase && open_update != state.nominations_open) {
+                state.nominations_open = open_update
+                channelEmit(channel_id, 'open nominations update', open_update)
+            }
+        }
+    })
+    
     // Seat update
     socket.on('seat update', (channel_id, seat_update) => {
         if (channel_id in game_states && socket.id == game_states[channel_id].host_socket_id && !game_states[channel_id].clock_info.active) {
@@ -668,6 +680,7 @@ io.on('connection', (socket) => {
                     player.nominated = false
                     player.nominateed = false
                 }
+                state.nominations_open = false
                 channelEmit(channel_id, 'phase update', state.day_phase)
             }
         }

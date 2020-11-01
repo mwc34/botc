@@ -49,6 +49,8 @@ const game_log = document.getElementById('gameLog')
 const edition_menu = document.getElementById('editionMenu')
 const edition_icon = document.getElementById('editionIcon')
 const reveal_grimoire = document.getElementById('revealGrimoire')
+const nomination_status = document.getElementById('nominationStatus')
+const change_nomination_status = document.getElementById('changeNominationStatus')
 const urlParams = new URLSearchParams(window.location.search);
 const max_players = 20
 const max_reminders = 5
@@ -74,6 +76,7 @@ var game_state = {
         'active' : false,
     },
     'day_phase' : false,
+    'nominations_open' : false,
 }
 
 var client_type = null // 0 Player, 1 Client

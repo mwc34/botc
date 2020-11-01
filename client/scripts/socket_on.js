@@ -280,7 +280,8 @@ socket.on('phase update', (day_phase) => {
         player.nominated = false
         player.nominateed = false
     }
-    reDrawChangePhase()
+    game_state.nominations_open = false
+    reDrawHUD()
 })
 
 socket.on('edition update', (edition) => {
@@ -299,6 +300,11 @@ socket.on('new edition', (edition) => {
     if (client_type) {
         socket.emit('edition update', channel_id, edition.id)
     }
+})
+
+socket.on('open nominations update', (state) => {
+    game_state.nominations_open = state
+    reDrawHUD()
 })
 
 socket.on('reveal grimoire', (grimoire) => {

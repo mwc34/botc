@@ -79,6 +79,8 @@ function setup() {
     setupEditionMenu()
     setupEditionIcon()
     setupRevealGrimoire()
+    setupNominationStatus()
+    setupChangeNominationStatus()
 }
 
 function addHover(e, colour_1 = getFontColour(), colour_2 = getSelectedFontColour()) {
@@ -307,6 +309,12 @@ function setupMenu() {
         player_menu.style.visibility = 'hidden'
         if (!game_state.day_phase) {
             alert_box_info.push({'text' : 'You can\'t nominate during the night phase'})
+            alert_box.check()
+        }
+        else if (!game_state.nominations_open) {
+            alert_box_info.push({
+                'text' : 'Nominations are not open',
+            })
             alert_box.check()
         }
         else if (!game_state.clock_info.active) {
@@ -1273,32 +1281,56 @@ function setupFinishGame() {
 function setupRevealGrimoire() {
     reveal_grimoire.style.position = 'absolute'
     reveal_grimoire.onclick = () => {
-        alert_box_info.push({
-            'text' : 'Are you sure you want to reveal the grimoire?<br>This will show the players everything!',
-            'type' : 'confirm',
-            'func' : (res) => {
-                socket.emit('reveal grimoire', channel_id, game_state)
-            }
-        })
-        alert_box.check()
+        if (client_type && !getMenuOpen()) {
+            alert_box_info.push({
+                'text' : 'Are you sure you want to reveal the grimoire?<br>This will show the players everything!',
+                'type' : 'confirm',
+                'func' : (res) => {
+                    socket.emit('reveal grimoire', channel_id, game_state)
+                }
+            })
+            alert_box.check()
+        }
     }
 }
 
 function setupRefresh() {
     refresh.style.position = 'absolute'
-    refresh.style.visibility = 'inherit'
     refresh.onclick = () => {
         socket.emit('reset', channel_id)
+    }
+}
+
+function setupNominationStatus() {
+    nomination_status.style.position = 'absolute'
+}
+
+function setupChangeNominationStatus() {
+    change_nomination_status.style.position = 'absolute'
+    change_nomination_status.onclick = () => {
+        if (client_type) {
+            if (game_state.day_phase) {
+                socket.emit('open nominations update', channel_id, !game_state.nominations_open)
+            }
+            else {
+                alert_box_info.push({
+                    'text' : 'You can\'t open nominations during the night'
+                })
+                alert_box.check()
+            }
+        }
     }
 }
 
 function setupSyncCharacters() {
     sync_characters.style.position = 'absolute'
     sync_characters.onclick = () => {
-        let to_send = []
-        for (let player of game_state.player_info) {
-            if (!player.synced) {
-                socket.emit('character update', channel_id, {'seat_id' : player.seat_id, 'character' : player.character})
+        if (client_type) {
+            let to_send = []
+            for (let player of game_state.player_info) {
+                if (!player.synced) {
+                    socket.emit('character update', channel_id, {'seat_id' : player.seat_id, 'character' : player.character})
+                }
             }
         }
     }
@@ -1307,7 +1339,7 @@ function setupSyncCharacters() {
 function setupChooseCharacters() {
     choose_characters.style.position = 'absolute'
     choose_characters.onclick = () => {
-        if (!game_state.clock_info.active && !getMenuOpen()) {
+        if (!game_state.clock_info.active && !getMenuOpen() && client_type) {
             let traveler_count = 0
             for (let p of game_state.player_info) {
                 if (p.character && getCharacterFromID(p.character).team == 'traveler') {
