@@ -1527,6 +1527,9 @@ function setupNightActionMenu() {
                         if (v) {
                             night_action.info = v
                         }
+                        else {
+                            night_action.info = undefined
+                        }
                         
                         night_action_menu.style.visibility = 'hidden'
                         
