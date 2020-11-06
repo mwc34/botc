@@ -331,11 +331,11 @@ socket.on('night action', (night_action) => {
         alert_box.check()
     }
     else {
-        new Notification("BOTCT: [game]", { "body":"Information for stuff" });
+        new Notification(`BotC: ${channel_id}`, { "body": `Night Action: ${night_action.name}`});
         let timer = (new Date()).getTime()
         let msg = getLogNightActionStyle('Received Night Action from ' + getLogPlayerStyle('The Host') + ':<br>' + nightAlert(night_action))
-        appendLog(msg)
         alert_box_info.push({'text' : msg, 'func' : () => {
+            appendLog(msg)
             if (night_action.name == 'Demon Info') {
                 game_state.demon_bluffs = night_action.info.characters
                 setSSDemonBluffs(game_state.demon_bluffs)

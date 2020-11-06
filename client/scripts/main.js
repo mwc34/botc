@@ -605,13 +605,13 @@ function setLog(content) {
 }
 
 function appendLog(msg) {
-    let at_bottom = game_log.children[0].scrollTop == game_log.children[0].scrollTopMax
+    let at_bottom = (game_log.children[0].scrollHeight - game_log.children[0].scrollTop - parseFloat(game_log.children[0].style.height) < 2)
     if (game_log.children[0].innerHTML.length > 0) {
         game_log.children[0].innerHTML += '<br><br>'
     }
     game_log.children[0].innerHTML += msg
     if (at_bottom) {
-        game_log.children[0].scrollTop = game_log.children[0].scrollTopMax
+        game_log.children[0].scrollTop = game_log.children[0].scrollHeight
     }
     sessionStorage.log = game_log.children[0].innerHTML
 }
