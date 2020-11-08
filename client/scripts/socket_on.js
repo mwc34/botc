@@ -183,6 +183,7 @@ socket.on('vote update', (vote_update) => {
     let player = getPlayerBySeatID(vote_update.seat_id)
     player.voting = vote_update.voting
     reDrawVotes()
+    reDrawClock()
 })
 
 socket.on('interval update', (interval) => {
