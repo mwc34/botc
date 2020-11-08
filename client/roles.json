@@ -1463,6 +1463,9 @@
             "scope_restrictions":[
                "demons"
             ]
+            "player_restrictions":[
+                "cancel"
+            ]
          }
       ]
    },
