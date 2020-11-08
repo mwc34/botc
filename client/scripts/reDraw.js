@@ -739,7 +739,7 @@ function reDrawClock() {
         let t = `${getLogPlayerStyle(getPlayerBySeatID(clock_info.nominator).name)}${
             (clock_info.free ? ' free' : '')} nominated ${
             getLogPlayerStyle(getPlayerBySeatID(clock_info.nominatee).name)}<br>${
-            votes.length} vote${(votes.length != 1 ? 's' : '')} in favour (majority is ${Math.ceil(alive/2)})<br>${
+            votes.length} vote${(votes.length != 1 ? 's' : '')} in favour (majority is ${Math.ceil((clock_info.free ? game_state.player_info.length : alive)/2)})<br>${
             clock_info.start_time ? '' : 'Vote time is '}`
         clock_vote_info.children[0].innerHTML = getLogNominationStyle(t)
 
