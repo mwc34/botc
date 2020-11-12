@@ -222,6 +222,7 @@ const base_state = {
         'free' : false,
     },
     'day_phase' : false,
+    'phase_counter' : 0,
     'nominations_open' : false,
 }
 
@@ -670,18 +671,19 @@ io.on('connection', (socket) => {
     })
     
     // Phase update
-    socket.on('phase update', (channel_id, day_phase) => {
+    socket.on('phase update', (channel_id, day_phase, phase_counter) => {
         if (channel_id in game_states && socket.id == game_states[channel_id].host_socket_id && !game_states[channel_id].clock_info.active && Object.getOwnPropertyNames(game_states[channel_id].night_actions).length == 0) {
             let state = game_states[channel_id]
-            if (state.day_phase != Boolean(day_phase)) {
+            if (state.day_phase != Boolean(day_phase) && Math.abs(state.phase_counter - phase_counter) <= 1 && phase_counter >= 0 && (phase_counter > 0 || !day_phase)) {
                 state.day_phase = Boolean(day_phase)
+                state.phase_counter = phase_counter
                 // Wipe nominations
                 for (let player of state.player_info) {
                     player.nominated = false
                     player.nominateed = false
                 }
                 state.nominations_open = false
-                channelEmit(channel_id, 'phase update', state.day_phase)
+                channelEmit(channel_id, 'phase update', {'day_phase' : state.day_phase, 'phase_counter' : phase_counter})
             }
         }
     })

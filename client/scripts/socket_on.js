@@ -273,9 +273,10 @@ socket.on('cancel vote update', () => {
     reDrawClock()
 })
 
-socket.on('phase update', (day_phase) => {
-    game_state.day_phase = day_phase
-    appendLog(getLogPhaseStyle(`Phase change to ${day_phase == true ? 'day' : 'night'}`))
+socket.on('phase update', (phase_update) => {
+    game_state.day_phase = phase_update.day_phase
+    game_state.phase_counter = phase_update.phase_counter
+    appendLog(getLogPhaseStyle(`Phase change to ${game_state.day_phase == true ? 'Day' : 'Night'} ${game_state.phase_counter}`))
     // Wipe nominations
     for (let player of game_state.player_info) {
         player.nominated = false

@@ -76,6 +76,7 @@ var game_state = {
         'active' : false,
     },
     'day_phase' : false,
+    'phase_counter' : 0,
     'nominations_open' : false,
 }
 

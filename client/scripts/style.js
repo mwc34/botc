@@ -330,6 +330,11 @@ function styleHUD() {
             }
         }
     }
+    
+    // Change Phase
+    change_phase.children[0].style.verticalAlign = 'middle'
+    change_phase.children[1].style.whiteSpace = 'pre'
+    change_phase.children[2].style.verticalAlign = 'middle'
 }
 
 function styleNightActionMenu() {

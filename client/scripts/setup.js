@@ -1192,11 +1192,19 @@ function setupDayPhase() {
 
 function setupChangePhase() {
     change_phase.style.position = 'absolute'
-    change_phase.onclick = () => {
+    change_phase.children[0].onclick = () => {
         if (client_type && !getMenuOpen() && !game_state.clock_info.active) {
-            socket.emit('phase update', channel_id, !game_state.day_phase)
+            if (game_state.day_phase || game_state.phase_counter > 0) {
+                socket.emit('phase update', channel_id, !game_state.day_phase, game_state.phase_counter - game_state.day_phase)
+            }
         }
     }
+    change_phase.children[2].onclick = () => {
+        if (client_type && !getMenuOpen() && !game_state.clock_info.active) {
+            socket.emit('phase update', channel_id, !game_state.day_phase, game_state.phase_counter + !game_state.day_phase)
+        }
+    }
+    change_phase.children[1].onclick = change_phase.children[2].onclick
 }
 
 function setupCurrentEdition() {

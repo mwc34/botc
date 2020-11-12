@@ -502,6 +502,10 @@ function reSizeHUD() {
             row.style.lineHeight = getHUDRowHeight() + 'px'
         }
     }
+    
+    // Change Phase
+    change_phase.children[0].width = change_phase.children[0].height = getHUDFontSize()
+    change_phase.children[2].width = change_phase.children[2].height = getHUDFontSize()
 }
 
 function reSizeNightActionMenu() {
