@@ -778,20 +778,24 @@ function setupTokens() {
                         
                         // Hide Extra Night Options
                         if (client_type) {
+                            let temp = []
+                            
+                            if (!game_state.day_phase) {
+                                let c = getCharacterFromID(getPlayerBySeatID(token_selected_seat_id).character)
+                                if (c != null) {
+                                    temp = JSON.parse(JSON.stringify(c.night_actions))
+                                }
+                                for (let a of default_night_action) {
+                                    temp.push(a)
+                                }
+                                for (let a of getScopedNightActions(c)) {
+                                    temp.push(a)
+                                }
+                            }
                             // MAGIC NUMBER
-                            let c = getCharacterFromID(getPlayerBySeatID(token_selected_seat_id).character)
                             for (let i=0; i<host_menu.children[0].childElementCount - 5; i++) {
                                 if (!game_state.day_phase) {
-                                    let temp = []
-                                    if (c != null) {
-                                        temp = JSON.parse(JSON.stringify(c.night_actions))
-                                    }
-                                    for (let a of default_night_action) {
-                                        temp.push(a)
-                                    }
-                                    for (let a of getScopedNightActions(c)) {
-                                        temp.push(a)
-                                    }
+                                    
                                     if (temp.length > i) {
                                         menu.children[0].children[5 + i].innerHTML = temp[i].name
                                         menu.children[0].children[5 + i].style.visibility = ''
