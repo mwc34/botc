@@ -13,6 +13,7 @@ socket.on('new host', (msg) => {
         token_click_type = 0
         your_seat_id = null
         token_menu_info.active = false
+        night_action_info.start_time = null
         reminder_menu.style.visibility = 'hidden'
         night_action_menu.style.visibility = 'hidden'
         edition_menu.style.visibility = 'hidden'
@@ -52,6 +53,7 @@ socket.on('new player', (msg) => {
         token_click_type = 0
         your_seat_id = null
         token_menu_info.active = false
+        night_action_info.start_time = null
         reminder_menu.style.visibility = 'hidden'
         night_action_menu.style.visibility = 'hidden'
         edition_menu.style.visibility = 'hidden'
@@ -364,6 +366,32 @@ socket.on('night action', (night_action) => {
         }})
         alert_box.check()
     }
+})
+
+socket.on('reset game', (state) => {
+    for (let e of alert_box_info) {
+        alert_box_info.pop()
+    }
+    
+    alert_box_info.push({
+        'text' : 'The Host has reset the game',
+    })
+    alert_box.check()
+    clearLog()
+    wipeSessionStorage()
+    sessionStorage.channel_id = channel_id
+    sessionStorage.client_type = client_type
+    game_state = state
+    token_click_type = 0
+    token_menu_info.active = false
+    night_action_info.start_time = null
+    reminder_menu.style.visibility = 'hidden'
+    night_action_menu.style.visibility = 'hidden'
+    edition_menu.style.visibility = 'hidden'
+    token_selected_seat_id = null
+    reSize()
+    reDraw()
+    
 })
 
 socket.on('reset', (state) => {

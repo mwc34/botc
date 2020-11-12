@@ -805,12 +805,48 @@ io.on('connection', (socket) => {
         channelEmit(channel_id, 'reveal grimoire', state, false)
     })
     
-    // Reset
-    socket.on('reset', (channel_id) => {
-        if (channel_id in game_states) {
-            // Give total info
-            let state = game_states[channel_id]
-            socket.emit('reset', censorState(state, socket.id))
+    // Reset Game
+    socket.on('reset game', (channel_id) => {
+        if (channel_id in game_states && socket.id == game_states[channel_id].host_socket_id) {
+            let old_state = game_states[channel_id]
+            let state = copy(base_state)
+            
+            let copy_attributes = [
+                'host_socket_id',
+                'spectators',
+                'edition_reference_sheets',
+                'edition',
+                'editions',
+            ]
+            
+            for (let a of copy_attributes) {
+                state[a] = old_state[a]
+            }
+            
+            for (let p of old_state.player_info) {
+                let player = copy(base_player_info)
+                player.seat = state.player_info.length
+                player.seat_id = state.next_seat_id
+                player.name = p.name
+                player.socket_id = p.socket_id
+                
+                state.next_seat_id++
+                state.player_info.push(player)
+            }
+            
+            // Send it out
+            if (state.host_socket_id != null) {
+                io.to(state.host_socket_id).emit('reset game', censorState(state))
+            }
+            
+            for (let player of state.player_info) {
+                if (player.socket_id != null) {
+                    io.to(player.socket_id).emit('reset game', censorState(state))
+                }
+            }
+            for (let spectator of state.spectators) {
+                io.to(spectator).emit('reset game', censorState(state))
+            }
         }
     })
     

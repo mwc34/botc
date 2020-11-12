@@ -773,6 +773,7 @@ function reDrawHUD() {
     change_edition.style.visibility = client_type || client_type == null ? change_edition.style.visibility : 'hidden'
     change_phase.style.visibility = client_type || client_type == null ? change_phase.style.visibility : 'hidden'
     reveal_grimoire.style.visibility = client_type || client_type == null ? reveal_grimoire.style.visibility : 'hidden'
+    reset_game.style.visibility = client_type || client_type == null ? reset_game.style.visibility : 'hidden'
     change_nomination_status.style.visibility = client_type || client_type == null ? change_nomination_status.style.visibility : 'hidden'
     
     host_connected.innerHTML = 'Host Status: ' + (game_state.host_socket_id ? (client_type ? 'You are the Host' : 'Hosted') : 'Hostless')

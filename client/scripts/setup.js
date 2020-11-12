@@ -52,7 +52,7 @@ function setup() {
     setupAddPlayer()
     setupFinishGame()
     setupCancelSelect()
-    setupRefresh()
+    setupResetGame()
     setupSyncCharacters()
     setupTokenMenu()
     setupChooseCharacters()
@@ -1306,7 +1306,9 @@ function setupRevealGrimoire() {
                 'text' : 'Are you sure you want to reveal the grimoire?<br>This will show the players everything!',
                 'type' : 'confirm',
                 'func' : (res) => {
-                    socket.emit('reveal grimoire', channel_id, game_state)
+                    if (res) {
+                        socket.emit('reveal grimoire', channel_id, game_state)
+                    }
                 }
             })
             alert_box.check()
@@ -1314,10 +1316,21 @@ function setupRevealGrimoire() {
     }
 }
 
-function setupRefresh() {
-    refresh.style.position = 'absolute'
-    refresh.onclick = () => {
-        socket.emit('reset', channel_id)
+function setupResetGame() {
+    reset_game.style.position = 'absolute'
+    reset_game.onclick = () => {
+        if (client_type) {
+            alert_box_info.push({
+                'text' : 'Are you sure you want to reset the game?<br>This will reset everything but the players!',
+                'type' : 'confirm',
+                'func' : (res) => {
+                    if (res) {
+                        socket.emit('reset game', channel_id)
+                    }
+                }
+            })
+            alert_box.check()
+        }
     }
 }
 
@@ -1667,7 +1680,7 @@ function setupAlertBox() {
     alert_box.style.zIndex = 500
     
     alert_box.check = () => {
-        if (alert_box_info.length > 0 && alert_box.style.visibility == 'hidden') {
+        if (alert_box_info.length > 0) {
             alert_box.children[0].children[0].innerHTML = alert_box_info[0].text
             switch (alert_box_info[0].type) {
                 // Confirm
