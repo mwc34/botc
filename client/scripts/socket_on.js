@@ -29,9 +29,7 @@ socket.on('new host', (msg) => {
         }
         let sspi = getSSPlayerInfo()
         for (let p of game_state.player_info) {
-            if (!sspi[p.seat_id]) {
-                sspi[p.seat_id] = {'character' : p.character, 'reminders' : p.reminders}
-            }
+            sspi[p.seat_id] = {'character' : p.character, 'reminders' : p.reminders}
         }
         if (sessionStorage.log) {
             setLog(sessionStorage.log)
@@ -74,7 +72,10 @@ socket.on('new player', (msg) => {
         }
         let sspi = getSSPlayerInfo()
         for (let p of game_state.player_info) {
-            if (!sspi[p.seat_id]) {
+            // Fix travelers
+            if (!sspi[p.seat_id] 
+                    || (p.character && getCharacterFromID(p.character).team == 'traveler') 
+                    || (sspi[p.seat_id].character && getCharacterFromID(sspi[p.seat_id].character).team == 'traveler')) {
                 sspi[p.seat_id] = {'character' : p.character, 'reminders' : p.reminders}
             }
             else {
@@ -132,14 +133,17 @@ socket.on('name update', (name_update) => {
 })
 
 socket.on('character update', (character_update) => {
+    console.log(character_update)
     let player = getPlayerBySeatID(character_update.seat_id)
+    let old_character = player.character
     player.character = character_update.character
     let sspi = getSSPlayerInfo()
     sspi[player.seat_id].character = player.character
     setSSPlayerInfo(sspi)
     player.synced = true
+    let text = ''
     if (player.seat_id == your_seat_id) {
-        let text = getLogDefaultStyle('Your character has changed to: ' + (!player.character ? 'Empty' : getLogCharacterStyle(getCharacterFromID(player.character).name)))
+        text = getLogDefaultStyle('Your character has changed to: ' + (!player.character ? 'Empty' : getLogCharacterStyle(getCharacterFromID(player.character).name)))
         alert_box_info.push({'text' : text,
                              'func' : () => {
                                  appendLog(text)
@@ -147,6 +151,28 @@ socket.on('character update', (character_update) => {
                                  reDrawNightReminders()
                                  reDrawHUD()
                              }})
+        alert_box.check()
+    }
+    else if (!client_type && ((old_character && getCharacterFromID(old_character).team == 'traveler') 
+                    || (character_update.character && getCharacterFromID(character_update.character).team == 'traveler'))) {
+        
+        // Change to a traveler
+        if (character_update.character && getCharacterFromID(character_update.character).team == 'traveler') {
+            text = getLogDefaultStyle(`The character of ${player.name} has changed to: ${getLogCharacterStyle(getCharacterFromID(character_update.character).name)}`)
+        }
+        // Changed from a traveler
+        else {
+            text = getLogDefaultStyle(`Player ${player.name} is no longer a Traveler`)
+        }
+        alert_box_info.push({
+            'text' : text,
+            'func' : () => {
+                appendLog(text)
+                reDrawTokens()
+                reDrawNightReminders()
+                reDrawHUD()
+            }
+        })
         alert_box.check()
     }
     else {

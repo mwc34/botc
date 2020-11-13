@@ -114,14 +114,11 @@ function channelEmit(channel_id, eventName, msg, emitToHost = true) {
 function censorState(state, socket_id) {
     state = copy(state)
     
-    delete state.spectators
-    delete state.night_actions
-    delete state.roles_by_id
-    delete state.edition_reference_sheets
-    state.group_night_action = {'name' : null, 'data' : {}}
     for (let player of state.player_info) {
         if (player.socket_id != socket_id && state.host_socket_id != socket_id) {
-            player.character = null
+            if (!player.character || getCharacterFromID(state, player.character).team != 'traveler') {
+                player.character = null
+            }   
             player.reminders = []
         }
         player.socket_id = (player.socket_id == null) ? false : true
@@ -129,6 +126,12 @@ function censorState(state, socket_id) {
     state.demon_bluffs = (state.host_socket_id == socket_id) ? state.demon_bluffs : []
     state.host_socket_id = (state.host_socket_id == null) ? false : true
     state.roles = (state.host_socket_id == socket_id) ? state.roles : roles
+    
+    delete state.spectators
+    delete state.night_actions
+    delete state.roles_by_id
+    delete state.edition_reference_sheets
+    state.group_night_action = {'name' : null, 'data' : {}}
     
     return state
 }

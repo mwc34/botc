@@ -1372,6 +1372,7 @@ function setupSyncCharacters() {
             let to_send = []
             for (let player of game_state.player_info) {
                 if (!player.synced) {
+                    console.log(player.character)
                     socket.emit('character update', channel_id, {'seat_id' : player.seat_id, 'character' : player.character})
                 }
             }
