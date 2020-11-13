@@ -817,22 +817,25 @@ io.on('connection', (socket) => {
                 'edition_reference_sheets',
                 'edition',
                 'editions',
+                'next_seat_id',
             ]
             
             for (let a of copy_attributes) {
                 state[a] = old_state[a]
             }
             
-            for (let p of old_state.player_info) {
+            for (let i=0; i < old_state.player_info.length; i++) {
+                let p = getPlayerBySeat(old_state, i)
                 let player = copy(base_player_info)
-                player.seat = state.player_info.length
-                player.seat_id = state.next_seat_id
+                player.seat = p.seat
+                player.seat_id = p.seat_id
                 player.name = p.name
                 player.socket_id = p.socket_id
                 
-                state.next_seat_id++
                 state.player_info.push(player)
             }
+            
+            game_states[channel_id] = state
             
             // Send it out
             if (state.host_socket_id != null) {

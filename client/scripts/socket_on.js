@@ -381,7 +381,17 @@ socket.on('reset game', (state) => {
     wipeSessionStorage()
     sessionStorage.channel_id = channel_id
     sessionStorage.client_type = client_type
+    if (your_seat_id != null) {
+        sessionStorage.seat_id = your_seat_id
+    }
     game_state = state
+    
+    let sspi = {}
+    for (let p of game_state.player_info) {
+        sspi[p.seat_id] = {'character' : p.character, 'reminders' : p.reminders}
+    }
+    setSSPlayerInfo(sspi)
+    
     token_click_type = 0
     token_menu_info.active = false
     night_action_info.start_time = null
@@ -392,40 +402,6 @@ socket.on('reset game', (state) => {
     reSize()
     reDraw()
     
-})
-
-socket.on('reset', (state) => {
-    for (let key in state) {
-        if (key == 'player_info') {
-            for (let player of state[key]) {
-                for (let key2 in player) {
-                    let match = getPlayerBySeatID(player.seat_id)
-                    if (match != null) {
-                        if (!(['reminders', 'character'].includes(key2)) || (key2 == 'character' && your_seat_id == player.seat_id)) {
-                            match[key2] = player[key2]
-                            if (key2 == 'character') {
-                                let sspi = getSSPlayerInfo()
-                                sspi[player.seat_id].character = player.character
-                                setSSPlayerInfo(sspi)
-                            }
-                        } else if (client_type) {
-                            if (key2 == 'character') {
-                                match[key2] = player[key2]
-                            }
-                        }
-                    }
-                    else {
-                        game_state.player_info.push(player)
-                    }
-                }
-            }
-        }
-        else if (!['demon_bluffs', 'group_night_action'].includes(key)) {
-            game_state[key] = state[key]
-        }
-    }
-    reSize()
-    reDraw()
 })
 
 socket.on('remove update', (seat_id) => {
@@ -443,6 +419,7 @@ socket.on('remove update', (seat_id) => {
     reDrawPlayers()
     if (player.seat_id == your_seat_id) {
         your_seat_id = null
+        delete sessionStorage.seat_id
         reDrawPlayers()
         alert_box_info.push({'text' : 'Your seat was removed', 'func' : () => {requestSitDown();reDrawHUD();}})
         alert_box.check()

@@ -64,7 +64,7 @@ function reDrawTokens() {
                 token.style.border = getTokenBorderSize(game_state.player_info.length) + 'px solid red'
                 token.style.margin = -getTokenBorderSize(game_state.player_info.length) + 'px'
             }
-            else if (!player.synced && (client_type || player.seat_id == your_seat_id)) {
+            else if (client_type && !player.synced) {
                 token.style.border = getTokenBorderSize(game_state.player_info.length) + 'px solid orange'
                 token.style.margin = -getTokenBorderSize(game_state.player_info.length) + 'px'
             }
