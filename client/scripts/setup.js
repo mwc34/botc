@@ -167,14 +167,24 @@ function setupMenu() {
         let menu = client_type ? host_menu : player_menu;
         menu.style.visibility = 'hidden'
         
+        let c = getCharacterFromID(getPlayerBySeatID(token_selected_seat_id).character)
+        
         if (!token_menu_info.active) {
-            token_menu_info.choices = 1
-            token_menu_info.type = 1
-            token_menu_info.valid_teams = client_type ? [] : ['extra', 'townsfolk', 'outsider', 'minion', 'demon']
-            token_menu_info.selected = []
-            token_menu_info.out_of_play = false
-            token_menu_info.active = true
-            reDrawTokenMenu()
+            if (client_type || !c || !(c.team == 'traveler')) {
+                token_menu_info.choices = 1
+                token_menu_info.type = 1
+                token_menu_info.valid_teams = client_type ? [] : ['extra', 'townsfolk', 'outsider', 'minion', 'demon']
+                token_menu_info.selected = []
+                token_menu_info.out_of_play = false
+                token_menu_info.active = true
+                reDrawTokenMenu()
+            }
+            else {
+                alert_box_info.push({
+                    'text' : 'You can\'t change the character of a Traveler!'
+                })
+                alert_box.check()
+            }
         }
     }
     
