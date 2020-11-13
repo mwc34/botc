@@ -272,7 +272,6 @@ function setupMenu() {
                     
                     // For ever changing night actions
                     if (night_action.create) {
-                        console.log(night_action)
                         // Pop up form to calculate data
                         night_action_menu.children[1].children[1].children[1].innerHTML = night_action.in_players || 0
                         night_action_menu.children[2].children[1].children[1].innerHTML = night_action.in_characters || 0
@@ -401,6 +400,16 @@ function setupTokenMenu() {
     finish_button.style.zIndex = 'inherit'
     finish_button.innerHTML = 'Finish'
     finish_button.onclick = () => {
+        if (token_menu_info.type < 2) {
+            for (let c of token_menu_info.selected) {
+                if (c && getCharacterFromID(c).removes_self) {
+                    alert_box_info.push({
+                        'text' : `You have chosen the ${getLogCharacterStyle(getCharacterFromID(c).name)}.<br>You may need to make adjustments to the setup.`
+                    })
+                    alert_box.check()
+                }
+            }
+        }
         if (token_menu_info.selected.length >= token_menu_info.choices || (token_menu_info.type == 0 && token_menu_info.selected.length == 15) || (token_menu_info.type == 2 && (night_action_info.character_restrictions.includes("cancel") || client_type))) {
             token_menu_info.active = false
             reDrawTokenMenu()
@@ -1255,7 +1264,6 @@ function setupOpenReferenceSheet() {
 
                 reader.readAsArrayBuffer(event.target.files[0]);
             };
-            console.log(input)
             input.click()
         }
         else {
@@ -1372,7 +1380,6 @@ function setupSyncCharacters() {
             let to_send = []
             for (let player of game_state.player_info) {
                 if (!player.synced) {
-                    console.log(player.character)
                     socket.emit('character update', channel_id, {'seat_id' : player.seat_id, 'character' : player.character})
                 }
             }

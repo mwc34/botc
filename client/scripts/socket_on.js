@@ -133,7 +133,6 @@ socket.on('name update', (name_update) => {
 })
 
 socket.on('character update', (character_update) => {
-    console.log(character_update)
     let player = getPlayerBySeatID(character_update.seat_id)
     let old_character = player.character
     player.character = character_update.character

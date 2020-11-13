@@ -305,6 +305,7 @@
          "Drunk"
       ],
       "setup":true,
+      "removes_self":true,
       "ability":"You do not know you are the Drunk. You think you are a Townsfolk, but your ability malfunctions.",
       "night_actions":[
          
@@ -834,6 +835,7 @@
          "Decoy"
       ],
       "setup":true,
+      "removes_self":true,
       "name":"Lunatic",
       "team":"outsider",
       "ability":"You think you are a Demon, but your abilities malfunction. The Demon knows who you are and who you attack.",
@@ -2336,6 +2338,7 @@
          "The Demon"
       ],
       "setup":true,
+      "removes_self":true,
       "name":"Lil' Monsta",
       "team":"demon",
       "ability":"Each night, Minions choose who babysits Lil' Monsta's token & \u201cis the Demon\u201d. A player dies each night*. [+1 Minion]",
