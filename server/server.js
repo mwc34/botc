@@ -446,11 +446,11 @@ io.on('connection', (socket) => {
                 }
                 if (valid) {
                     let max_counts = {
-                        'townsfolk' : 13,
-                        'outsider' : 4,
-                        'minion' : 4,
-                        'demon' : 4,
-                        'traveler' : 5,
+                        'townsfolk' : 14,
+                        'outsider' : 7,
+                        'minion' : 7,
+                        'demon' : 7,
+                        'traveler' : 7,
                     }
                     // Check characters
                     for (let team in edition.characters) {

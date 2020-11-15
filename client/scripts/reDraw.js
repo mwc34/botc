@@ -401,7 +401,7 @@ function reDrawTokenMenu() {
         
         // Extras & Travelers
         teams = ['extra', 'traveler']
-        lengths = [1, 5]
+        lengths = [1, 7]
         for (let k=0; k < teams.length; k++) {
             let team = token_menu.children[5 + k]
             let ids = getTeamIDs(game_state.edition, teams[k], token_menu_info.out_of_play)
@@ -459,12 +459,12 @@ function reDrawTokenMenu() {
         // Townsfolk
         ids = getTeamIDs(game_state.edition, 'townsfolk', token_menu_info.out_of_play)
         if ((token_menu_info.valid_teams.length == 0 || token_menu_info.valid_teams.includes('townsfolk')) && ids.length > 0) {
-            while (ids.length > 13) {
+            while (ids.length > 7+7) {
                 ids.pop()
             }
             for (let i=0; i<2; i++) {
                 let townsfolk = token_menu.children[7 + i]
-                for (let j=0; j<7-i; j++) {
+                for (let j=0; j<7; j++) {
                     let town = townsfolk.children[j]
                     if (i * 7 + j < ids.length) {
                         
@@ -517,11 +517,11 @@ function reDrawTokenMenu() {
             let team = token_menu.children[9 + k]
             let ids = getTeamIDs(game_state.edition, teams[k], token_menu_info.out_of_play)
             if ((token_menu_info.valid_teams.length == 0 || token_menu_info.valid_teams.includes(teams[k])) && ids.length > 0) {
-                while (ids.length > 4) {
+                while (ids.length > 7) {
                     ids.pop()
                 }
                 
-                for (let i=0; i<4; i++) {
+                for (let i=0; i<7; i++) {
                     let t = team.children[i]
                     if (i < ids.length) {
                         

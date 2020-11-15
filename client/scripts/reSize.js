@@ -267,7 +267,7 @@ function reSizeTokenMenu() {
     
     // Travelers
     let travelers = token_menu.children[6]
-    for (let i=0; i<5; i++) {
+    for (let i=0; i<7; i++) {
         let traveler = travelers.children[i]
         let width = height = getTokenMenuSize()
         traveler.style.width = traveler.style.height = width + 'px'
@@ -307,7 +307,7 @@ function reSizeTokenMenu() {
     
     // Townsfolk Row 2
     let townsfolk2 = token_menu.children[8]
-    for (let i=0; i<6; i++) {
+    for (let i=0; i<7; i++) {
         let town = townsfolk2.children[i]
         let width = height = getTokenMenuSize()
         town.style.width = town.style.height = width + 'px'
@@ -327,7 +327,7 @@ function reSizeTokenMenu() {
     
     // Outsiders
     let outsiders = token_menu.children[9]
-    for (let i=0; i<4; i++) {
+    for (let i=0; i<7; i++) {
         let outsider = outsiders.children[i]
         let width = height = getTokenMenuSize()
         outsider.style.width = outsider.style.height = width + 'px'
@@ -347,7 +347,7 @@ function reSizeTokenMenu() {
     
     // Minions
     let minions = token_menu.children[10]
-    for (let i=0; i<4; i++) {
+    for (let i=0; i<7; i++) {
         let minion = minions.children[i]
         let width = height = getTokenMenuSize()
         minion.style.width = minion.style.height = width + 'px'
@@ -367,7 +367,7 @@ function reSizeTokenMenu() {
     
     // Demons
     let demons = token_menu.children[11]
-    for (let i=0; i<4; i++) {
+    for (let i=0; i<7; i++) {
         let demon = demons.children[i]
         let width = height = getTokenMenuSize()
         demon.style.width = demon.style.height = width + 'px'

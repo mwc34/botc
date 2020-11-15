@@ -482,7 +482,7 @@ function setupTokenMenu() {
     token_menu.appendChild(finish_button)
     token_menu.appendChild(team_selection)
     
-    let max_numbers = [1, 5, 7, 6, 4, 4, 4]
+    let max_numbers = [1, 7, 7, 7, 7, 7, 7] // Might as well allow max numbers. Normal script is 1 5 7 6 4 4 4
     for (let k=0; k < max_numbers.length; k++) {
     
         // Team
@@ -1868,11 +1868,11 @@ function setupEditionMenu() {
             }
             else {
                 let max_counts = {
-                    'townsfolk' : 13,
-                    'outsider' : 4,
-                    'minion' : 4,
-                    'demon' : 4,
-                    'traveler' : 5
+                    'townsfolk' : 14,
+                    'outsider' : 7,
+                    'minion' : 7,
+                    'demon' : 7,
+                    'traveler' : 7
                 }
                 characters = {}
                 for (let i of filecontent) {
