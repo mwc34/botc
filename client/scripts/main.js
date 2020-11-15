@@ -367,12 +367,15 @@ function nightAlert(night_action, reverse_name = false) {
 }
 
 function clockAnimation() {
-    reDrawClock()
     if (game_state.clock_info.start_time != null) {
         let progress = Math.min(1, ((new Date()).getTime() - game_state.clock_info.start_time) / (game_state.player_info.length * game_state.clock_info.interval))
         if (progress < 1) {
             window.requestAnimationFrame(clockAnimation)
         }
+        reDrawClock()
+    }
+    else {
+        reDrawClock()
     }
 }
 
