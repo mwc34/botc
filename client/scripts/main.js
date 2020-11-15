@@ -372,11 +372,8 @@ function clockAnimation() {
         if (progress < 1) {
             window.requestAnimationFrame(clockAnimation)
         }
-        reDrawClock()
     }
-    else {
-        reDrawClock()
-    }
+    reDrawClock()
 }
 
 function nightActionAnimation() {
