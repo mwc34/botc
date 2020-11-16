@@ -134,7 +134,7 @@ function reDrawVotes() {
             
     for (let i=0; i < max_players; i++) {
         let temp = 0
-        if (clock_info.nominatee) {
+        if (clock_info.nominatee != null) {
             temp = (i - getPlayerBySeatID(clock_info.nominatee).seat + game_state.player_info.length) % game_state.player_info.length
             if (temp == 0) {
                 temp = game_state.player_info.length
