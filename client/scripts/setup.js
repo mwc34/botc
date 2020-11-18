@@ -337,7 +337,16 @@ function setupMenu() {
         else if (!game_state.clock_info.active) {
             let nominator = getPlayerBySeatID(your_seat_id)
             if (nominator.alive) {
-                socket.emit('nomination update', channel_id, {'nominator' : your_seat_id, 'nominatee' : token_selected_seat_id})
+                let nominate_c = getPlayerBySeatID(token_selected_seat_id).character
+                if (!nominate_c || getCharacterFromID(nominate_c).team != 'traveler') {
+                    socket.emit('nomination update', channel_id, {'nominator' : your_seat_id, 'nominatee' : token_selected_seat_id})
+                }
+                else {
+                    alert_box_info.push({
+                        'text' : 'You can\'t nominate a Traveler!'
+                    })
+                    alert_box.check()
+                }
             }
         }
     }
@@ -855,7 +864,16 @@ function setupTokens() {
                 case 2:
                     token_click_type = 0
                     reDrawHUD()
-                    socket.emit('nomination update', channel_id, {'nominator' : token_selected_seat_id, 'nominatee' : getPlayerBySeat(token_seat).seat_id})
+                    let nominate_c = getPlayerBySeat(token_seat).character
+                    if (!nominate_c || getCharacterFromID(nominate_c).team != 'traveler') {
+                        socket.emit('nomination update', channel_id, {'nominator' : token_selected_seat_id, 'nominatee' : getPlayerBySeat(token_seat).seat_id})
+                    }
+                    else {
+                        alert_box_info.push({
+                            'text' : 'You can\'t nominate a Traveler!'
+                        })
+                        alert_box.check()
+                    }
                     break;
                 // Move player
                 case 3:
