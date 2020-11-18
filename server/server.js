@@ -584,7 +584,7 @@ io.on('connection', (socket) => {
             // Valid person doing the nomination
             let nominator = getPlayerBySeatID(state, nomination_update.nominator)
             let nominatee = getPlayerBySeatID(state, nomination_update.nominatee)
-            if (nominator != null && nominatee != null && (socket.id == state.host_socket_id || socket.id == nominator.socket_id) && (nominator.alive || nomination_update.free)) {
+            if (nominator != null && nominatee != null && (socket.id == state.host_socket_id || (socket.id == nominator.socket_id && state.nominations_open)) && (nominator.alive || nomination_update.free)) {
                 // Haven't already nominated/nominateed
                 if ((!nominator.nominated && !nominatee.nominateed) || nomination_update.free) {
                     clock_info.nominator = nominator.seat_id
