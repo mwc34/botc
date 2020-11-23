@@ -29,6 +29,19 @@ function setup() {
         }
     }
     
+    // Close menu for tap screens
+    document.onclick = (event) => {
+        let menu = (client_type ? host_menu : player_menu)
+        
+        if (menu.style.visibility == '' &&
+            (event.pageX < parseFloat(menu.style.left) ||
+             event.pageX > parseFloat(menu.style.left) + parseFloat(menu.style.width) ||
+             event.pageY < parseFloat(menu.style.top) ||
+             event.pageY > parseFloat(menu.style.top) + parseFloat(menu.style.height))) {
+            menu.style.visibility = 'hidden'
+        }
+    }
+    
     window.onresize = () => {
         clearTimeout(window.resizedFinished)
         window.resizedFinished = setTimeout(() => {
@@ -991,9 +1004,9 @@ function setupNames() {
         name.style.visibility = 'hidden'
         names.appendChild(name)
         
-        name.onclick = () => {
+        name.onclick = (event) => {
             if (token_click_type) {
-                tokens.children[token_seat].onclick()
+                tokens.children[token_seat].onclick(event)
             }
             else if (!getMenuOpen()) {
                 token_selected_seat_id = getPlayerBySeat(token_seat).seat_id
