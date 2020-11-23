@@ -46,7 +46,7 @@ for (let page of getAllFiles('/home/societies/evabs/public_html/')) {
     })
 }
 
-app.get('/reference_sheet', (req, res) => {
+app.get('/Reference%20Sheet', (req, res) => {
     let channel_id = req.query.channel_id
     let edition_id = req.query.edition_id
     if (channel_id in game_states && edition_id) {
@@ -63,8 +63,8 @@ app.get('/reference_sheet', (req, res) => {
                 let pdfData = game_states[channel_id].edition_reference_sheets[edition.id]
                 res.writeHead(200, {
                 'Content-Length': Buffer.byteLength(pdfData),
-                'Content-Type': 'application/pdf'})
-                //'Content-disposition': 'attachment;filename=test.pdf',})
+                'Content-Type': 'application/pdf',})
+                //'Content-disposition': 'inline;filename=test.pdf',})
                 .end(pdfData);
             }
             else {

@@ -6,6 +6,16 @@ socket.on('new host', (msg) => {
     }
     // Host accepted
     else {
+        
+        if (sessionStorage.log) {
+            setLog(sessionStorage.log)
+        }
+        if (sessionStorage.channel_id == channel_id) {
+            appendLog(getLogDefaultStyle('Reconnected'))
+        }
+        else {
+            appendLog(getLogDefaultStyle('Connected'))
+        }
         sessionStorage.channel_id = channel_id
         client_type = 1
         sessionStorage.client_type = client_type
@@ -34,9 +44,6 @@ socket.on('new host', (msg) => {
         for (let p of game_state.player_info) {
             sspi[p.seat_id] = {'character' : p.character, 'reminders' : p.reminders}
         }
-        if (sessionStorage.log) {
-            setLog(sessionStorage.log)
-        }
         setSSPlayerInfo(sspi)
     }
 })
@@ -47,6 +54,16 @@ socket.on('new player', (msg) => {
         alert_box.check()
     }
     else {
+        
+        if (sessionStorage.log) {
+            setLog(sessionStorage.log)
+        }
+        if (sessionStorage.channel_id == channel_id) {
+            appendLog(getLogDefaultStyle('Reconnected'))
+        }
+        else {
+            appendLog(getLogDefaultStyle('Connected'))
+        }
         sessionStorage.channel_id = channel_id
         client_type = 0
         sessionStorage.client_type = client_type
@@ -91,9 +108,6 @@ socket.on('new player', (msg) => {
                     p.reminders = player.reminders
                 }
             }
-        }
-        if (sessionStorage.log) {
-            setLog(sessionStorage.log)
         }
         
         if (getSSDemonBluffs()) {
@@ -525,20 +539,18 @@ socket.on('connect', () => {
     
     if (sessionStorage.log) {
         setLog(sessionStorage.log)
-        appendLog(getLogDefaultStyle('Reconnected'))
-    }
-    else {
-        appendLog(getLogDefaultStyle('Connected'))
     }
     
-    
-    game_menu.style.visibility = ''
-    game.style.visibility = 'hidden'
-    non_square.style.visibility = 'hidden'
 })
 
 socket.on('disconnect', () => {
-    // window.location.reload()
+    game_menu.style.visibility = ''
+    game.style.visibility = 'hidden'
+    non_square.style.visibility = 'hidden'
+    alert_box_info.push({
+        'text' : 'You have disconnected'
+    })
+    alert_box.check()
 })
 
 

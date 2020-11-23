@@ -1298,7 +1298,7 @@ function setupOpenReferenceSheet() {
             input.click()
         }
         else {
-            window.open(`reference_sheet?channel_id=${channel_id}&edition_id=${game_state.edition}`)
+            window.open(`Reference Sheet?channel_id=${channel_id}&edition_id=${game_state.edition}`)
         }
     }
 }
