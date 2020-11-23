@@ -510,8 +510,8 @@ socket.on('host update', (host_update) => {
     reDrawHUD()
 })
 
-socket.on('finish', () => {
-    alert_box_info.push({'text' : 'Your game has closed', 'func' : () => {
+socket.on('finish', (finish_msg) => {
+    alert_box_info.push({'text' : finish_msg, 'func' : () => {
         reDrawHUD()
         reDrawFabledDemonBluffsHUD()
         game_menu.style.visibility = ''

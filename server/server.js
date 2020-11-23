@@ -80,13 +80,22 @@ app.get('/Reference%20Sheet', (req, res) => {
 // Copy state
 function copy(state) {
     let new_state = {}
-    if ('night_actions' in state) {
+    if ('night_actions' in state ||
+        'game_timeout' in state ||
+        'hostless_timeout' in state) {
         for (let i in state) {
-            if (i != 'night_actions') {
+            if (i != 'night_actions' &&
+                i != 'game_timeout' &&
+                i != 'hostless_timeout') {
                 new_state[i] = state[i]
             }
+            else if (i == 'night_actions') {
+                new_state[i] = {}
+            }
+            else {
+                new_state[i] = null
+            }
         }
-        new_state['night_actions'] = {}
     }
     else {
         new_state = state
@@ -130,6 +139,8 @@ function censorState(state, socket_id) {
     
     delete state.spectators
     delete state.night_actions
+    delete state.hostless_timeout
+    delete state.game_timeout
     delete state.roles_by_id
     delete state.edition_reference_sheets
     state.group_night_action = {'name' : null, 'data' : {}}
@@ -191,6 +202,10 @@ function getPlayerBySocketID(state, socket_id) {
 
 const max_players = 20
 
+const game_timeout = 1000 * 3600 * 24 // 24 Hours
+
+const hostless_timeout = 1000 * 3600 // Hour
+
 // Roles json
 
 var roles = JSON.parse(fs.readFileSync('/home/societies/evabs/public_html/roles.json', 'utf8'));
@@ -205,6 +220,8 @@ const game_states = {}
 
 const base_state = {
     'host_socket_id' : null,
+    'hostless_timeout' : null,
+    'game_timeout' : null,
     'spectators' : [],
     'night_actions' : {},
     'roles_by_id' : {},
@@ -265,8 +282,21 @@ io.on('connection', (socket) => {
         else {
             if (!(channel_id in game_states)) {
                 game_states[channel_id] = copy(base_state)
+                game_states[channel_id].game_timeout = setTimeout(() => {
+                    channelEmit(channel_id, 'finish', 'Your game has closed due to it running for too long')
+                    if (game_states[channel_id].game_timeout) {
+                        clearTimeout(game_states[channel_id].game_timeout)
+                    }
+                    if (game_states[channel_id].hostless_timeout) {
+                        clearTimeout(game_states[channel_id].hostless_timeout)
+                    }
+                    delete game_states[channel_id]
+                }, game_timeout)
             }
             game_states[channel_id].host_socket_id = socket.id
+            if (game_states[channel_id].hostless_timeout) {
+                clearTimeout(game_states[channel_id].hostless_timeout)
+            }
             socket.emit('new host', censorState(game_states[channel_id], socket.id))
             channelEmit(channel_id, 'host update', true)
         }
@@ -527,11 +557,11 @@ io.on('connection', (socket) => {
     // Seat update
     socket.on('seat update', (channel_id, seat_update) => {
         if (channel_id in game_states && socket.id == game_states[channel_id].host_socket_id && !game_states[channel_id].clock_info.active) {
-            let new_state = copy(game_states[channel_id])
-            let seats_unused = [...Array(new_state.player_info.length).keys()]
+            let new_player_info = copy(game_states[channel_id].player_info)
+            let seats_unused = [...Array(new_player_info.length).keys()]
             let to_return = {}
 
-            for (let player of new_state.player_info) {
+            for (let player of new_player_info) {
 
                 if (player.seat_id in seat_update) {
                     player.seat = seat_update[player.seat_id]
@@ -544,7 +574,7 @@ io.on('connection', (socket) => {
             }
 
             if (seats_unused.length == 0) {
-                game_states[channel_id] = new_state
+                game_states[channel_id].player_info = new_player_info
                 channelEmit(channel_id, 'seat update', to_return)
             }
         }
@@ -868,6 +898,31 @@ io.on('connection', (socket) => {
             
             game_states[channel_id] = state
             
+            // Redo timeout timers
+            game_states[channel_id].game_timeout = setTimeout(() => {
+                channelEmit(channel_id, 'finish', 'Your game has closed due to it running for too long')
+                if (game_states[channel_id].game_timeout) {
+                    clearTimeout(game_states[channel_id].game_timeout)
+                }
+                if (game_states[channel_id].hostless_timeout) {
+                    clearTimeout(game_states[channel_id].hostless_timeout)
+                }
+                delete game_states[channel_id]
+            }, game_timeout)
+            
+            if (!game_states[channel_id].host_socket_id) {
+                game_states[channel_id].hostless_timeout = setTimeout(() => {
+                    channelEmit(channel_id, 'finish', 'Your game has closed due to it not having a host')
+                    if (game_states[channel_id].game_timeout) {
+                        clearTimeout(game_states[channel_id].game_timeout)
+                    }
+                    if (game_states[channel_id].hostless_timeout) {
+                        clearTimeout(game_states[channel_id].hostless_timeout)
+                    }
+                    delete game_states[channel_id]
+                }, hostless_timeout)
+            }
+            
             // Send it out
             if (state.host_socket_id != null) {
                 io.to(state.host_socket_id).emit('reset game', censorState(state))
@@ -920,13 +975,29 @@ io.on('connection', (socket) => {
         if (channel_id in game_states && (socket.id == game_states[channel_id].host_socket_id)) {
             game_states[channel_id].host_socket_id = null
             channelEmit(channel_id, 'host update', false)
+            game_states[channel_id].hostless_timeout = setTimeout(() => {
+                channelEmit(channel_id, 'finish', 'Your game has closed due to it not having a host')
+                if (game_states[channel_id].game_timeout) {
+                    clearTimeout(game_states[channel_id].game_timeout)
+                }
+                if (game_states[channel_id].hostless_timeout) {
+                    clearTimeout(game_states[channel_id].hostless_timeout)
+                }
+                delete game_states[channel_id]
+            }, hostless_timeout)
         }
     })
     
     // Game finish
     socket.on('finish', (channel_id) => {
         if (channel_id in game_states && socket.id == game_states[channel_id].host_socket_id) {
-            channelEmit(channel_id, 'finish')
+            channelEmit(channel_id, 'finish', 'Your game has closed')
+            if (game_states[channel_id].game_timeout) {
+                clearTimeout(game_states[channel_id].game_timeout)
+            }
+            if (game_states[channel_id].hostless_timeout) {
+                clearTimeout(game_states[channel_id].hostless_timeout)
+            }
             delete game_states[channel_id]
         }
     })
@@ -939,6 +1010,16 @@ io.on('connection', (socket) => {
             if (game_states[channel_id].host_socket_id == socket.id) {
                 game_states[channel_id].host_socket_id = null
                 channelEmit(channel_id, 'host update', false)
+                game_states[channel_id].hostless_timeout = setTimeout(() => {
+                    channelEmit(channel_id, 'finish', 'Your game has closed due to it not having a host')
+                    if (game_states[channel_id].game_timeout) {
+                        clearTimeout(game_states[channel_id].game_timeout)
+                    }
+                    if (game_states[channel_id].hostless_timeout) {
+                        clearTimeout(game_states[channel_id].hostless_timeout)
+                    }
+                    delete game_states[channel_id]
+                }, hostless_timeout)
             }
             
             let player = getPlayerBySocketID(game_states[channel_id], socket.id)
