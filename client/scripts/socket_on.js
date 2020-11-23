@@ -548,7 +548,7 @@ socket.on('disconnect', () => {
     game.style.visibility = 'hidden'
     non_square.style.visibility = 'hidden'
     alert_box_info.push({
-        'text' : 'You have disconnected'
+        'text' : 'You have lost connection with the server'
     })
     alert_box.check()
 })
