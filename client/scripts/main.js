@@ -24,6 +24,7 @@ const sync_characters = document.getElementById('syncCharacters')
 const reminders = document.getElementById('reminders')
 const token_menu = document.getElementById('tokenMenu')
 const choose_characters = document.getElementById('chooseCharacters')
+const choose_fabled = document.getElementById('chooseFabled')
 const current_edition = document.getElementById('currentEdition')
 const change_edition = document.getElementById('changeEdition')
 const change_phase = document.getElementById('changePhase')
@@ -36,6 +37,8 @@ const character_split = document.getElementById('characterSplit')
 const alive_vote_info = document.getElementById('aliveVoteInfo')
 const clock_vote_info = document.getElementById('clockVoteInfo')
 const night_action_menu = document.getElementById('nightActionMenu')
+const fabled_demon_bluffs_HUD = document.getElementById('fabledDemonBluffsHUD')
+const fabled_tokens = document.getElementById('fabled')
 const demon_bluffs = document.getElementById('demonBluffs')
 const night_reminders = document.getElementById('nightReminders')
 const square = document.getElementById('square')
@@ -64,6 +67,8 @@ var game_state = {
     'edition' : 'tb',
     'roles' : [],
     'editions' : [],
+    'fabled' : [],
+    'fabled_in_play' : [],
     'group_night_action' : [null, []],
     'next_seat_id' : 0,
     'demon_bluffs' : [],
@@ -93,6 +98,8 @@ var token_menu_info = {
     'selected' : [], // Tokens selected
     'out_of_play' : false, // Only out of play
 }
+
+var fabled_demon_bluffs_HUD_focus = null
 
 const default_night_action = [
     {'name' : 'Generic Night Info', 'info' : '<>'},
@@ -128,7 +135,7 @@ var night_action_info = {
                 game_state.demon_bluffs = night_action_info.characters
                 setSSDemonBluffs(game_state.demon_bluffs)
                 socket.emit('demon bluff update', channel_id, game_state.demon_bluffs)
-                reDrawDemonBluffs()
+                reDrawFabledDemonBluffsHUD()
             }
             
             let to_send = {
@@ -273,6 +280,15 @@ function getScopedNightActions(c) {
     }
     
     return to_return
+}
+
+function getFabledFromID(id) {
+    for (let f of game_state.fabled) {
+        if (f.id == id) {
+            return f
+        }
+    }
+    return null
 }
 
 function getCharacterFromID(id) {
@@ -471,7 +487,7 @@ function revealGrimoire(grimoire) {
     reDrawTokens()
     reDrawNightReminders()
     reDrawReminders()
-    reDrawDemonBluffs()
+    reDrawFabledDemonBluffsHUD()
 }
 
 function startNightAction(night_action) {

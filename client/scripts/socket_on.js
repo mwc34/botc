@@ -10,6 +10,9 @@ socket.on('new host', (msg) => {
         client_type = 1
         sessionStorage.client_type = client_type
         game_state = msg
+        for (let key in roles_by_id) {
+            delete roles_by_id[key]
+        }
         token_click_type = 0
         your_seat_id = null
         token_menu_info.active = false
@@ -48,6 +51,9 @@ socket.on('new player', (msg) => {
         client_type = 0
         sessionStorage.client_type = client_type
         game_state = msg
+        for (let key in roles_by_id) {
+            delete roles_by_id[key]
+        }
         token_click_type = 0
         your_seat_id = null
         token_menu_info.active = false
@@ -313,6 +319,11 @@ socket.on('phase update', (phase_update) => {
     reDrawHUD()
 })
 
+socket.on('fabled in play update', (fabled_in_play) => {
+    game_state.fabled_in_play = fabled_in_play
+    reDrawFabledDemonBluffsHUD()
+})
+
 socket.on('edition update', (edition) => {
     game_state.edition = edition
     reDraw()
@@ -368,7 +379,7 @@ socket.on('night action', (night_action) => {
             if (night_action.name == 'Demon Info') {
                 game_state.demon_bluffs = night_action.info.characters
                 setSSDemonBluffs(game_state.demon_bluffs)
-                reDrawDemonBluffs()
+                reDrawFabledDemonBluffsHUD()
             }
             if (night_action.grimoire) {
                 revealGrimoire(night_action.grimoire)
@@ -410,6 +421,9 @@ socket.on('reset game', (state) => {
         sessionStorage.seat_id = your_seat_id
     }
     game_state = state
+    for (let key in roles_by_id) {
+        delete roles_by_id[key]
+    }
     
     let sspi = {}
     for (let p of game_state.player_info) {
@@ -473,7 +487,7 @@ socket.on('host update', (host_update) => {
 socket.on('finish', () => {
     alert_box_info.push({'text' : 'Your game has closed', 'func' : () => {
         reDrawHUD()
-        reDrawDemonBluffs()
+        reDrawFabledDemonBluffsHUD()
         game_menu.style.visibility = ''
         game.style.visibility = 'hidden'
         non_square.style.visibility = 'hidden'

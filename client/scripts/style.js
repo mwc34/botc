@@ -11,6 +11,8 @@ function style() {
     styleDeadVotes()
     styleInfo()
     styleNightActionMenu()
+    styleFabledDemonBluffsHUD()
+    styleFabled()
     styleDemonBluffs()
     styleTokenMenu()
     styleReminderMenu()
@@ -212,7 +214,7 @@ function styleTokenMenu() {
         team.style.fontFamily = getFontFamily()
     }
     
-    let max_numbers = [1, 7, 7, 7, 7, 7, 7]
+    let max_numbers = [7, 7, 1, 7, 7, 7, 7, 7, 7]
     for (let k=0; k < max_numbers.length; k++) {
         let team = token_menu.children[5 + k]
         for (let i=0; i < max_numbers[k]; i++) {
@@ -420,15 +422,25 @@ function styleNightActionMenu() {
     }
 }
 
+function styleFabledDemonBluffsHUD() {
+    fabled_demon_bluffs_HUD.style.backgroundColor = getBackgroundColour()
+    fabled_demon_bluffs_HUD.style.borderStyle = 'solid'
+    fabled_demon_bluffs_HUD.style.borderColor = getBorderColour()
+}
+
+function styleFabled() {
+    fabled_tokens.children[0].style.textAlign = 'center'
+    fabled_tokens.children[0].style.color = getFontColour()
+    fabled_tokens.children[0].style.fontFamily = getFontFamily()
+    fabled_tokens.children[0].style.userSelect = 'none'
+    
+}
+
 function styleDemonBluffs() {
     demon_bluffs.children[0].style.textAlign = 'center'
     demon_bluffs.children[0].style.color = getFontColour()
     demon_bluffs.children[0].style.fontFamily = getFontFamily()
-    
-    demon_bluffs.style.backgroundColor = getBackgroundColour()
-    
-    demon_bluffs.style.borderStyle = 'solid'
-    demon_bluffs.style.borderColor = getBorderColour()
+    demon_bluffs.children[0].style.userSelect = 'none'
 }
 
 function styleNightReminders() {

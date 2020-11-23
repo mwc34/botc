@@ -32,6 +32,6 @@ Promise.resolve()
 .then(function(){
     main()
 })
-.catch(function () {
-    alert("Server not started")
-})
+// .catch(function () {
+    // alert("Server not started")
+// })

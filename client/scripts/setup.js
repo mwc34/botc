@@ -55,6 +55,7 @@ function setup() {
     setupResetGame()
     setupSyncCharacters()
     setupTokenMenu()
+    setupChooseFabled()
     setupChooseCharacters()
     setupOpenReferenceSheet()
     setupChangeEdition()
@@ -65,6 +66,8 @@ function setup() {
     setupCharacterSplit()
     setupAliveVoteInfo()
     setupNightActionMenu()
+    setupFabledDemonBluffsHUD()
+    setupFabled()
     setupDemonBluffs()
     setupNightReminders()
     setupChannelID()
@@ -411,7 +414,7 @@ function setupTokenMenu() {
     finish_button.onclick = () => {
         if (token_menu_info.type < 2) {
             for (let c of token_menu_info.selected) {
-                if (c && getCharacterFromID(c).removes_self) {
+                if (getCharacterFromID(c) && getCharacterFromID(c).removes_self) {
                     alert_box_info.push({
                         'text' : `You have chosen the ${getLogCharacterStyle(getCharacterFromID(c).name)}.<br>You may need to make adjustments to the setup.`
                     })
@@ -442,18 +445,25 @@ function setupTokenMenu() {
                     reDrawHUD()
                     break
                 case 1:
-                    let player = getPlayerBySeatID(token_selected_seat_id)
-                    let c = token_menu_info.selected[0]
-                    if (player.character != c) {
-                        player.character = c
-                        player.synced = false
-                        let sspi = getSSPlayerInfo()
-                        sspi[player.seat_id].character = player.character
-                        setSSPlayerInfo(sspi)
+                    if (!token_menu_info.valid_teams.includes('fabled')) {
+                        let player = getPlayerBySeatID(token_selected_seat_id)
+                        let c = token_menu_info.selected[0]
+                        if (player.character != c) {
+                            player.character = c
+                            player.synced = false
+                            let sspi = getSSPlayerInfo()
+                            sspi[player.seat_id].character = player.character
+                            setSSPlayerInfo(sspi)
+                        }
+                        reDrawTokens()
+                        reDrawNightReminders()
+                        reDrawHUD()
                     }
-                    reDrawTokens()
-                    reDrawNightReminders()
-                    reDrawHUD()
+                    else if (client_type) {
+                        let t = JSON.parse(JSON.stringify(token_menu_info.selected))
+                        socket.emit('fabled in play update', channel_id, t)
+                    }
+                    
                     break
                 case 2:
                     night_action_info.characters = []
@@ -491,7 +501,7 @@ function setupTokenMenu() {
     token_menu.appendChild(finish_button)
     token_menu.appendChild(team_selection)
     
-    let max_numbers = [1, 7, 7, 7, 7, 7, 7] // Might as well allow max numbers. Normal script is 1 5 7 6 4 4 4
+    let max_numbers = [7, 7, 1, 7, 7, 7, 7, 7, 7] // Might as well allow max numbers. Normal script is 7 7 1 5 7 6 4 4 4 fabled first
     for (let k=0; k < max_numbers.length; k++) {
     
         // Team
@@ -512,7 +522,7 @@ function setupTokenMenu() {
             
             let svg = document.createElementNS("http://www.w3.org/2000/svg", "svg")
             svg.style.position = 'absolute'
-            svg.innerHTML = '<path fill="transparent" id="token_' + i + '_menu_curve"></path><text style="font-size:16px"><textPath xlink:href="#token_' + i + '_menu_curve" text-anchor="middle" startOffset="50%"></textPath></text>'
+            svg.innerHTML = '<path fill="transparent" id="token_' + k + '_' + i + '_menu_curve"></path><text style="font-size:16px"><textPath xlink:href="#token_' + k + '_' + i + '_menu_curve" text-anchor="middle" startOffset="50%"></textPath></text>'
             
             t.appendChild(bg_image)
             t.appendChild(icon_image)
@@ -525,7 +535,7 @@ function setupTokenMenu() {
                 }
                 else {
                     token_menu_info.selected.push(id)
-                    while (token_menu_info.selected.length > token_menu_info.choices) {
+                    while (token_menu_info.selected.length > token_menu_info.choices && !token_menu_info.valid_teams.includes('fabled')) {
                         let idx = 0
                         if (token_menu_info.type == 0) {
                             let c = getCharacterFromID(id)
@@ -545,6 +555,9 @@ function setupTokenMenu() {
             let e = t
             t.onmouseenter = () => {
                 let c = getCharacterFromID(getIconIDFromPath(t.children[1].src))
+                if (!c) {
+                    c = getFabledFromID(getIconIDFromPath(t.children[1].src))
+                }
                 if (c) {
                     info_hover_box.children[0].innerHTML = c.ability
                     
@@ -1405,6 +1418,21 @@ function setupSyncCharacters() {
     }
 }
 
+function setupChooseFabled() {
+    choose_fabled.style.position = 'absolute'
+    choose_fabled.onclick = () => {
+        if (!getMenuOpen() && client_type) {
+            token_menu_info.choices = 0
+            token_menu_info.type = 1
+            token_menu_info.valid_teams = ['fabled']
+            token_menu_info.selected = JSON.parse(JSON.stringify(game_state.fabled_in_play))
+            token_menu_info.out_of_play = false
+            token_menu_info.active = true
+            reDrawTokenMenu()
+        }
+    }
+}
+
 function setupChooseCharacters() {
     choose_characters.style.position = 'absolute'
     choose_characters.onclick = () => {
@@ -1611,9 +1639,66 @@ function setupNightActionMenu() {
     }
 }
 
+function setupFabledDemonBluffsHUD() {
+    fabled_demon_bluffs_HUD.style.position = 'absolute'
+    fabled_demon_bluffs_HUD.style.visibility = 'hidden'
+}
+
+function setupFabled() {
+    fabled_tokens.style.position = 'absolute'
+    
+    for (let i=0; i < 13 + 1; i++) { // MAGIC NUMBER
+        if (i > 0) {
+            fabled_tokens.appendChild(document.createElement('div'))
+        }
+        let div = fabled_tokens.children[i]
+        div.style.position = 'absolute'
+        if (i > 0) {
+            let bg_image = document.createElement('img')
+            bg_image.style.position = 'absolute'
+            bg_image.src = 'assets/other/token.png'
+            
+            let icon_image = document.createElement('img')
+            icon_image.style.position = 'absolute'
+            
+            let svg = document.createElementNS("http://www.w3.org/2000/svg", "svg")
+            svg.style.position = 'absolute'
+            svg.innerHTML = '<path fill="transparent" id="token_' + i + '_fabled_curve"></path><text style="font-size:16px"><textPath xlink:href="#token_' + i + '_fabled_curve" text-anchor="middle" startOffset="50%"></textPath></text>'
+            
+            div.appendChild(bg_image)
+            div.appendChild(icon_image)
+            div.appendChild(svg)
+            
+            div.onmouseenter = () => {
+                let c = getFabledFromID(getIconIDFromPath(div.children[1].src))
+                if (c) {
+                    info_hover_box.children[0].innerHTML = c.ability
+
+                    info_hover_box.style.left = parseFloat(div.style.left) + parseFloat(fabled_demon_bluffs_HUD.style.left) - getInfoHoverBoxOffset() - parseFloat(info_hover_box.style.width) + 'px'
+                    info_hover_box.style.justifyContent = 'right'
+                    
+                    info_hover_box.style.top = parseFloat(div.style.height)/2 + parseFloat(div.style.top) + parseFloat(fabled_demon_bluffs_HUD.style.top) + 'px'
+                    
+                    info_hover_box.style.visibility = ''
+                }
+            }
+            
+            div.onmouseleave = () => {
+                info_hover_box.style.visibility = 'hidden'
+            }
+        }
+    }
+    
+    fabled_tokens.children[0].onclick = () => {
+        if (game_state.fabled_in_play.length > 0 && fabled_demon_bluffs_HUD_focus != 'fabled') {
+            fabled_demon_bluffs_HUD_focus = 'fabled'
+            reDrawFabledDemonBluffsHUD()
+        }
+    }
+}
+
 function setupDemonBluffs() {
     demon_bluffs.style.position = 'absolute'
-    demon_bluffs.style.visibility = 'hidden'
     for (let i=0; i<demon_bluffs.childElementCount; i++) {
         demon_bluffs.children[i].style.position = 'absolute'
         if (i > 0) {
@@ -1639,10 +1724,10 @@ function setupDemonBluffs() {
                 if (c) {
                     info_hover_box.children[0].innerHTML = c.ability
 
-                    info_hover_box.style.left = parseFloat(e.style.left) + parseFloat(demon_bluffs.style.left) - getInfoHoverBoxOffset() - parseFloat(info_hover_box.style.width) + 'px'
+                    info_hover_box.style.left = parseFloat(e.style.left) + parseFloat(fabled_demon_bluffs_HUD.style.left) - getInfoHoverBoxOffset() - parseFloat(info_hover_box.style.width) + 'px'
                     info_hover_box.style.justifyContent = 'right'
                     
-                    info_hover_box.style.top = parseFloat(e.style.height)/2 + parseFloat(e.style.top) + parseFloat(demon_bluffs.style.top) + 'px'
+                    info_hover_box.style.top = parseFloat(e.style.height)/2 + parseFloat(e.style.top) + parseFloat(fabled_demon_bluffs_HUD.style.top) + 'px'
                     
                     info_hover_box.style.visibility = ''
                 }
@@ -1651,6 +1736,13 @@ function setupDemonBluffs() {
             demon_bluffs.children[i].onmouseleave = () => {
                 info_hover_box.style.visibility = 'hidden'
             }
+        }
+    }
+    
+    demon_bluffs.children[0].onclick = () => {
+        if (game_state.demon_bluffs.length > 0 && fabled_demon_bluffs_HUD_focus != 'demon_bluffs') {
+            fabled_demon_bluffs_HUD_focus = 'demon_bluffs'
+            reDrawFabledDemonBluffsHUD()
         }
     }
 }
@@ -1893,14 +1985,25 @@ function setupEditionMenu() {
                     'traveler' : 7
                 }
                 characters = {}
+                fabled = []
                 for (let i of filecontent) {
                     let c = getCharacterFromID(i.id)
                     if (c) {
                         if (!(c.team in characters)) {
                             characters[c.team] = []
                         }
-                        characters[c.team].push(c.id)
-                        max_counts[c.team]--
+                        if (!characters[c.team].includes(c.id)) {
+                            characters[c.team].push(c.id)
+                            max_counts[c.team]--
+                        }
+                        
+                    }
+                    else {
+                        c = getFabledFromID(i.id)
+                        if (c && !fabled.includes(c.id)) {
+                            fabled.push(c.id)
+                            console.log(c.id)
+                        }
                     }
                 }
                 
@@ -1913,7 +2016,7 @@ function setupEditionMenu() {
                     alert_box.check()
                 }
                 else {
-                    let edition = {'id' : id, 'name' : name, 'characters' : characters, 'icon' : "assets/editions/custom.png"}
+                    let edition = {'id' : id, 'name' : name, 'characters' : characters, 'fabled' : fabled, 'icon' : "assets/editions/custom.png"}
                     socket.emit('new edition', channel_id, edition)
                     edition_menu.style.visibility = 'hidden'
                 }

@@ -5,7 +5,7 @@ function reDraw() {
     reDrawHUD()
     reDrawTokenMenu()
     reDrawReminderMenu()
-    reDrawDemonBluffs()
+    reDrawFabledDemonBluffsHUD()
     reDrawEditionMenu()
     reDrawEditionIcon()
 }
@@ -316,6 +316,16 @@ function reDrawReminderMenu() {
         }
     }
     
+    // Fabled
+    for (let f of game_state.fabled_in_play) {
+        let fabled = getFabledFromID(f)
+        if (fabled) {
+            for (let t of fabled.reminders) {
+                to_show.push({'icon' : fabled.id, 'text' : t})
+            }
+        }
+    }
+    
     let square_size = Math.ceil(Math.sqrt(to_show.length))
     
     let info_bar = reminder_menu.children[0]
@@ -391,7 +401,16 @@ function reDrawTokenMenu() {
         
         let total_columns = 0
         for (let team of token_menu_info.valid_teams) {
-            total_columns = Math.max(total_columns, Math.min(7, getTeamIDs(game_state.edition, team).length))
+            if (team == 'fabled') {
+                let ids = []
+                for (let f of game_state.fabled) {
+                    ids.push(f.id)
+                }
+                total_columns = Math.max(total_columns, Math.min(7, ids.length))
+            }
+            else {
+                total_columns = Math.max(total_columns, Math.min(7, getTeamIDs(game_state.edition, team).length))
+            }
         }
         
         let rows = 0
@@ -399,13 +418,74 @@ function reDrawTokenMenu() {
         let width = total_columns * (getTokenMenuSize() + 2 * getTokenMenuPaddingSize())
         let height = (getTokenMenuSize() + 2 * getTokenMenuPaddingSize())
         
+        // Fabled
+        let ids = []
+        for (let f of game_state.fabled) {
+            ids.push(f.id)
+        }
+        if (token_menu_info.valid_teams.includes('fabled') && ids.length > 0) {
+            while (ids.length > 7+7) {
+                ids.pop()
+            }
+            for (let i=0; i<2; i++) {
+                let fabled = token_menu.children[5 + i]
+                for (let j=0; j<7; j++) {
+                    let f = fabled.children[j]
+                    if (i * 7 + j < ids.length) {
+                        
+                        let path = getIconPath(ids[i*7 + j])
+                        f.children[1].src = path
+                        if (path == '') {
+                            f.children[1].style.visibility = 'hidden'
+                        }
+                        else {
+                            f.children[1].style.visibility = ''
+                        }
+                        if (ids[i*7 + j]) {
+                            f.children[2].children[1].children[0].textContent = getFabledFromID(ids[i*7 + j]).name
+                        }
+                        else {
+                            f.children[2].children[1].children[0].textContent = ''
+                        }
+                        
+                        if (token_menu_info.selected.includes(ids[i*7 + j])) {
+                            f.style.border = getTokenMenuBorderSize() + 'px solid ' + (!token_menu_info.type && getFabledFromID(ids[i*7 + j]).setup ? 'purple' : 'red')
+                            f.style.margin = -getTokenMenuBorderSize() + 'px'
+                        }
+                        else {
+                            f.style.margin = ''
+                            f.style.border = ''
+                        }
+                        f.style.visibility = ''
+                    }
+                    else {
+                        f.style.visibility = 'hidden'
+                    }
+                }
+                let row_length = i ? Math.max(0, ids.length - 7) : Math.min(ids.length, 7)
+                if (row_length > 0) {
+                    fabled.style.visibility = ''
+                    fabled.style.top = getTokenMenuSize()/2 + getTokenMenuButtonHeight() + rows * height + 'px'
+                    fabled.style.left = getTokenMenuSize()/2 + (total_columns - row_length) * width/(2 * total_columns) + 'px'
+                    rows++
+                }
+                else {
+                    fabled.style.visibility = 'hidden'
+                }
+            }
+        }
+        else {
+            token_menu.children[5].style.visibility = 'hidden'
+            token_menu.children[6].style.visibility = 'hidden'
+        }
+        
         // Extras & Travelers
         teams = ['extra', 'traveler']
         lengths = [1, 7]
         for (let k=0; k < teams.length; k++) {
-            let team = token_menu.children[5 + k]
+            let team = token_menu.children[7 + k]
             let ids = getTeamIDs(game_state.edition, teams[k], token_menu_info.out_of_play)
-            if ((token_menu_info.valid_teams.length == 0 || token_menu_info.valid_teams.includes(teams[k])) && ids.length > 0) {
+            if (token_menu_info.valid_teams.includes(teams[k]) && ids.length > 0) {
                 while (ids.length > lengths[k]) {
                     ids.pop()
                 }
@@ -458,12 +538,12 @@ function reDrawTokenMenu() {
         
         // Townsfolk
         ids = getTeamIDs(game_state.edition, 'townsfolk', token_menu_info.out_of_play)
-        if ((token_menu_info.valid_teams.length == 0 || token_menu_info.valid_teams.includes('townsfolk')) && ids.length > 0) {
+        if (token_menu_info.valid_teams.includes('townsfolk') && ids.length > 0) {
             while (ids.length > 7+7) {
                 ids.pop()
             }
             for (let i=0; i<2; i++) {
-                let townsfolk = token_menu.children[7 + i]
+                let townsfolk = token_menu.children[9 + i]
                 for (let j=0; j<7; j++) {
                     let town = townsfolk.children[j]
                     if (i * 7 + j < ids.length) {
@@ -504,19 +584,22 @@ function reDrawTokenMenu() {
                     townsfolk.style.left = getTokenMenuSize()/2 + (total_columns - row_length) * width/(2 * total_columns) + 'px'
                     rows++
                 }
+                else {
+                    townsfolk.style.visibility = 'hidden'
+                }
             }
         }
         else {
-            token_menu.children[7].style.visibility = 'hidden'
-            token_menu.children[8].style.visibility = 'hidden'
+            token_menu.children[9].style.visibility = 'hidden'
+            token_menu.children[10].style.visibility = 'hidden'
         }
 
         // Outsiders / Minions / Demons
         teams = ['outsider', 'minion', 'demon']
         for (let k=0; k<3; k++) {
-            let team = token_menu.children[9 + k]
+            let team = token_menu.children[11 + k]
             let ids = getTeamIDs(game_state.edition, teams[k], token_menu_info.out_of_play)
-            if ((token_menu_info.valid_teams.length == 0 || token_menu_info.valid_teams.includes(teams[k])) && ids.length > 0) {
+            if (token_menu_info.valid_teams.includes(teams[k]) && ids.length > 0) {
                 while (ids.length > 7) {
                     ids.pop()
                 }
@@ -586,7 +669,12 @@ function reDrawTokenMenu() {
                 info_bar.innerHTML = 'Choose ' + token_menu_info.choices + ' character(s) (' + (token_menu_info.choices - token_menu_info.selected.length) + ' remaining)'
                 break
             case 1:
-                info_bar.innerHTML = 'Choose ' + token_menu_info.choices + ' character(s) (' + (token_menu_info.choices - token_menu_info.selected.length) + ' remaining)'
+                if (!token_menu_info.valid_teams.includes('fabled')) {
+                    info_bar.innerHTML = 'Choose ' + token_menu_info.choices + ' character(s) (' + (token_menu_info.choices - token_menu_info.selected.length) + ' remaining)'
+                }
+                else {
+                    info_bar.innerHTML = 'Choose the fabled to be in play'
+                }
                 break
             case 2:
                 let up_to = ''
@@ -771,6 +859,7 @@ function reDrawHUD() {
     choose_characters.style.visibility = client_type || client_type == null ? choose_characters.style.visibility : 'hidden'
     shuffle_players.style.visibility = client_type || client_type == null ? shuffle_players.style.visibility : 'hidden'
     change_edition.style.visibility = client_type || client_type == null ? change_edition.style.visibility : 'hidden'
+    choose_fabled.style.visibility = client_type || client_type == null ? choose_fabled.style.visibility : 'hidden'
     change_phase.style.visibility = client_type || client_type == null ? change_phase.style.visibility : 'hidden'
     reveal_grimoire.style.visibility = client_type || client_type == null ? reveal_grimoire.style.visibility : 'hidden'
     reset_game.style.visibility = client_type || client_type == null ? reset_game.style.visibility : 'hidden'
@@ -900,26 +989,151 @@ function reDrawHUD() {
     }
 }
 
-function reDrawDemonBluffs() {
-    if (game_state.demon_bluffs.length > 0) {
-        for (let i=1; i < 4; i++) {
-            
-            let t = getIconPath(game_state.demon_bluffs[i-1])
-            demon_bluffs.children[i].children[1].src = t
-            if (t == '') {
-                demon_bluffs.children[i].children[1].style.visibility = 'hidden'
-            }
-            else {
-                demon_bluffs.children[i].children[1].style.visibility = ''
-            }
-            if (game_state.demon_bluffs[i-1]) {
-                demon_bluffs.children[i].children[2].children[1].children[0].textContent = getCharacterFromID(game_state.demon_bluffs[i-1]).name
-            }
-        }
-        demon_bluffs.style.visibility = ''
+function reDrawFabledDemonBluffsHUD() {
+    
+    // Check if only one active
+    let both_active = false
+    if (game_state.demon_bluffs.length > 0 && game_state.fabled_in_play.length == 0) {
+        fabled_demon_bluffs_HUD_focus = 'demon_bluffs'
+    }
+    else if (game_state.demon_bluffs.length == 0 && game_state.fabled_in_play.length > 0) {
+        fabled_demon_bluffs_HUD_focus = 'fabled'
+    }
+    else if (game_state.demon_bluffs.length == 0 && game_state.fabled_in_play.length == 0) {
+        fabled_demon_bluffs_HUD_focus = null
     }
     else {
-        demon_bluffs.style.visibility = 'hidden'
+        both_active = true
+        if (!fabled_demon_bluffs_HUD_focus) {
+            fabled_demon_bluffs_HUD_focus = 'demon_bluffs'
+        }
+    }
+    
+    let y = parseFloat(fabled_demon_bluffs_HUD.style.height)
+    let x = parseFloat(fabled_demon_bluffs_HUD.style.width)
+    let p = x/3
+    
+    let title_height = y-p
+    
+    // Fabled
+    let square_size = Math.ceil(Math.sqrt(game_state.fabled_in_play.length/3))
+    let token_size = p/square_size
+    
+    for (let i=0; i < fabled_tokens.childElementCount; i++) {
+        let e = fabled_tokens.children[i]
+        if (i > 0) {
+            if (i <= game_state.fabled_in_play.length && fabled_demon_bluffs_HUD_focus == 'fabled') {
+                let t = getIconPath(game_state.fabled_in_play[i-1])
+                e.children[1].src = t
+
+                e.children[2].children[1].children[0].textContent = getFabledFromID(game_state.fabled_in_play[i-1]).name
+                
+                e.style.top = title_height + token_size * (Math.floor((i-1) / (3 * square_size))) + 'px'
+                let offset = (((i-1) >= 3 * square_size*(square_size-1)) * (3*square_size**2 - game_state.fabled_in_play.length)) * token_size/2
+                e.style.left = offset + ((i-1) % (3 * square_size)) * token_size + 'px'
+                
+                e.style.width = e.style.height = token_size + 'px'
+                
+                for (j=0; j < 2; j++) {
+                    e.children[j].width = token_size
+                    e.children[j].height = token_size
+                }
+                
+                e.children[2].setAttribute('width', token_size)
+                e.children[2].setAttribute('height', token_size)
+            
+                e.children[2].children[0].setAttribute('d', 'M ' + 0.075 * token_size + ' ' + token_size/2 + ' a ' + token_size*0.425 + ' ' + token_size*0.425 + ' 0 0 0 ' + 0.85*token_size + ' 0')
+                e.children[2].children[1].style.fontSize = (token_size/getTokenSize(0)) * getTokenFontSize(0) + 'px'
+                
+                e.style.visibility = ''
+            }
+            else {
+                e.style.visibility = 'hidden'            
+            }
+        }
+        else {
+            if (both_active) {
+                if (fabled_demon_bluffs_HUD_focus == 'fabled') {
+                    e.style.borderRightColor = 'transparent'
+                    e.style.borderBottomColor = 'transparent'
+                }
+                else {
+                    e.style.borderRightColor = getBorderColour()
+                    e.style.borderBottomColor = getBorderColour()
+                }
+                e.style.width = x/2 - getBorderSize() + 'px'
+                e.style.height = title_height - getBorderSize() + 'px'
+                e.style.borderStyle = 'none solid solid none'
+                addHover(e)
+                e.style.visibility = ''
+            }
+            else if (fabled_demon_bluffs_HUD_focus == 'fabled') {
+                e.style.width = x + 'px'
+                e.style.height = title_height + 'px'
+                e.style.borderStyle = 'none'
+                e.onmouseenter = undefined
+                e.onmouseleave = undefined
+                e.style.visibility = ''
+            }
+            else {
+                e.style.visibility = 'hidden'
+            }
+        }
+    }
+    
+    // Demon Bluffs
+    for (let i=0; i < demon_bluffs.childElementCount; i++) {
+        let e = demon_bluffs.children[i]
+        
+        if (i > 0) {
+            if (i <= game_state.demon_bluffs.length && fabled_demon_bluffs_HUD_focus == 'demon_bluffs') {
+                let t = getIconPath(game_state.demon_bluffs[i-1])
+                e.children[1].src = t
+                e.children[2].children[1].children[0].textContent = getCharacterFromID(game_state.demon_bluffs[i-1]).name
+            
+                e.style.visibility = ''
+            }
+            else {
+                e.style.visibility = 'hidden'
+            }
+        }
+        else {
+            if (both_active) {
+                if (fabled_demon_bluffs_HUD_focus == 'demon_bluffs') {
+                    e.style.borderBottomColor = 'transparent'
+                    e.style.borderLeftColor = 'transparent'
+                }
+                else {
+                    e.style.borderBottomColor = getBorderColour()
+                    e.style.borderLeftColor = getBorderColour()
+                }
+                e.style.width = Math.ceil(x/2 - getBorderSize()) + 'px'
+                e.style.height = title_height - getBorderSize() + 'px'
+                e.style.borderStyle = 'none none solid solid'
+                e.style.left = x/2 + 'px'
+                addHover(e)
+                e.style.visibility = ''
+            }
+            else if (fabled_demon_bluffs_HUD_focus == 'demon_bluffs') {
+                e.style.width = x + 'px'
+                e.style.left = '0px'
+                e.style.height = title_height + 'px'
+                e.style.borderStyle = 'none'
+                e.onmouseenter = undefined
+                e.onmouseleave = undefined
+                e.style.visibility = ''
+            }
+            else {
+                e.style.visibility = 'hidden'
+            }
+        }
+    }
+    
+    if (fabled_demon_bluffs_HUD_focus) {
+        fabled_demon_bluffs_HUD.style.visibility = ''
+    }
+    else {
+        fabled_demon_bluffs_HUD.style.visibility = 'hidden'
     }
 }
 

@@ -9,7 +9,7 @@ function reSize() {
     reSizePlayers()
     reSizeGameMenu()
     reSizeNightActionMenu()
-    reSizeDemonBluffs()
+    reSizeFabledDemonBluffsHUD()
     reSizeInfo()
     reSizeCancelSelect()
     reSizeTokenMenu()
@@ -245,145 +245,29 @@ function reSizeTokenMenu() {
         team.style.fontSize = getTokenMenuFontSize() + 'px'
     }
     
-    // Extras
-    let extras = token_menu.children[5]
-    for (let i=0; i<1; i++) {
-        let empty = extras.children[i]
-        let width = height = getTokenMenuSize()
-        empty.style.width = empty.style.height = width + 'px'
-        empty.style.left = (getTokenMenuSize() + 2 * getTokenMenuPaddingSize()) * i + getTokenMenuPaddingSize() + 'px'
-        empty.style.top = getTokenMenuPaddingSize() + 'px'
-        for (j=0; j < 2; j++) {
-            empty.children[j].width = width
-            empty.children[j].height = height
+    // Teams
+    let max_numbers = [7, 7, 1, 7, 7, 7, 7, 7, 7]
+    for (let k=0; k < max_numbers.length; k++) {
+        let team = token_menu.children[5 + k]
+        for (let i=0; i < max_numbers[k]; i++) {
+            let t = team.children[i]
+            let width = height = getTokenMenuSize()
+            t.style.width = t.style.height = width + 'px'
+            t.style.left = (getTokenMenuSize() + 2 * getTokenMenuPaddingSize()) * i + getTokenMenuPaddingSize() + 'px'
+            t.style.top = getTokenMenuPaddingSize() + 'px'
+            for (j=0; j < 2; j++) {
+                t.children[j].width = width
+                t.children[j].height = height
+            }
+            
+            t.children[2].setAttribute('width', width)
+            t.children[2].setAttribute('height', height)
+            
+            t.children[2].children[0].setAttribute('d', 'M ' + 0.075 * width + ' ' + height/2 + ' a ' + width*0.425 + ' ' + height*0.425 + ' 0 0 0 ' + 0.85*width + ' 0')
+            t.children[2].children[1].style.fontSize = getTokenMenuTokenFontSize() + 'px'
         }
-        
-        empty.children[2].setAttribute('width', width)
-        empty.children[2].setAttribute('height', height)
-        
-        empty.children[2].children[0].setAttribute('d', 'M ' + 0.075 * width + ' ' + height/2 + ' a ' + width*0.425 + ' ' + height*0.425 + ' 0 0 0 ' + 0.85*width + ' 0')
-        empty.children[2].children[1].style.fontSize = getTokenMenuTokenFontSize() + 'px'
     }
     
-    // Travelers
-    let travelers = token_menu.children[6]
-    for (let i=0; i<7; i++) {
-        let traveler = travelers.children[i]
-        let width = height = getTokenMenuSize()
-        traveler.style.width = traveler.style.height = width + 'px'
-        traveler.style.left = (getTokenMenuSize() + 2 * getTokenMenuPaddingSize()) * i + getTokenMenuPaddingSize() + 'px'
-        traveler.style.top = getTokenMenuPaddingSize() + 'px'
-        for (j=0; j < 2; j++) {
-            traveler.children[j].width = width
-            traveler.children[j].height = height
-        }
-        
-        traveler.children[2].setAttribute('width', width)
-        traveler.children[2].setAttribute('height', height)
-        
-        traveler.children[2].children[0].setAttribute('d', 'M ' + 0.075 * width + ' ' + height/2 + ' a ' + width*0.425 + ' ' + height*0.425 + ' 0 0 0 ' + 0.85*width + ' 0')
-        traveler.children[2].children[1].style.fontSize = getTokenMenuTokenFontSize() + 'px'
-    }
-    
-    // Townsfolk Row 1
-    let townsfolk1 = token_menu.children[7]
-    for (let i=0; i<7; i++) {
-        let town = townsfolk1.children[i]
-        let width = height = getTokenMenuSize()
-        town.style.width = town.style.height = width + 'px'
-        town.style.left = (getTokenMenuSize() + 2 * getTokenMenuPaddingSize()) * i + getTokenMenuPaddingSize() + 'px'
-        town.style.top = getTokenMenuPaddingSize() + 'px'
-        for (j=0; j < 2; j++) {
-            town.children[j].width = width
-            town.children[j].height = height
-        }
-        
-        town.children[2].setAttribute('width', width)
-        town.children[2].setAttribute('height', height)
-        
-        town.children[2].children[0].setAttribute('d', 'M ' + 0.075 * width + ' ' + height/2 + ' a ' + width*0.425 + ' ' + height*0.425 + ' 0 0 0 ' + 0.85*width + ' 0')
-        town.children[2].children[1].style.fontSize = getTokenMenuTokenFontSize() + 'px'
-    }
-    
-    // Townsfolk Row 2
-    let townsfolk2 = token_menu.children[8]
-    for (let i=0; i<7; i++) {
-        let town = townsfolk2.children[i]
-        let width = height = getTokenMenuSize()
-        town.style.width = town.style.height = width + 'px'
-        town.style.left = (getTokenMenuSize() + 2 * getTokenMenuPaddingSize()) * i + getTokenMenuPaddingSize() + 'px'
-        town.style.top = getTokenMenuPaddingSize() + 'px'
-        for (j=0; j < 2; j++) {
-            town.children[j].width = width
-            town.children[j].height = height
-        }
-        
-        town.children[2].setAttribute('width', width)
-        town.children[2].setAttribute('height', height)
-        
-        town.children[2].children[0].setAttribute('d', 'M ' + 0.075 * width + ' ' + height/2 + ' a ' + width*0.425 + ' ' + height*0.425 + ' 0 0 0 ' + 0.85*width + ' 0')
-        town.children[2].children[1].style.fontSize = getTokenMenuTokenFontSize() + 'px'
-    }
-    
-    // Outsiders
-    let outsiders = token_menu.children[9]
-    for (let i=0; i<7; i++) {
-        let outsider = outsiders.children[i]
-        let width = height = getTokenMenuSize()
-        outsider.style.width = outsider.style.height = width + 'px'
-        outsider.style.left = (getTokenMenuSize() + 2 * getTokenMenuPaddingSize()) * i + getTokenMenuPaddingSize() + 'px'
-        outsider.style.top = getTokenMenuPaddingSize() + 'px'
-        for (j=0; j < 2; j++) {
-            outsider.children[j].width = width
-            outsider.children[j].height = height
-        }
-        
-        outsider.children[2].setAttribute('width', width)
-        outsider.children[2].setAttribute('height', height)
-        
-        outsider.children[2].children[0].setAttribute('d', 'M ' + 0.075 * width + ' ' + height/2 + ' a ' + width*0.425 + ' ' + height*0.425 + ' 0 0 0 ' + 0.85*width + ' 0')
-        outsider.children[2].children[1].style.fontSize = getTokenMenuTokenFontSize() + 'px'
-    }
-    
-    // Minions
-    let minions = token_menu.children[10]
-    for (let i=0; i<7; i++) {
-        let minion = minions.children[i]
-        let width = height = getTokenMenuSize()
-        minion.style.width = minion.style.height = width + 'px'
-        minion.style.left = (getTokenMenuSize() + 2 * getTokenMenuPaddingSize()) * i + getTokenMenuPaddingSize() + 'px'
-        minion.style.top = getTokenMenuPaddingSize() + 'px'
-        for (j=0; j < 2; j++) {
-            minion.children[j].width = width
-            minion.children[j].height = height
-        }
-        
-        minion.children[2].setAttribute('width', width)
-        minion.children[2].setAttribute('height', height)
-        
-        minion.children[2].children[0].setAttribute('d', 'M ' + 0.075 * width + ' ' + height/2 + ' a ' + width*0.425 + ' ' + height*0.425 + ' 0 0 0 ' + 0.85*width + ' 0')
-        minion.children[2].children[1].style.fontSize = getTokenMenuTokenFontSize() + 'px'
-    }
-    
-    // Demons
-    let demons = token_menu.children[11]
-    for (let i=0; i<7; i++) {
-        let demon = demons.children[i]
-        let width = height = getTokenMenuSize()
-        demon.style.width = demon.style.height = width + 'px'
-        demon.style.left = (getTokenMenuSize() + 2 * getTokenMenuPaddingSize()) * i + getTokenMenuPaddingSize() + 'px'
-        demon.style.top = getTokenMenuPaddingSize() + 'px'
-        for (j=0; j < 2; j++) {
-            demon.children[j].width = width
-            demon.children[j].height = height
-        }
-        
-        demon.children[2].setAttribute('width', width)
-        demon.children[2].setAttribute('height', height)
-        
-        demon.children[2].children[0].setAttribute('d', 'M ' + 0.075 * width + ' ' + height/2 + ' a ' + width*0.425 + ' ' + height*0.425 + ' 0 0 0 ' + 0.85*width + ' 0')
-        demon.children[2].children[1].style.fontSize = getTokenMenuTokenFontSize() + 'px'
-    }
 }
 
 function reSizeReminderMenu() {
@@ -612,7 +496,7 @@ function reSizeNightActionMenu() {
     }
 }
 
-function reSizeDemonBluffs() {
+function reSizeFabledDemonBluffsHUD() {
     let e_y = (window.innerHeight - size)/2
     let e_x = (window.innerWidth - size)/2
     let r = getTokenSize(0)/2 + size * getCircleFraction() / 2
@@ -625,13 +509,21 @@ function reSizeDemonBluffs() {
     let x = 2.4 * y
     let p = x/3
     
-    demon_bluffs.style.top = window.innerHeight - y - 2 * getBorderSize() - getHUDMargin() + 'px'
-    demon_bluffs.style.left = window.innerWidth - getBorderSize() * 2 - getHUDMargin() - x + 'px'
-    demon_bluffs.style.height = y + 'px'
-    demon_bluffs.style.width = x + 'px'
-    demon_bluffs.style.borderRadius = getCornerRadius() + 'px'
-    demon_bluffs.style.borderWidth = getBorderSize() + 'px'
+    fabled_demon_bluffs_HUD.style.top = window.innerHeight - y - 2 * getBorderSize() - getHUDMargin() + 'px'
+    fabled_demon_bluffs_HUD.style.left = window.innerWidth - getBorderSize() * 2 - getHUDMargin() - x + 'px'
+    fabled_demon_bluffs_HUD.style.height = y + 'px'
+    fabled_demon_bluffs_HUD.style.width = x + 'px'
+    fabled_demon_bluffs_HUD.style.borderRadius = getCornerRadius() + 'px'
+    fabled_demon_bluffs_HUD.style.borderWidth = getBorderSize() + 'px'
     
+    // Fabled
+    fabled_tokens.children[0].style.width = x + 'px'
+    fabled_tokens.children[0].style.height = (y-p) + 'px'
+    fabled_tokens.children[0].style.lineHeight = (y-p) + 'px'
+    fabled_tokens.children[0].style.borderWidth = getBorderSize() + 'px'
+    fabled_tokens.children[0].style.borderBottomRightRadius = getCornerRadius() + 'px'
+    
+    // Demon Bluffs
     for (let i=0; i < demon_bluffs.childElementCount; i++) {
         let e = demon_bluffs.children[i]
         if (i > 0) {
@@ -654,6 +546,8 @@ function reSizeDemonBluffs() {
             e.style.width = x + 'px'
             e.style.height = (y-p) + 'px'
             e.style.lineHeight = (y-p) + 'px'
+            e.style.borderWidth = getBorderSize() + 'px'
+            e.style.borderBottomLeftRadius = getCornerRadius() + 'px'
         }
     }
 }
