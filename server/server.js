@@ -124,8 +124,9 @@ function censorState(state, socket_id) {
         player.socket_id = (player.socket_id == null) ? false : true
     }
     state.demon_bluffs = (state.host_socket_id == socket_id) ? state.demon_bluffs : []
-    state.host_socket_id = (state.host_socket_id == null) ? false : true
     state.roles = (state.host_socket_id == socket_id) ? state.roles : roles
+    state.host_socket_id = (state.host_socket_id == null) ? false : true
+    
     
     delete state.spectators
     delete state.night_actions

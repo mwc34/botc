@@ -1621,7 +1621,6 @@ function setupNightActionMenu() {
                         }
                         
                         night_action_menu.style.visibility = 'hidden'
-                        
                         socket.emit('role update', channel_id, game_state.roles)
                         
                         startNightAction(night_action)
@@ -2002,7 +2001,6 @@ function setupEditionMenu() {
                         c = getFabledFromID(i.id)
                         if (c && !fabled.includes(c.id)) {
                             fabled.push(c.id)
-                            console.log(c.id)
                         }
                     }
                 }
