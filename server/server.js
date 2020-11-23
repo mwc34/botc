@@ -906,8 +906,10 @@ io.on('connection', (socket) => {
             let player = getPlayerBySeatID(game_states[channel_id], seat_id)
             if (socket.id == game_states[channel_id].host_socket_id || (player != null && player.socket_id == socket.id)) {
                 if (player != null && player.socket_id != null) {
-                    channelEmit(channel_id, 'kick update', seat_id)
+                    let self_kick = player != null && player.socket_id == socket.id
+                    channelEmit(channel_id, 'kick update', {'seat_id' : seat_id, 'self_kick' : self_kick})
                     player.socket_id = null
+                    game_states[channel_id].spectators.push(socket.id)
                 }
             }
         }
@@ -942,7 +944,7 @@ io.on('connection', (socket) => {
             let player = getPlayerBySocketID(game_states[channel_id], socket.id)
             if (player != null) {
                 player.socket_id = null
-                channelEmit(channel_id, 'kick update', player.seat_id)
+                channelEmit(channel_id, 'kick update', {'seat_id' : player.seat_id})
             }
             if (game_states[channel_id].spectators.includes(socket.id)) {
                 game_states[channel_id].spectators.splice(game_states[channel_id].spectators.indexOf(socket.id), 1)

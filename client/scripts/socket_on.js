@@ -480,16 +480,28 @@ socket.on('remove update', (seat_id) => {
     reDrawHUD()
 })
 
-socket.on('kick update', (seat_id) => {
-    let player = getPlayerBySeatID(seat_id)
+socket.on('kick update', (kick_update) => {
+    let player = getPlayerBySeatID(kick_update.seat_id)
     player.socket_id = false
     reDrawSocketIcons()
     if (player.seat_id == your_seat_id) {
         your_seat_id = null
         delete sessionStorage.seat_id
         reDrawPlayers()
-        alert_box_info.push({'text' : 'You were kicked from your seat', 'func' : () => {requestSitDown()}})
-        alert_box.check()
+        
+        let f = () => {
+            if (channel_id != null) {
+                requestSitDown()
+            }
+        }
+        
+        if (!kick_update.self_kick) {
+            alert_box_info.push({'text' : 'You were kicked from your seat', 'func' : () => {f()}})
+            alert_box.check()
+        }
+        else {
+            f()
+        }
     }
 })
 
