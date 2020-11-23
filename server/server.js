@@ -933,6 +933,7 @@ io.on('connection', (socket) => {
     socket.on('disconnect', () => {
         console.log('User Disconnected: ' + socket.id)
         for (let channel_id in game_states) {
+            let found_channel = false
             if (game_states[channel_id].host_socket_id == socket.id) {
                 game_states[channel_id].host_socket_id = null
                 channelEmit(channel_id, 'host update', false)
@@ -945,6 +946,9 @@ io.on('connection', (socket) => {
             }
             if (game_states[channel_id].spectators.includes(socket.id)) {
                 game_states[channel_id].spectators.splice(game_states[channel_id].spectators.indexOf(socket.id), 1)
+            }
+            if (found_channel) {
+                break
             }
         }
     })
