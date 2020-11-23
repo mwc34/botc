@@ -508,6 +508,7 @@ io.on('connection', (socket) => {
     socket.on('role update', (channel_id, roles) => {
         if (channel_id in game_states && socket.id == game_states[channel_id].host_socket_id) {
             game_states[channel_id].roles = roles
+            game_states[channel_id].roles_by_id = {}
         }
     })
     
