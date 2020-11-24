@@ -400,7 +400,7 @@ function reSizeHUD() {
 
 function reSizeNightActionMenu() {
     
-    let row_sizes = [2, 2, 2, 2, 2, 0, 0.5, 1] // Title, finish, restrictions & info double
+    let row_sizes = [2, 2, 2, 2, 2, 1.5, 0.5, 1] // Title, finish, restrictions & info double
     let rows = row_sizes.reduce((a, b) => {return a + b}, 0)
     
     night_action_menu.style.width = getNightActionMenuWidth() + getNightActionMenuPadding() * 2 + 'px'
@@ -463,7 +463,7 @@ function reSizeNightActionMenu() {
         else if (i < 8) { 
             div.style.top = 8 * getNightActionMenuRowHeight() + getNightActionMenuPadding() + 'px'
             div.children[0].style.width = getNightActionMenuWidth()/4 - 2 * getBorderSize() + 'px'
-            div.children[0].style.left = 3*getNightActionMenuWidth()/4 - parseFloat(div.children[0].style.width)/2 + 'px'
+            div.children[0].style.left = 2*getNightActionMenuWidth()/4 - parseFloat(div.children[0].style.width)/2 + 'px'
             div.children[0].style.top = getNightActionMenuRowHeight()/2 + 'px'
             div.children[0].style.height = getNightActionMenuRowHeight() - 1 * getBorderSize() + 'px'
             div.children[0].style.lineHeight = parseFloat(div.children[0].style.height) + 'px'
@@ -471,15 +471,15 @@ function reSizeNightActionMenu() {
             div.children[0].style.borderWidth = getBorderSize() + 'px'
             div.children[0].style.fontSize = getNightActionMenuFontSize() + 'px'
         }
-        // Info Prompt
-        else if (i < 9) {
-            div.style.top = 8 * getNightActionMenuRowHeight() + getNightActionMenuPadding() + 'px'
+        // Info/Confirm Prompt
+        else if (i < 10) {
+            div.style.top = 9.5 * getNightActionMenuRowHeight() + getNightActionMenuPadding() + 'px'
             
             div.children[0].style.lineHeight = getNightActionMenuRowHeight() + 'px'
             for (let j=0; j < div.childElementCount; j++) {
-                div.children[j].style.width = getNightActionMenuWidth()/2 - Boolean(j) * 2 * getBorderSize() + 'px'
+                div.children[j].style.width = getNightActionMenuWidth()/2 - Boolean(j) * 8 * getBorderSize() + 'px'
                 div.children[j].style.height = getNightActionMenuRowHeight() - Boolean(j) * 2 * getBorderSize() + 'px'
-                // div.children[j].style.left = j * getNightActionMenuWidth()/2 + 'px'
+                div.children[j].style.left = (i-8) * getNightActionMenuWidth()/2 + j * 3 * getBorderSize() + 'px'
                 div.children[j].style.top = j * (getNightActionMenuRowHeight()) + 'px'
                 div.children[j].style.fontSize = getNightActionMenuFontSize() + 'px'
                 div.children[1].style.borderRadius = `${r}px ${r}px ${r}px ${r}px`
@@ -487,8 +487,8 @@ function reSizeNightActionMenu() {
             }
         }
         // Finish Cancel
-        else if (i < 10) {
-            div.style.top = 10.5 * getNightActionMenuRowHeight() + getNightActionMenuPadding() + 'px'
+        else if (i < 11) {
+            div.style.top = 12 * getNightActionMenuRowHeight() + getNightActionMenuPadding() + 'px'
             for (let j=0; j < div.childElementCount; j++) {
                 div.children[j].style.width = getNightActionMenuWidth()/2 - getBorderSize() + 'px'
                 div.children[j].style.height = getNightActionMenuRowHeight() - 2 * getBorderSize() + 'px'

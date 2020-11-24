@@ -398,8 +398,8 @@ function styleNightActionMenu() {
             div.children[0].style.userSelect = 'none'
             addHover(div.children[0])
         }
-        // Info Prompt
-        else if (i < 9) {
+        // Info/Confirm Prompt
+        else if (i < 10) {
             div.children[0].style.textAlign = 'center'
             div.children[0].style.color = getFontColour()
             div.children[0].style.fontFamily = getFontFamily()
@@ -413,7 +413,7 @@ function styleNightActionMenu() {
             div.children[1].style.userSelect = 'none'
         }
         // Finish Cancel
-        else if (i < 10) {
+        else if (i < 11) {
             for (j=0; j < 2; j++) {
                 div.children[j].style.textAlign = 'center'
                 div.children[j].style.color = getFontColour()

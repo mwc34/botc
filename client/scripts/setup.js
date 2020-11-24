@@ -318,6 +318,7 @@ function setupMenu() {
                         }
                         night_action_menu.children[7].children[0].style.opacity = deselected_opacity + (1 - deselected_opacity) * Boolean(night_action.grimoire)
                         night_action_menu.children[8].children[1].value = night_action.info || ''
+                        night_action_menu.children[9].children[1].value = night_action.confirm || ''
                         
                         night_action_menu.style.visibility = ''
                         
@@ -1625,8 +1626,12 @@ function setupNightActionMenu() {
             else if (i < 9) {
                 // pass
             }
-            // Finish Cancel
+            // Confirm Prompt
             else if (i < 10) {
+                // pass
+            }
+            // Finish Cancel
+            else if (i < 11) {
                 // Finish
                 if (j==0) {
                     div.children[j].onclick = () => {
@@ -1681,6 +1686,13 @@ function setupNightActionMenu() {
                         }
                         else {
                             night_action.info = undefined
+                        }
+                        v = night_action_menu.children[9].children[1].value
+                        if (v) {
+                            night_action.confirm = v
+                        }
+                        else {
+                            night_action.confirm = undefined
                         }
                         
                         night_action_menu.style.visibility = 'hidden'
