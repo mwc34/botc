@@ -2033,7 +2033,21 @@ function setupEditionMenu() {
                 return;
             }
 
-            let filecontent = JSON.parse(evt.target.result);
+            try {
+                let filecontent = JSON.parse(evt.target.result);
+            }
+            catch (e) {
+                if (e.name == 'SyntaxError') {
+                    alert_box_info.push({
+                        'text' : 'Your JSON is malformed.'
+                    })
+                    alert_box.check()
+                    return
+                }
+                else {
+                    throw e
+                }
+            }
             let name = event.target.files[0].name.replace(/\.[^\.]*/, "")
             let id = name.replaceAll(/[^\w]/g, "").toLowerCase()
             
