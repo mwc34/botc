@@ -1,7 +1,7 @@
-socket.on('new host', (msg) => {
+socket.on('new host', (msg, reason) => {
     // Host rejected
     if (!msg) {
-        alert_box_info.push({'text' : 'Channel: ' + channel_id + ' is already in use'})
+        alert_box_info.push({'text' : reason})
         alert_box.check()
     }
     // Host accepted
@@ -48,9 +48,9 @@ socket.on('new host', (msg) => {
     }
 })
 
-socket.on('new player', (msg) => {
+socket.on('new player', (msg, reason) => {
     if (!msg) {
-        alert_box_info.push({'text' : 'Channel: ' + channel_id + ' is not available to join'})
+        alert_box_info.push({'text' : reason})
         alert_box.check()
     }
     else {

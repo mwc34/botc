@@ -220,10 +220,13 @@ function printInfo() {
 }
 
 const max_players = 20
+const max_spectators = 20
 
 const game_timeout = 1000 * 3600 * 24 // 24 Hours
 
 const hostless_timeout = 1000 * 3600 // Hour
+
+const max_games = 100
 
 // Roles json
 
@@ -310,12 +313,19 @@ io.on('connection', (socket) => {
         }
         
         // Room already taken
-        if (channel_id in game_states && game_states[channel_id].host_socket_id != null || already_connected) {
-            socket.emit('new host', false)
+        if (channel_id in game_states && game_states[channel_id].host_socket_id != null) {
+            socket.emit('new host', false, `Channel ${channel_id} is already in use`)
+        }
+        else if (already_connected) {
+            socket.emit('new host', false, `You are already connected to a different channel or role`)
         }
         // Room available
         else {
             if (!(channel_id in game_states)) {
+                if (Object.keys(game_states).length == max_games) {
+                    socket.emit('new host', false, `There are already the maximum number of games active`)
+                    return
+                }
                 game_states[channel_id] = copy(base_state)
                 game_states[channel_id].game_timeout = setTimeout(() => {
                     channelEmit(channel_id, 'finish', 'Your game has closed due to it running for too long')
@@ -357,16 +367,22 @@ io.on('connection', (socket) => {
             }
         }
         
-        if (channel_id in game_states && !already_connected) {
+        if (!(channel_id in game_states)) {
+            socket.emit('new player', false, `Channel ${channel_id} is not active`)
+        }
+        else if (already_connected) {
+            socket.emit('new player', false, `You are already connected to a different channel or role`)
+        }
+        else if (game_states[channel_id].spectators.length == max_spectators) {
+            socket.emit('new player', false, `There are already the maximum number of spectators`)
+        }
+        else {
             // Send game info
             socket.emit('new player', censorState(game_states[channel_id], socket.id))
             if (!game_states[channel_id].spectators.includes(socket.id)) {
                 game_states[channel_id].spectators.push(socket.id)
             }
             printInfo()
-        }
-        else {
-            socket.emit('new player', false)
         }
     })
     
