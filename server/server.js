@@ -220,6 +220,7 @@ function printInfo() {
 }
 
 const max_players = 20
+
 const max_spectators = 20
 
 const game_timeout = 1000 * 3600 * 24 // 24 Hours
@@ -808,7 +809,8 @@ io.on('connection', (socket) => {
                 let segments = game_states[channel_id].player_info.length
                 let position = (segments + player.seat - getPlayerBySeatID(game_states[channel_id], clock_info.nominatee).seat) % segments
                 position = position == 0 ? segments : position
-                let cut_off = position * clock_info.interval
+                let latency_leeway = 50
+                let cut_off = position * clock_info.interval + latency_leeway
                 if ((clock_info.start_time == null || curr_time - clock_info.start_time < cut_off) && (!(Boolean(vote_update) && !player.alive && !player.dead_vote) || clock_info.free)) {
                     player.voting = Boolean(vote_update)
                     channelEmit(channel_id, 'vote update', {'seat_id' : player.seat_id, 'voting' : player.voting})
@@ -1071,6 +1073,8 @@ io.on('connection', (socket) => {
                 'host_socket_id',
                 'spectators',
                 'edition_reference_sheets',
+                'roles',
+                'fabled',
                 'edition',
                 'editions',
                 'next_seat_id',

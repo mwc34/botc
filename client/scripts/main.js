@@ -111,7 +111,8 @@ const default_night_action = [
 const alert_box_info = [] // Example item: {'text' : 'This is an alert', 'func' : () => {return 'Clicked!'}}
 
 var night_action_info = {
-    'time' : 15000,
+    'base_time' : 15000,
+    'time' : 0,
     'timed_out' : false,
     'name' : null,
     'start_time' : null,
@@ -149,7 +150,7 @@ var night_action_info = {
                 'character_restrictions' : night_action_info.character_restrictions,
                 'grimoire' : night_action_info.grimoire ? game_state : null,
                 'group' : Boolean(night_action_info.group),
-                'time' : 15000, 
+                'time' : night_action_info.base_time, 
                 'seat_id' : night_action_info.seat_id,
                 'confirm' : night_action_info.confirm,
                 'info' : {
