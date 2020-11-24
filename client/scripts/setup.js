@@ -2032,9 +2032,9 @@ function setupEditionMenu() {
                 alert('Error while reading file');
                 return;
             }
-
+            let filecontent = null
             try {
-                let filecontent = JSON.parse(evt.target.result);
+                filecontent = JSON.parse(evt.target.result);
             }
             catch (e) {
                 if (e.name == 'SyntaxError') {
