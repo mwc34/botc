@@ -1159,16 +1159,22 @@ io.on('connection', (socket) => {
     })
     
     // Kick update
-    socket.on('kick update', (channel_id, seat_id) => {
+    socket.on('kick update', (channel_id, seat_id, full_leave) => {
         if (channel_id in game_states) {
             let player = getPlayerBySeatID(game_states[channel_id], seat_id)
-            if (socket.id == game_states[channel_id].host_socket_id || (player != null && player.socket_id == socket.id)) {
+            if (socket.id == game_states[channel_id].host_socket_id || (player != null && player.socket_id == socket.id) || game_states[channel_id].spectators.includes(socket.id)) {
                 if (player != null && player.socket_id != null) {
-                    let self_kick = player != null && player.socket_id == socket.id
+                    let self_kick = socket.id != game_states[channel_id].host_socket_id
                     channelEmit(channel_id, 'kick update', {'seat_id' : player.seat_id, 'self_kick' : self_kick})
-                    game_states[channel_id].spectators.push(player.socket_id)
+                    if (!full_leave) {
+                        game_states[channel_id].spectators.push(player.socket_id)
+                    }
                     player.socket_id = null
                     printInfo()
+                }
+                // Spectator
+                else {
+                    game_states[channel_id].spectators.splice(game_states[channel_id].spectators.indexOf(socket.id), 1)
                 }
             }
         }

@@ -1548,8 +1548,8 @@ function setupShufflePlayers() {
 function setupLeaveGame() {
     leave_game.style.position = 'absolute'
     leave_game.onclick = () => {
-        if (!client_type && your_seat_id != null) {
-            socket.emit('kick update', channel_id, your_seat_id)
+        if (!client_type) {
+            socket.emit('kick update', channel_id, your_seat_id, true)
         }
         game_menu.style.visibility = ''
         game.style.visibility = 'hidden'
