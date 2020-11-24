@@ -343,6 +343,9 @@ function getIconPath(character) {
             return `assets/iconAssets/${c.id}.png`
         }
     }
+    else if (character) {
+        return `assets/iconAssets/${character}.png`
+    }
     else {
         return ""
     }

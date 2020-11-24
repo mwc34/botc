@@ -349,8 +349,9 @@ function reDrawReminderMenu() {
     reminder_size = getReminderMenuSize()
     let max_columns = Math.floor(size/reminder_size)
     let max_rows = max_columns - 2
-    rows = Math.min(max_rows, Math.ceil(to_show.length / square_size))
     columns = Math.min(max_columns, square_size)
+    rows = Math.min(max_rows, Math.ceil(to_show.length / columns))
+    
     
     let padding = reminder_size * getReminderGapFraction()
     
@@ -413,7 +414,7 @@ function reDrawTokenMenu() {
             token_menu_info.valid_teams = ['extra', 'traveler', 'townsfolk', 'outsider', 'minion', 'demon']
         }
         
-        let total_columns = 0
+        let total_columns = 7 // Could be 0
         for (let team of token_menu_info.valid_teams) {
             if (team == 'fabled') {
                 let ids = []
