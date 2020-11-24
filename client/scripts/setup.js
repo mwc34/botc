@@ -57,6 +57,7 @@ function setup() {
     setupDeathTokens()
     setupVotes()
     setupSocketIcons()
+    setupNightActionPendings()
     setupDeadVote()
     setupReminders()
     setupGameMenu()
@@ -1063,6 +1064,17 @@ function setupSocketIcons() {
     }
 }
 
+function setupNightActionPendings() {
+    for (let i=0; i < max_players; i++) {
+        let nap = document.createElement('img')
+        nap.style.zIndex = 'inherit'
+        nap.style.position = 'absolute'
+        nap.style.visibility = 'hidden'
+        nap.src = 'assets/other/nap.png'
+        night_action_pendings.appendChild(nap)
+    }
+}
+
 function setupDeadVote() {
     for (let i=0; i < max_players; i++) {
         let dead_vote = document.createElement('img')
@@ -1262,13 +1274,47 @@ function setupChangePhase() {
     change_phase.children[0].onclick = () => {
         if (client_type && !getMenuOpen() && !game_state.clock_info.active) {
             if (game_state.day_phase || game_state.phase_counter > 0) {
-                socket.emit('phase update', channel_id, !game_state.day_phase, game_state.phase_counter - game_state.day_phase)
+                let curr_night_action = false
+                if (!game_state.day_phase) {
+                    for (let p of game_state.player_info) {
+                        if (p.night_action) {
+                            curr_night_action = true
+                            break
+                        }
+                    }
+                }
+                if (!curr_night_action) {
+                    socket.emit('phase update', channel_id, !game_state.day_phase, game_state.phase_counter - game_state.day_phase)
+                }
+                else {
+                    alert_box_info.push({
+                        'text' : 'You can\'t change the phase whilst there are still night actions being processed'
+                    })
+                    alert_box.check()
+                }
             }
         }
     }
     change_phase.children[2].onclick = () => {
         if (client_type && !getMenuOpen() && !game_state.clock_info.active) {
-            socket.emit('phase update', channel_id, !game_state.day_phase, game_state.phase_counter + !game_state.day_phase)
+            let curr_night_action = false
+            if (!game_state.day_phase) {
+                for (let p of game_state.player_info) {
+                    if (p.night_action) {
+                        curr_night_action = true
+                        break
+                    }
+                }
+            }
+            if (!curr_night_action) {
+                socket.emit('phase update', channel_id, !game_state.day_phase, game_state.phase_counter + !game_state.day_phase)
+            }
+            else {
+                alert_box_info.push({
+                    'text' : 'You can\'t change the phase whilst there are still night actions being processed'
+                })
+                alert_box.check()
+            }
         }
     }
     change_phase.children[1].onclick = change_phase.children[2].onclick

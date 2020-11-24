@@ -19,6 +19,7 @@ const reset_game = document.getElementById('resetGame')
 const yes_votes = document.getElementById('yesVotes')
 const no_votes = document.getElementById('noVotes')
 const socket_icons = document.getElementById('socketIcons')
+const night_action_pendings = document.getElementById('nightActionPendings')
 const dead_votes = document.getElementById('deadVotes')
 const sync_characters = document.getElementById('syncCharacters')
 const reminders = document.getElementById('reminders')
@@ -156,9 +157,15 @@ var night_action_info = {
                     'info' : (client_type || night_action_info.confirm == null ? night_action_info.info : ["The Confirm Response was <>", night_action_info.confirm])
                 }
             }
+            // Only send if had info in or is host
             if (client_type || (to_send.info.players.length > 0 || to_send.info.characters.length > 0 || to_send.info.info.length > 0)) {
-            appendLog(getLogNightActionStyle(`Sent Night Action to ${getLogPlayerStyle(client_type ? getPlayerBySeatID(night_action_info.seat_id).name : 'The Host')}:<br>` + nightAlert(to_send, true)))
+                appendLog(getLogNightActionStyle(`Sent Night Action to ${getLogPlayerStyle(client_type ? getPlayerBySeatID(night_action_info.seat_id).name : 'The Host')}:<br>` + nightAlert(to_send, true)))
             }   
+            
+            if (client_type) {
+                getPlayerBySeatID(to_send.seat_id).night_action = true
+                reDrawNightActionPendings()
+            }
             
             socket.emit('night action', channel_id, to_send)
         }

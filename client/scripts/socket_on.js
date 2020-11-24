@@ -380,16 +380,33 @@ socket.on('group night action update', (group_night_action) => {
 socket.on('night action', (night_action) => {
     if (client_type) {
         let msg = getLogNightActionStyle('Received Night Action from ' + getLogPlayerStyle(getPlayerBySeatID(night_action.seat_id).name) + ':<br>' + nightAlert(night_action))
-        appendLog(msg)
-        alert_box_info.push({'text' : msg})
-        alert_box.check()
+        
+        // Only log if had info
+        if (night_action.server_response ||
+                night_action.timed_out ||
+                night_action.info.players.length > 0 || 
+                night_action.info.characters.length > 0 || 
+                night_action.info.info.length > 0
+            ) {
+            appendLog(msg)
+            alert_box_info.push({'text' : msg})
+            alert_box.check()
+        }
+        getPlayerBySeatID(night_action.seat_id).night_action = false
+        reDrawNightActionPendings()
+        
     }
     else {
         new Notification(`BotC: ${channel_id}`, { "body": `Night Action: ${night_action.name}`});
         let timer = (new Date()).getTime()
         let msg = getLogNightActionStyle('Received Night Action from ' + getLogPlayerStyle('The Host') + ':<br>' + nightAlert(night_action))
         alert_box_info.push({'text' : msg, 'func' : () => {
-            appendLog(msg)
+            
+            // Only log if had info
+            if (night_action.info.players.length > 0 || night_action.info.characters.length > 0 || night_action.info.info.length > 0) {
+                appendLog(msg)
+            }
+            
             if (night_action.name == 'Demon Info') {
                 game_state.demon_bluffs = night_action.info.characters
                 setSSDemonBluffs(game_state.demon_bluffs)

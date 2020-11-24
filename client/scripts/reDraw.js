@@ -15,6 +15,7 @@ function reDrawPlayers() {
     reDrawNames()
     reDrawDeathTokens()
     reDrawSocketIcons()
+    reDrawNightActionPendings()
     reDrawVotes()
     reDrawDeadVotes()
     reDrawReminders()
@@ -175,6 +176,19 @@ function reDrawDeadVotes() {
         }
         else {
             dead_vote.style.visibility = 'hidden'
+        }
+    }
+}
+
+function reDrawNightActionPendings() {
+    for (let i=0; i < max_players; i++) {
+        let nap = night_action_pendings.children[i]
+        let player = getPlayerBySeat(i)
+        if (i < game_state.player_info.length && player.night_action) {
+            nap.style.visibility = ''
+        }
+        else {
+            nap.style.visibility = 'hidden'
         }
     }
 }

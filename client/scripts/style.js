@@ -8,6 +8,7 @@ function style() {
     styleGameMenu()
     styleVotes()
     styleSocketIcons()
+    styleNightActionPendings()
     styleDeadVotes()
     styleInfo()
     styleNightActionMenu()
@@ -109,6 +110,12 @@ function styleNames() {
 function styleDeathTokens() {
     for (let i=0; i < max_players; i++) {
         let death_token = death_tokens.children[i]
+    }
+}
+
+function styleNightActionPendings() {
+    for (let i=0; i < max_players; i++) {
+        let nap = night_action_pendings.children[i]
     }
 }
 

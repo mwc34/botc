@@ -264,6 +264,7 @@ const base_player_info = {
     'reminders' : [],
     'voting' : false,
     'synced' : true,
+    'night_action' : false,
 }
 
 // Socket Updates
@@ -354,7 +355,7 @@ io.on('connection', (socket) => {
             if (name) {
                 // Name available
                 if (getPlayerByName(game_states[channel_id], name) == null) {
-                    player.name = name
+                    player.name = String(name)
                 }
             }
             state.next_seat_id++
@@ -365,12 +366,12 @@ io.on('connection', (socket) => {
     
     // Name Update
     socket.on('name update', (channel_id, name_update) => {
-        if (channel_id in game_states && socket.id == game_states[channel_id].host_socket_id) {
+        if (channel_id in game_states && socket.id == game_states[channel_id].host_socket_id && name_update) {
             let player = getPlayerBySeatID(game_states[channel_id], name_update.seat_id)
             if (player != null) {
                 // Name available
                 if (getPlayerByName(game_states[channel_id], name_update.name) == null) {
-                    player.name = name_update.name
+                    player.name = String(name_update.name)
                     channelEmit(channel_id, 'name update', {'seat_id' : player.seat_id, 'name' : player.name})
                 }
             }
@@ -379,13 +380,13 @@ io.on('connection', (socket) => {
     
     // Character Update
     socket.on('character update', (channel_id, character_update) => {
-        if (channel_id in game_states && socket.id == game_states[channel_id].host_socket_id) {
+        if (channel_id in game_states && socket.id == game_states[channel_id].host_socket_id && character_update) {
             let player = getPlayerBySeatID(game_states[channel_id], character_update.seat_id)
             let c = getCharacterFromID(game_states[channel_id], character_update.character)
             if (player != null && (c || !character_update.character)) {
                 // If turning into traveler
                 if (c && c.team == 'traveler') {
-                    player.character = character_update.character || null
+                    player.character = c.id
                     channelEmit(channel_id, 'character update', {'seat_id' : player.seat_id, 'character' : player.character})
                 }
                 else {
@@ -416,7 +417,7 @@ io.on('connection', (socket) => {
     
     // Alive update
     socket.on('alive update', (channel_id, alive_update) => {
-        if (channel_id in game_states && socket.id == game_states[channel_id].host_socket_id) {
+        if (channel_id in game_states && socket.id == game_states[channel_id].host_socket_id && alive_update) {
             let player = getPlayerBySeatID(game_states[channel_id], alive_update.seat_id)
             if (player != null) {
                 player.alive = Boolean(alive_update.alive)
@@ -433,7 +434,7 @@ io.on('connection', (socket) => {
         if (channel_id in game_states && socket.id == game_states[channel_id].host_socket_id) {
             for (let edition of game_states[channel_id].editions) {
                 if (edition.id == edition_update) {
-                    game_states[channel_id].edition = edition_update
+                    game_states[channel_id].edition = edition.id
                     channelEmit(channel_id, 'edition update', game_states[channel_id].edition)
                     game_states[channel_id].fabled_in_play = edition.fabled || []
                     channelEmit(channel_id, 'fabled in play update', game_states[channel_id].fabled_in_play)
@@ -529,15 +530,15 @@ io.on('connection', (socket) => {
     
     // Fabled update
     socket.on('fabled in play update', (channel_id, fabled_in_play) => {
-        if (channel_id in game_states && socket.id == game_states[channel_id].host_socket_id) {
+        if (channel_id in game_states && socket.id == game_states[channel_id].host_socket_id && Array.isArray(fabled_in_play)) {
             game_states[channel_id].fabled_in_play = fabled_in_play
             channelEmit(channel_id, 'fabled in play update', fabled_in_play)
         }
     })
     
-    // Role update
+    // Role update RETIRED FOR NOW
     socket.on('role update', (channel_id, roles) => {
-        if (channel_id in game_states && socket.id == game_states[channel_id].host_socket_id) {
+        if (false && channel_id in game_states && socket.id == game_states[channel_id].host_socket_id) {
             game_states[channel_id].roles = roles
             game_states[channel_id].roles_by_id = {}
         }
@@ -548,15 +549,15 @@ io.on('connection', (socket) => {
         let state = game_states[channel_id]
         if (state && socket.id == state.host_socket_id) {
             if (state.day_phase && open_update != state.nominations_open) {
-                state.nominations_open = open_update
-                channelEmit(channel_id, 'open nominations update', open_update)
+                state.nominations_open = Boolean(open_update)
+                channelEmit(channel_id, 'open nominations update', state.nominations_open)
             }
         }
     })
     
     // Seat update
     socket.on('seat update', (channel_id, seat_update) => {
-        if (channel_id in game_states && socket.id == game_states[channel_id].host_socket_id && !game_states[channel_id].clock_info.active) {
+        if (channel_id in game_states && socket.id == game_states[channel_id].host_socket_id && !game_states[channel_id].clock_info.active && seat_update && seat_update.constructor == Object) {
             let new_player_info = copy(game_states[channel_id].player_info)
             let seats_unused = [...Array(new_player_info.length).keys()]
             let to_return = {}
@@ -582,9 +583,9 @@ io.on('connection', (socket) => {
     
     // Reminder update
     socket.on('reminder update', (channel_id, reminder_update) => {
-        if (channel_id in game_states && game_states[channel_id].host_socket_id == socket.id) {
+        if (channel_id in game_states && game_states[channel_id].host_socket_id == socket.id && reminder_update) {
             let player = getPlayerBySeatID(game_states[channel_id], reminder_update.seat_id)
-            if (player != null && reminder_update.reminders) {
+            if (player != null && reminder_update.reminders && Array.isArray(reminder_update.reminders)) {
                 let new_reminders = []
                 for (let r of reminder_update.reminders) {
                     new_reminders.push({'icon' : r.icon, 'text' : r.text})
@@ -596,7 +597,7 @@ io.on('connection', (socket) => {
     
     // Demon Bluff Update
     socket.on('demon bluff update', (channel_id, demon_bluffs) => {
-        if (channel_id in game_states && game_states[channel_id].host_socket_id == socket.id) {
+        if (channel_id in game_states && game_states[channel_id].host_socket_id == socket.id && Array.isArray(demon_bluffs)) {
             game_states[channel_id].demon_bluffs = demon_bluffs
         }
     })
@@ -636,7 +637,7 @@ io.on('connection', (socket) => {
     
     // Nomination update
     socket.on('nomination update', (channel_id, nomination_update) => {
-        if (channel_id in game_states && !game_states[channel_id].clock_info.active && game_states[channel_id].day_phase) {
+        if (channel_id in game_states && !game_states[channel_id].clock_info.active && game_states[channel_id].day_phase && nomination_update) {
             let state = game_states[channel_id]
             let clock_info = state.clock_info
             // Valid person doing the nomination
@@ -733,7 +734,7 @@ io.on('connection', (socket) => {
     
     // Phase update
     socket.on('phase update', (channel_id, day_phase, phase_counter) => {
-        if (channel_id in game_states && socket.id == game_states[channel_id].host_socket_id && !game_states[channel_id].clock_info.active && Object.getOwnPropertyNames(game_states[channel_id].night_actions).length == 0) {
+        if (channel_id in game_states && socket.id == game_states[channel_id].host_socket_id && !game_states[channel_id].clock_info.active && Object.getOwnPropertyNames(game_states[channel_id].night_actions).length == 0 && Number.isInteger(phase_counter)) {
             let state = game_states[channel_id]
             if (state.day_phase != Boolean(day_phase) && Math.abs(state.phase_counter - phase_counter) <= 1 && phase_counter >= 0 && (phase_counter > 0 || !day_phase)) {
                 state.day_phase = Boolean(day_phase)
@@ -751,7 +752,7 @@ io.on('connection', (socket) => {
     
     // Night Action
     socket.on('night action', (channel_id, night_action) => {
-        if (channel_id in game_states && !game_states[channel_id].day_phase) {
+        if (channel_id in game_states && !game_states[channel_id].day_phase && night_action) {
             if (socket.id == game_states[channel_id].host_socket_id) {
                 let player = getPlayerBySeatID(game_states[channel_id], night_action.seat_id)
                 if (player != null && player.socket_id != null && !(player.seat_id in game_states[channel_id].night_actions)) {
@@ -793,7 +794,7 @@ io.on('connection', (socket) => {
                                 }
                                 delete game_states[channel_id].night_actions[player.seat_id]
                                 
-                                io.to(game_states[channel_id].host_socket_id).emit('night action', {'seat_id' : player.seat_id, 'name' : night_action.name, 'info' : {'info' : [player.name + ' didn\'t respond', '']}})
+                                io.to(game_states[channel_id].host_socket_id).emit('night action', {'seat_id' : player.seat_id, 'name' : night_action.name, 'server_response' : true, 'info' : {'info' : [player.name + ' didn\'t respond', '']}})
                             }, wait_time + 5000) // MAGIC NUMBER
                         
                         if (night_action.group) {
@@ -811,7 +812,7 @@ io.on('connection', (socket) => {
                     }
                 }
                 else {
-                    io.to(game_states[channel_id].host_socket_id).emit('night action', {'seat_id' : player.seat_id, 'name' : night_action.name, 'info' : {'info' : ['That player doesn\'t exist or is already handling a night action', '']}})
+                    io.to(game_states[channel_id].host_socket_id).emit('night action', {'seat_id' : player.seat_id, 'name' : night_action.name, 'server_response' : true, 'info' : {'info' : ['That player doesn\'t exist or is already handling a night action', '']}})
                 }
             }
             else if (getPlayerBySocketID(game_states[channel_id], socket.id) != null) {
@@ -835,7 +836,7 @@ io.on('connection', (socket) => {
                         io.to(game_states[channel_id].host_socket_id).emit('night action', night_action) // TODO Bad Security?
                     }
                     else {
-                        io.to(game_states[channel_id].host_socket_id).emit('night action', {'seat_id' : player.seat_id, 'name' : night_action.name, 'info' : {'info' : ['The player didn\'t respond correctly', '']}})
+                        io.to(game_states[channel_id].host_socket_id).emit('night action', {'seat_id' : player.seat_id, 'name' : night_action.name, 'server_response' : true, 'info' : {'info' : ['The player didn\'t respond correctly', '']}})
                     }
                 }
             }
@@ -844,7 +845,7 @@ io.on('connection', (socket) => {
     
     // Group Night Action Update
     socket.on('group night action update', (channel_id, players) => {
-        if (channel_id in game_states) {
+        if (channel_id in game_states && Array.isArray(players)) {
             let player = getPlayerBySocketID(game_states[channel_id], socket.id)
             if (player.seat_id in game_states[channel_id].night_actions) {
                 let data = game_states[channel_id].group_night_action.data
@@ -945,7 +946,7 @@ io.on('connection', (socket) => {
             let state = game_states[channel_id]
             let player = getPlayerBySeatID(state, seat_id)
             if (player != null) {
-                channelEmit(channel_id, 'remove update', seat_id)
+                channelEmit(channel_id, 'remove update', player.seat_id)
                 state.player_info.splice(state.player_info.indexOf(player), 1)
                 for (let i = player.seat+1; i <= state.player_info.length; i++) {
                     let t = getPlayerBySeat(state, i)
@@ -962,7 +963,7 @@ io.on('connection', (socket) => {
             if (socket.id == game_states[channel_id].host_socket_id || (player != null && player.socket_id == socket.id)) {
                 if (player != null && player.socket_id != null) {
                     let self_kick = player != null && player.socket_id == socket.id
-                    channelEmit(channel_id, 'kick update', {'seat_id' : seat_id, 'self_kick' : self_kick})
+                    channelEmit(channel_id, 'kick update', {'seat_id' : player.seat_id, 'self_kick' : self_kick})
                     player.socket_id = null
                     game_states[channel_id].spectators.push(socket.id)
                 }

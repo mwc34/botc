@@ -88,6 +88,7 @@ function reSizePlayers() {
         let death_token = death_tokens.children[i]
         let socket_icon = socket_icons.children[i]
         let dead_vote = dead_votes.children[i]
+        let nap = night_action_pendings.children[i]
         
         let width = getTokenSize(game_state.player_info.length)
         let height = width
@@ -142,6 +143,11 @@ function reSizePlayers() {
         dead_vote.height = dead_vote.width * 381 / 467
         dead_vote.style.left = left + width - dead_vote.width + 'px'
         dead_vote.style.top = top + height - dead_vote.height + 'px'
+        
+        nap.width = getSocketIconSize(game_state.player_info.length)
+        nap.height = nap.width
+        nap.style.left = left + 'px'
+        nap.style.top = top + 'px'
         
         for (let j=0; j < 2; j++) {
             let r = night_reminders.children[i*2 + j]
