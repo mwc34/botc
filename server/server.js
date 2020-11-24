@@ -205,6 +205,20 @@ function getPlayerBySocketID(state, socket_id) {
     return null
 }
 
+// Print Info
+function printInfo() {
+    let games = Object.keys(game_states).length
+    let hosts = 0
+    let players = 0
+    let spectators = 0
+    for (let key in game_states) {
+        hosts += Boolean(game_states[key].host_socket_id)
+        players += game_states[key].player_info.reduce((a, b) => {return a + Boolean(b.socket_id)}, 0)
+        spectators += game_states[key].spectators.length
+    }
+    console.log(`Currently ${games} game${games != 1 ? 's' : ''} ${games != 1 ? 'are' : 'is'} running with ${hosts} host${hosts != 1 ? 's' : ''}, ${players} player${players != 1 ? 's' : ''} and ${spectators} spectator${spectators != 1 ? 's' : ''} connected in total.`)
+}
+
 const max_players = 20
 
 const game_timeout = 1000 * 3600 * 24 // 24 Hours
@@ -281,14 +295,22 @@ const base_player_info = {
 // Socket Updates
 
 io.on('connection', (socket) => {
-    console.log('User Connected: ' + socket.id);
-    
-    socket.emit('connect info', roles)
     
     // Host connecting
     socket.on('new host', (channel_id) => {
+        // Already connected
+        let already_connected = false
+        for (let key in game_states) {
+            if (socket.id == game_states[key].host_socket_id ||
+                game_states[key].spectators.includes(socket.id) ||
+                game_states[key].player_info.map((e) => {return e.socket_id}).includes(socket.id)) {
+                
+                already_connected = true
+            }
+        }
+        
         // Room already taken
-        if (channel_id in game_states && game_states[channel_id].host_socket_id != null) {
+        if (channel_id in game_states && game_states[channel_id].host_socket_id != null || already_connected) {
             socket.emit('new host', false)
         }
         // Room available
@@ -304,23 +326,44 @@ io.on('connection', (socket) => {
                         clearTimeout(game_states[channel_id].hostless_timeout)
                     }
                     delete game_states[channel_id]
+                    printInfo()
                 }, game_timeout)
             }
             game_states[channel_id].host_socket_id = socket.id
             if (game_states[channel_id].hostless_timeout) {
                 clearTimeout(game_states[channel_id].hostless_timeout)
             }
+            
+            if (game_states[channel_id].spectators.includes(socket.id)) {
+                game_states[channel_id].spectators.splice(game_states[channel_id].spectators.indexOf(socket.id), 1)
+            }
+            
             socket.emit('new host', censorState(game_states[channel_id], socket.id))
             channelEmit(channel_id, 'host update', true)
+            printInfo()
         }
     })
     
     // Player connecting
     socket.on('new player', (channel_id) => {
-        if (channel_id in game_states) {
+        // Already connected
+        let already_connected = false
+        for (let key in game_states) {
+            if (socket.id == game_states[key].host_socket_id ||
+                game_states[key].spectators.includes(socket.id) ||
+                game_states[key].player_info.map((e) => {return e.socket_id}).includes(socket.id)) {
+                
+                already_connected = true
+            }
+        }
+        
+        if (channel_id in game_states && !already_connected) {
             // Send game info
             socket.emit('new player', censorState(game_states[channel_id], socket.id))
-            game_states[channel_id].spectators.push(socket.id)
+            if (!game_states[channel_id].spectators.includes(socket.id)) {
+                game_states[channel_id].spectators.push(socket.id)
+            }
+            printInfo()
         }
         else {
             socket.emit('new player', false)
@@ -348,6 +391,7 @@ io.on('connection', (socket) => {
                     
                     // Update players
                     channelEmit(channel_id, 'socket update', {'seat_id' : player.seat_id, 'socket_id' : true})
+                    printInfo()
                 }
                 // Seat taken
                 else {
@@ -1043,6 +1087,7 @@ io.on('connection', (socket) => {
                     clearTimeout(game_states[channel_id].hostless_timeout)
                 }
                 delete game_states[channel_id]
+                printInfo()
             }, game_timeout)
             
             if (!game_states[channel_id].host_socket_id) {
@@ -1055,6 +1100,7 @@ io.on('connection', (socket) => {
                         clearTimeout(game_states[channel_id].hostless_timeout)
                     }
                     delete game_states[channel_id]
+                    printInfo()
                 }, hostless_timeout)
             }
             
@@ -1081,11 +1127,13 @@ io.on('connection', (socket) => {
             let player = getPlayerBySeatID(state, seat_id)
             if (player != null) {
                 channelEmit(channel_id, 'remove update', player.seat_id)
+                game_states[channel_id].spectators.push(player.socket_id)
                 state.player_info.splice(state.player_info.indexOf(player), 1)
                 for (let i = player.seat+1; i <= state.player_info.length; i++) {
                     let t = getPlayerBySeat(state, i)
                     t.seat--
                 }
+                printInfo()
             }
         }
     })
@@ -1098,8 +1146,9 @@ io.on('connection', (socket) => {
                 if (player != null && player.socket_id != null) {
                     let self_kick = player != null && player.socket_id == socket.id
                     channelEmit(channel_id, 'kick update', {'seat_id' : player.seat_id, 'self_kick' : self_kick})
+                    game_states[channel_id].spectators.push(player.socket_id)
                     player.socket_id = null
-                    game_states[channel_id].spectators.push(socket.id)
+                    printInfo()
                 }
             }
         }
@@ -1119,7 +1168,9 @@ io.on('connection', (socket) => {
                     clearTimeout(game_states[channel_id].hostless_timeout)
                 }
                 delete game_states[channel_id]
+                printInfo()
             }, hostless_timeout)
+            printInfo()
         }
     })
     
@@ -1134,12 +1185,12 @@ io.on('connection', (socket) => {
                 clearTimeout(game_states[channel_id].hostless_timeout)
             }
             delete game_states[channel_id]
+            printInfo()
         }
     })
     
     // Disconnect
     socket.on('disconnect', () => {
-        console.log('User Disconnected: ' + socket.id)
         for (let channel_id in game_states) {
             let found_channel = false
             if (game_states[channel_id].host_socket_id == socket.id) {
@@ -1154,16 +1205,20 @@ io.on('connection', (socket) => {
                         clearTimeout(game_states[channel_id].hostless_timeout)
                     }
                     delete game_states[channel_id]
+                    printInfo()
                 }, hostless_timeout)
+                printInfo()
             }
             
             let player = getPlayerBySocketID(game_states[channel_id], socket.id)
             if (player != null) {
                 player.socket_id = null
                 channelEmit(channel_id, 'kick update', {'seat_id' : player.seat_id})
+                printInfo()
             }
             if (game_states[channel_id].spectators.includes(socket.id)) {
                 game_states[channel_id].spectators.splice(game_states[channel_id].spectators.indexOf(socket.id), 1)
+                printInfo()
             }
             if (found_channel) {
                 break
