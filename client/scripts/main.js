@@ -60,7 +60,8 @@ const max_players = 20
 const max_reminders = 5
 const deselected_opacity = 0.5
 const roles_by_id = {}
-const socket = io('https://evabs.soc.srcf.net', {autoConnect: false})
+const website_url = 'https://evabs.soc.srcf.net'
+const socket = io(website_url, {autoConnect: false})
 Notification.requestPermission()
 var size = Math.min(window.innerWidth, window.innerHeight)
 var game_state = {
@@ -330,12 +331,41 @@ function getEditionFromName(name) {
 
 
 function getIconPath(character) {
-    return character ? "assets/iconAssets/" + character + ".png" : ""
+    let c = getCharacterFromID(character)
+    if (!c) {
+        c = getFabledFromID(character)
+    }
+    if (c) {
+        if (c.icon) {
+            return c.icon
+        }
+        else {
+            return `assets/iconAssets/${c.id}.png`
+        }
+    }
+    else {
+        return ""
+    }
 }
 
 function getIconIDFromPath(path) {
-    let t = path.match(/\/([^\/]*).png/)
-    return t ? t[1].toLowerCase() : null
+    if (!path.includes(website_url)) {
+        for (let c of game_state.roles) {
+            if (c.icon == path) {
+                return c.id
+            }
+        }
+        for (let c of game_state.fabled) {
+            if (c.icon == path) {
+                return c.id
+            }
+        }
+        return null
+    }
+    else {
+        let t = path.match(/\/([^\/]*).png/)
+        return t ? t[1].toLowerCase() : null
+    }
 }
 
 function getTokenPath(character) {

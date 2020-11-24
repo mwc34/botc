@@ -80,9 +80,10 @@ app.get('/Reference%20Sheet', (req, res) => {
 // Copy state
 function copy(state) {
     let new_state = {}
-    if ('night_actions' in state ||
-        'game_timeout' in state ||
-        'hostless_timeout' in state) {
+    if (state && state.constructor == Object && (
+            'night_actions' in state ||
+            'game_timeout' in state ||
+            'hostless_timeout' in state)) {
         for (let i in state) {
             if (i != 'night_actions' &&
                 i != 'game_timeout' &&
@@ -133,7 +134,6 @@ function censorState(state, socket_id) {
         player.socket_id = (player.socket_id == null) ? false : true
     }
     state.demon_bluffs = (state.host_socket_id == socket_id) ? state.demon_bluffs : []
-    state.roles = (state.host_socket_id == socket_id) ? state.roles : roles
     state.host_socket_id = (state.host_socket_id == null) ? false : true
     
     
@@ -144,12 +144,17 @@ function censorState(state, socket_id) {
     delete state.roles_by_id
     delete state.edition_reference_sheets
     state.group_night_action = {'name' : null, 'data' : {}}
+    state.roles = roles.concat(state.roles)
     
     return state
 }
 
 function getCharacterFromID(state, id) {
-    if (Object.keys(state.roles_by_id).length == 0) {
+    if (id in roles_by_id) {
+        return roles_by_id[id]
+    }
+    
+    if (state.roles.length > 0 && Object.keys(state.roles_by_id).length == 0) {
         for (let role of state.roles) {
             state.roles_by_id[role.id] = role
         }
@@ -208,7 +213,13 @@ const hostless_timeout = 1000 * 3600 // Hour
 
 // Roles json
 
+const roles_by_id = {}
+
 var roles = JSON.parse(fs.readFileSync('/home/societies/evabs/public_html/roles.json', 'utf8'));
+
+for (let role of roles) {
+    roles_by_id[role.id] = role
+}
 
 var editions = JSON.parse(fs.readFileSync('/home/societies/evabs/public_html/editions.json', 'utf8'));
 
@@ -233,7 +244,7 @@ const base_state = {
     'next_seat_id' : 0,
     'edition' : 'tb',
     'editions' : copy(editions),
-    'roles' : copy(roles),
+    'roles' : [],
     'fabled' : copy(fabled),
     'fabled_in_play' : [],
     'demon_bluffs' : [],
@@ -272,6 +283,7 @@ const base_player_info = {
 io.on('connection', (socket) => {
     console.log('User Connected: ' + socket.id);
     
+    socket.emit('connect info', roles)
     
     // Host connecting
     socket.on('new host', (channel_id) => {
@@ -474,7 +486,7 @@ io.on('connection', (socket) => {
                 'icon' : edition.icon, 
                 'reference_sheet' : false
             }
-            let valid = edition.id && edition.name && edition.characters.constructor == Object && edition.icon && Array.isArray(edition.fabled)
+            let valid = edition.id && edition.name && edition.characters && edition.characters.constructor == Object && edition.icon && Array.isArray(edition.fabled)
             if (valid) {
                 // Check unique
                 for (let e of game_states[channel_id].editions) {
@@ -492,13 +504,87 @@ io.on('connection', (socket) => {
                     }
                     // Check characters
                     let chars_checked = []
+                    let new_chars = []
                     for (let team in edition.characters) {
-                        for (let id of edition.characters[team]) {
+                        if (!Array.isArray(edition.characters[team])) {
+                            return
+                        }
+                        for (let i=0; i < edition.characters[team].length; i++) {
+                            let id = edition.characters[team][i]
                             let c = getCharacterFromID(game_states[channel_id], id)
-                            if (!c || c.team != team && !chars_checked.includes(c.id)) {
+                            if (c && (c.team != team || chars_checked.includes(c.id))) {
                                 valid = false
                             }
                             else {
+                                // New Character!!
+                                if (!c) {
+                                    if (!id || id.constructor != Object) {
+                                        return
+                                    }
+                                    
+                                    essential_keys = {
+                                        'id' : String,
+                                        'name' : String,
+                                        'ability' : String,
+                                        'team' : String,
+                                        'icon' : String,
+                                    }
+                                    
+                                    extra_keys = {
+                                        'setup' : Boolean,
+                                        'removes_self' : Boolean,
+                                        'firstNight' : parseInt,
+                                        'otherNight' : parseInt,
+                                        'firstNightReminder' : String,
+                                        'otherNightReminder' : String,
+                                        'reminders' : (e) => {return Array.isArray(e) ? e : []},
+                                        'remindersGlobal' : (e) => {return Array.isArray(e) ? e : []},
+                                        'night_actions' : (e) => {return Array.isArray(e) ? e : []},
+                                        'night_actions_scoped' : (e) => {return Array.isArray(e) ? e : []},
+                                    }
+                                    
+                                    blank_keys = {
+                                        'setup' : false,
+                                        'firstNight' : 0,
+                                        'otherNight' : 0,
+                                        'firstNightReminder' : "",
+                                        'otherNightReminder' : "",
+                                        'reminders' : [],
+                                        'night_actions' : [],
+                                    }
+                                    
+                                    new_c = {}
+                                    for (let key of Object.keys(essential_keys).concat(Object.keys(extra_keys))) {
+                                        if (key in id) {
+                                            new_c[key] = key in essential_keys ? essential_keys[key](id[key]) : extra_keys[key](id[key])
+                                        }
+                                        else if (key in essential_keys) {
+                                            return
+                                        }
+                                    }
+                                    
+                                    for (let key in blank_keys) {
+                                        if (!(key in new_c)) {
+                                            new_c[key] = copy(blank_keys[key])
+                                        }
+                                    }
+                                    
+                                    if (getCharacterFromID(game_states[channel_id], new_c.id)) {
+                                        return
+                                    }
+                                    
+                                    if (new_c.team != team) {
+                                        return
+                                    }
+                                    if (chars_checked.includes(new_c.id)) {
+                                        return
+                                    }
+                                    
+                                    edition.characters[team][i] = new_c.id
+                                    new_chars.push(new_c)
+                                    c = new_c
+                                    
+                                }
                                 max_counts[team]--
                                 chars_checked.push(c.id)
                                 if (max_counts[team] < 0) {
@@ -507,21 +593,77 @@ io.on('connection', (socket) => {
                             }
                         }
                     }
+
                     // Check fabled
                     let ids = []
+                    let fabled_checked = []
+                    let new_fabled = []
                     for (let f of game_states[channel_id].fabled) {
                         ids.push(f.id)
                     }
-                    for (let f of edition.fabled) {
-                        if (!ids.includes(f)) {
-                            valid = false
-                            break
+                    for (let i=0; i < edition.fabled.length; i++) {
+                        let f = edition.fabled[i]
+                        if (!ids.includes(f) || fabled_checked.includes(f)) {
+                            if (!f || f.constructor != Object) {
+                                return
+                            }
+                            essential_keys = {
+                                'id' : String,
+                                'name' : String,
+                                'ability' : String,
+                                'team' : String,
+                                'icon' : String,
+                            }
+                            
+                            extra_keys = {
+                                'reminders' : (e) => {Array.isArray(e) ? e : []},
+                            }
+                            
+                            blank_keys = {
+                                'reminders' : []
+                            }
+                            
+                            new_f = {}
+                            
+                            for (let key of Object.keys(essential_keys).concat(Object.keys(extra_keys))) {
+                                if (key in f) {
+                                    new_f[key] = key in essential_keys ? essential_keys[key](f[key]) : extra_keys[key](f[key])
+                                }
+                                else if (key in essential_keys) {
+                                    return
+                                }
+                            }
+                            
+                            for (let key in blank_keys) {
+                                if (!(key in new_f)) {
+                                    new_f[key] = copy(blank_keys[key])
+                                }
+                            }
+                            
+                            if (ids.includes(new_f.id)) {
+                                return
+                            }
+                            
+                            if (new_f.team != 'fabled') {
+                                return
+                            }
+                            
+                            if (fabled_checked.includes(new_f.id)) {
+                                return
+                            }
+                            
+                            edition.fabled[i] = new_f.id
+                            new_fabled.push(new_f)
+                            f = new_f     
                         }
+                        fabled_checked.push(f)
                     }
-                    
+
                     if (valid) {
+                        game_states[channel_id].fabled = game_states[channel_id].fabled.concat(new_fabled)
+                        game_states[channel_id].roles = game_states[channel_id].roles.concat(new_chars)
                         game_states[channel_id].editions.push(edition)
-                        channelEmit(channel_id, 'new edition', edition)
+                        channelEmit(channel_id, 'new edition', {'edition' : edition, 'new_roles' : new_chars, 'new_fabled' : new_fabled})
                     }
                 }
             }
@@ -533,14 +675,6 @@ io.on('connection', (socket) => {
         if (channel_id in game_states && socket.id == game_states[channel_id].host_socket_id && Array.isArray(fabled_in_play)) {
             game_states[channel_id].fabled_in_play = fabled_in_play
             channelEmit(channel_id, 'fabled in play update', fabled_in_play)
-        }
-    })
-    
-    // Role update RETIRED FOR NOW
-    socket.on('role update', (channel_id, roles) => {
-        if (false && channel_id in game_states && socket.id == game_states[channel_id].host_socket_id) {
-            game_states[channel_id].roles = roles
-            game_states[channel_id].roles_by_id = {}
         }
     })
     
@@ -752,7 +886,7 @@ io.on('connection', (socket) => {
     
     // Night Action
     socket.on('night action', (channel_id, night_action) => {
-        if (channel_id in game_states && !game_states[channel_id].day_phase && night_action) {
+        if (channel_id in game_states && !game_states[channel_id].day_phase && night_action && night_action.name) {
             if (socket.id == game_states[channel_id].host_socket_id) {
                 let player = getPlayerBySeatID(game_states[channel_id], night_action.seat_id)
                 if (player != null && player.socket_id != null && !(player.seat_id in game_states[channel_id].night_actions)) {

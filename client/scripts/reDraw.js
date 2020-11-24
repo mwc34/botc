@@ -438,10 +438,10 @@ function reDrawTokenMenu() {
             ids.push(f.id)
         }
         if (token_menu_info.valid_teams.includes('fabled') && ids.length > 0) {
-            while (ids.length > 7+7) {
+            while (ids.length > 7+7+7) {
                 ids.pop()
             }
-            for (let i=0; i<2; i++) {
+            for (let i=0; i<3; i++) {
                 let fabled = token_menu.children[5 + i]
                 for (let j=0; j<7; j++) {
                     let f = fabled.children[j]
@@ -476,7 +476,7 @@ function reDrawTokenMenu() {
                         f.style.visibility = 'hidden'
                     }
                 }
-                let row_length = i ? Math.max(0, ids.length - 7) : Math.min(ids.length, 7)
+                let row_length = Math.max(0, Math.min(7, ids.length - 7*i))
                 if (row_length > 0) {
                     fabled.style.visibility = ''
                     fabled.style.top = getTokenMenuSize()/2 + getTokenMenuButtonHeight() + rows * height + 'px'
@@ -491,13 +491,14 @@ function reDrawTokenMenu() {
         else {
             token_menu.children[5].style.visibility = 'hidden'
             token_menu.children[6].style.visibility = 'hidden'
+            token_menu.children[7].style.visibility = 'hidden'
         }
         
         // Extras & Travelers
         teams = ['extra', 'traveler']
         lengths = [1, 7]
         for (let k=0; k < teams.length; k++) {
-            let team = token_menu.children[7 + k]
+            let team = token_menu.children[8 + k]
             let ids = getTeamIDs(game_state.edition, teams[k], token_menu_info.out_of_play)
             if (token_menu_info.valid_teams.includes(teams[k]) && ids.length > 0) {
                 while (ids.length > lengths[k]) {
@@ -557,7 +558,7 @@ function reDrawTokenMenu() {
                 ids.pop()
             }
             for (let i=0; i<2; i++) {
-                let townsfolk = token_menu.children[9 + i]
+                let townsfolk = token_menu.children[10 + i]
                 for (let j=0; j<7; j++) {
                     let town = townsfolk.children[j]
                     if (i * 7 + j < ids.length) {
@@ -604,14 +605,14 @@ function reDrawTokenMenu() {
             }
         }
         else {
-            token_menu.children[9].style.visibility = 'hidden'
             token_menu.children[10].style.visibility = 'hidden'
+            token_menu.children[11].style.visibility = 'hidden'
         }
 
         // Outsiders / Minions / Demons
         teams = ['outsider', 'minion', 'demon']
         for (let k=0; k<3; k++) {
-            let team = token_menu.children[11 + k]
+            let team = token_menu.children[12 + k]
             let ids = getTeamIDs(game_state.edition, teams[k], token_menu_info.out_of_play)
             if (token_menu_info.valid_teams.includes(teams[k]) && ids.length > 0) {
                 while (ids.length > 7) {
@@ -1030,8 +1031,10 @@ function reDrawFabledDemonBluffsHUD() {
     let title_height = y-p
     
     // Fabled
-    let square_size = Math.ceil(Math.sqrt(game_state.fabled_in_play.length/3))
-    let token_size = p/square_size
+    // let square_size = Math.ceil(Math.sqrt(game_state.fabled_in_play.length/3))
+    let row_size = Math.ceil((-3 + Math.sqrt(9 + 12 * game_state.fabled_in_play.length))/6)
+    let column_size = Math.max(row_size*3, Math.ceil(game_state.fabled_in_play.length/row_size))
+    let token_size = Math.min(p/row_size, x/column_size)
     
     for (let i=0; i < fabled_tokens.childElementCount; i++) {
         let e = fabled_tokens.children[i]
@@ -1042,9 +1045,9 @@ function reDrawFabledDemonBluffsHUD() {
 
                 e.children[2].children[1].children[0].textContent = getFabledFromID(game_state.fabled_in_play[i-1]).name
                 
-                e.style.top = title_height + token_size * (Math.floor((i-1) / (3 * square_size))) + 'px'
-                let offset = (((i-1) >= 3 * square_size*(square_size-1)) * (3*square_size**2 - game_state.fabled_in_play.length)) * token_size/2
-                e.style.left = offset + ((i-1) % (3 * square_size)) * token_size + 'px'
+                e.style.top = (p - token_size*row_size)/2 + title_height + token_size * (Math.floor((i-1) / column_size)) + 'px'
+                let offset = (((i-1) >= game_state.fabled_in_play.length-(game_state.fabled_in_play.length % column_size)) * (column_size - (game_state.fabled_in_play.length % column_size))) * token_size/2
+                e.style.left = offset + ((i-1) % column_size) * token_size + 'px'
                 
                 e.style.width = e.style.height = token_size + 'px'
                 

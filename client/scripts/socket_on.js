@@ -348,11 +348,16 @@ socket.on('reference sheet update', (reference_sheet_update) => {
     reDrawHUD()
 })
 
-socket.on('new edition', (edition) => {
-    game_state.editions.push(edition)
+socket.on('new edition', (new_edition_update) => {
+    game_state.editions.push(new_edition_update.edition)
+    game_state.roles = game_state.roles.concat(new_edition_update.new_roles)
+    for (let role of new_edition_update.new_roles) {
+        roles_by_id[role.id] = role
+    }
+    game_state.fabled = game_state.fabled.concat(new_edition_update.new_fabled)
     reDrawEditionMenu()
     if (client_type) {
-        socket.emit('edition update', channel_id, edition.id)
+        socket.emit('edition update', channel_id, new_edition_update.edition.id)
     }
 })
 

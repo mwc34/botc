@@ -221,7 +221,7 @@ function styleTokenMenu() {
         team.style.fontFamily = getFontFamily()
     }
     
-    let max_numbers = [7, 7, 1, 7, 7, 7, 7, 7, 7]
+    let max_numbers = [7, 7, 7, 1, 7, 7, 7, 7, 7, 7]
     for (let k=0; k < max_numbers.length; k++) {
         let team = token_menu.children[5 + k]
         for (let i=0; i < max_numbers[k]; i++) {

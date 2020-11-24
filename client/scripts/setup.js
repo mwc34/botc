@@ -516,7 +516,7 @@ function setupTokenMenu() {
     token_menu.appendChild(finish_button)
     token_menu.appendChild(team_selection)
     
-    let max_numbers = [7, 7, 1, 7, 7, 7, 7, 7, 7] // Might as well allow max numbers. Normal script is 7 7 1 5 7 6 4 4 4 fabled first
+    let max_numbers = [7, 7, 7, 1, 7, 7, 7, 7, 7, 7] // Might as well allow max numbers. Normal script is 7 7 7 1 5 7 6 4 4 4 fabled first
     for (let k=0; k < max_numbers.length; k++) {
     
         // Team
@@ -948,7 +948,7 @@ function setupTokens() {
                         if (night_action_info.group) {
                             socket.emit('group night action update', channel_id, night_action_info.players)
                         }
-                        if (night_action_info.players.length == night_action_info.in_players && !night_action_info.group) {
+                        else if (night_action_info.players.length == night_action_info.in_players) {
                             token_click_type = 0
                             if (night_action_info.in_characters > 0) {
                                 if (!client_type) {
@@ -1696,7 +1696,6 @@ function setupNightActionMenu() {
                         }
                         
                         night_action_menu.style.visibility = 'hidden'
-                        socket.emit('role update', channel_id, game_state.roles)
                         
                         startNightAction(night_action)
                         
@@ -2060,8 +2059,10 @@ function setupEditionMenu() {
                 }
                 characters = {}
                 fabled = []
+                new_chars_added = []
                 for (let i of filecontent) {
                     let c = getCharacterFromID(i.id)
+                    // Character
                     if (c) {
                         if (!(c.team in characters)) {
                             characters[c.team] = []
@@ -2072,10 +2073,65 @@ function setupEditionMenu() {
                         }
                         
                     }
-                    else {
+                    // Fabled
+                    else if (getFabledFromID(i.id)) {
                         c = getFabledFromID(i.id)
                         if (c && !fabled.includes(c.id)) {
                             fabled.push(c.id)
+                        }
+                    }
+                    // New Character!
+                    else {
+                        essential_keys = [
+                            'id',
+                            'name',
+                            'ability',
+                            'team',
+                            'icon',
+                        ]
+                        
+                        extra_keys = [
+                            'setup',
+                            'removes_self',
+                            'firstNight',
+                            'otherNight',
+                            'firstNightReminder',
+                            'otherNightReminder',
+                            'reminders',
+                            'remindersGlobal',
+                            'night_actions',
+                            'night_actions_scoped',
+                        ]
+                        
+                        new_c = {}
+                        for (let key of essential_keys.concat(extra_keys)) {
+                            if (key in i) {
+                                new_c[key] = i[key]
+                            }
+                            else if (essential_keys.includes(key)) {
+                                alert_box_info.push({
+                                    'text' : `A new character didn't have the essential key ${key}`
+                                })
+                                alert_box.check()
+                                return
+                            }
+                        }
+                        
+                        if (new_c.team == 'fabled') {
+                            if (!new_chars_added.includes(new_c.id)) {
+                                fabled.push(new_c)
+                                new_chars_added.push(new_c.id)
+                            }
+                        }
+                        else if (Object.keys(max_counts).includes(new_c.team)) {
+                            if (!(new_c.team in characters)) {
+                                characters[new_c.team] = []
+                            }
+                            if (!(characters[new_c.team].includes(new_c.id)) && !new_chars_added.includes(new_c.id)) {
+                                characters[new_c.team].push(new_c)
+                                max_counts[new_c.team]--
+                                new_chars_added.push(new_c.id)
+                            }
                         }
                     }
                 }
