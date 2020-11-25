@@ -1462,7 +1462,7 @@ function setupRevealGrimoire() {
                 'type' : 'confirm',
                 'func' : (res) => {
                     if (res) {
-                        socket.emit('reveal grimoire', channel_id, game_state)
+                        socket.emit('reveal grimoire', channel_id, {'player_info' : game_state.player_info, 'demon_bluffs' : game_state.demon_bluffs})
                         appendLog(getLogDefaultStyle('You have revealed the grimoire'))
                     }
                 }
