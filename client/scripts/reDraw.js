@@ -1040,7 +1040,7 @@ function reDrawFabledDemonBluffsHUD() {
     for (let i=0; i < fabled_tokens.childElementCount; i++) {
         let e = fabled_tokens.children[i]
         if (i > 0) {
-            if (i <= game_state.fabled_in_play.length && fabled_demon_bluffs_HUD_focus == 'fabled') {
+            if (i <= game_state.fabled_in_play.length && fabled_demon_bluffs_HUD_focus == 'fabled' && game_state.fabled_in_play[i-1]) {
                 let t = getIconPath(game_state.fabled_in_play[i-1])
                 e.children[1].src = t
 

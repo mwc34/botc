@@ -813,7 +813,14 @@ io.on('connection', (socket) => {
     // Fabled update
     socket.on('fabled in play update', (channel_id, fabled_in_play) => {
         if (channel_id in game_states && socket.id == game_states[channel_id].host_socket_id && Array.isArray(fabled_in_play)) {
-            game_states[channel_id].fabled_in_play = fabled_in_play.slice(0, game_states[channel_id].fabled.length).map((e) => {return String(e).slice(0, 20)})
+            game_states[channel_id].fabled_in_play = fabled_in_play.slice(0, game_states[channel_id].fabled.length).filter((e) => {
+                for (let i of game_states[channel_id].fabled) {
+                    if (i.id == e) {
+                        return true
+                    }
+                }
+                return false
+            })
             channelEmit(channel_id, 'fabled in play update', game_states[channel_id].fabled_in_play)
         }
     })
@@ -872,7 +879,9 @@ io.on('connection', (socket) => {
     // Demon Bluff Update
     socket.on('demon bluff update', (channel_id, demon_bluffs) => {
         if (channel_id in game_states && game_states[channel_id].host_socket_id == socket.id && Array.isArray(demon_bluffs)) {
-            game_states[channel_id].demon_bluffs = demon_bluffs.slice(0, 3).map((e) => {return String(e).slice(0, 20)})
+            game_states[channel_id].demon_bluffs = demon_bluffs.slice(0, 3).filter((e) => {
+                return getCharacterFromID(game_states[channel_id], e)
+            })
         }
     })
     
