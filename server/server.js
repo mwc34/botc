@@ -1320,7 +1320,6 @@ io.on('connection', (socket) => {
                 endGame(channel_id)
             }, hostless_timeout)
             socket.disconnect()
-            printInfo()
         }
     })
     
