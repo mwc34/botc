@@ -376,7 +376,10 @@ socket.on('open nominations update', (state) => {
 socket.on('reveal grimoire', (grimoire) => {
     alert_box_info.push({
             'text' : 'Reveal Grimoire',
-            'func' : () => {revealGrimoire(grimoire)}
+            'func' : () => {
+                appendLog(getLogDefaultStyle('The grimoire has been revealed'))
+                revealGrimoire(grimoire)
+            }
     })
     alert_box.check()
     

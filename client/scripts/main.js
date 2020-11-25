@@ -148,7 +148,7 @@ var night_action_info = {
                 'characters' : Number(night_action_info.to_send_in_characters),
                 'player_restrictions' : night_action_info.player_restrictions,
                 'character_restrictions' : night_action_info.character_restrictions,
-                'grimoire' : night_action_info.grimoire ? game_state : null,
+                'grimoire' : night_action_info.grimoire ? {'player_info' : game_state.player_info, 'demon_bluffs' : game_state.demon_bluffs} : null,
                 'group' : Boolean(night_action_info.group),
                 'time' : night_action_info.base_time, 
                 'seat_id' : night_action_info.seat_id,

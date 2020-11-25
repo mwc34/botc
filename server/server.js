@@ -491,6 +491,7 @@ io.on('connection', (socket) => {
     socket.on('add update', (channel_id, names) => {
         if (channel_id in game_states && socket.id == game_states[channel_id].host_socket_id && !game_states[channel_id].clock_info.active) {
             for (let name of names) {
+                name = String(name).slice(0, 20)
                 if (game_states[channel_id].player_info.length < max_players) {
                     let state = game_states[channel_id]
                     let player = copy(base_player_info)
@@ -499,7 +500,7 @@ io.on('connection', (socket) => {
                     if (name) {
                         // Name available
                         if (getPlayerByName(game_states[channel_id], name) == null) {
-                            player.name = String(name)
+                            player.name = name
                         }
                     }
                     state.next_seat_id++
@@ -516,8 +517,9 @@ io.on('connection', (socket) => {
             let player = getPlayerBySeatID(game_states[channel_id], name_update.seat_id)
             if (player != null) {
                 // Name available
-                if (getPlayerByName(game_states[channel_id], name_update.name) == null) {
-                    player.name = String(name_update.name)
+                name = String(name_update.name).slice(0, 20)
+                if (getPlayerByName(game_states[channel_id], name) == null) {
+                    player.name = name
                     channelEmit(channel_id, 'name update', {'seat_id' : player.seat_id, 'name' : player.name})
                 }
             }
@@ -811,8 +813,8 @@ io.on('connection', (socket) => {
     // Fabled update
     socket.on('fabled in play update', (channel_id, fabled_in_play) => {
         if (channel_id in game_states && socket.id == game_states[channel_id].host_socket_id && Array.isArray(fabled_in_play)) {
-            game_states[channel_id].fabled_in_play = fabled_in_play
-            channelEmit(channel_id, 'fabled in play update', fabled_in_play)
+            game_states[channel_id].fabled_in_play = fabled_in_play.slice(0, game_states[channel_id].fabled.length).map((e) => {return String(e).slice(0, 20)})
+            channelEmit(channel_id, 'fabled in play update', game_states[channel_id].fabled_in_play)
         }
     })
     
@@ -837,7 +839,7 @@ io.on('connection', (socket) => {
             for (let player of new_player_info) {
 
                 if (player.seat_id in seat_update) {
-                    player.seat = seat_update[player.seat_id]
+                    player.seat = parseInt(seat_update[player.seat_id])
                     to_return[player.seat_id] = player.seat
                 }
 
@@ -859,8 +861,8 @@ io.on('connection', (socket) => {
             let player = getPlayerBySeatID(game_states[channel_id], reminder_update.seat_id)
             if (player != null && reminder_update.reminders && Array.isArray(reminder_update.reminders)) {
                 let new_reminders = []
-                for (let r of reminder_update.reminders) {
-                    new_reminders.push({'icon' : r.icon, 'text' : r.text})
+                for (let r of reminder_update.reminders.slice(0, 10)) {
+                    new_reminders.push({'icon' : String(r.icon).slice(0, 20), 'text' : String(r.text).slice(0, 20)})
                 }
                 player.reminders = new_reminders
             }
@@ -870,7 +872,7 @@ io.on('connection', (socket) => {
     // Demon Bluff Update
     socket.on('demon bluff update', (channel_id, demon_bluffs) => {
         if (channel_id in game_states && game_states[channel_id].host_socket_id == socket.id && Array.isArray(demon_bluffs)) {
-            game_states[channel_id].demon_bluffs = demon_bluffs
+            game_states[channel_id].demon_bluffs = demon_bluffs.slice(0, 3).map((e) => {return String(e).slice(0, 20)})
         }
     })
     
@@ -1009,6 +1011,7 @@ io.on('connection', (socket) => {
     socket.on('phase update', (channel_id, day_phase, phase_counter) => {
         if (channel_id in game_states && socket.id == game_states[channel_id].host_socket_id && !game_states[channel_id].clock_info.active && Object.getOwnPropertyNames(game_states[channel_id].night_actions).length == 0 && Number.isInteger(phase_counter)) {
             let state = game_states[channel_id]
+            phase_counter = parseInt(phase_counter)
             if (state.day_phase != Boolean(day_phase) && Math.abs(state.phase_counter - phase_counter) <= 1 && phase_counter >= 0 && (phase_counter > 0 || !day_phase)) {
                 state.day_phase = Boolean(day_phase)
                 state.phase_counter = phase_counter
@@ -1026,6 +1029,7 @@ io.on('connection', (socket) => {
     // Night Action
     socket.on('night action', (channel_id, night_action) => {
         if (channel_id in game_states && !game_states[channel_id].day_phase && night_action && night_action.name) {
+            night_action.name = String(night_action.name).slice(0, 40)
             if (socket.id == game_states[channel_id].host_socket_id) {
                 let player = getPlayerBySeatID(game_states[channel_id], night_action.seat_id)
                 if (player != null && player.socket_id != null && !(player.seat_id in game_states[channel_id].night_actions)) {
@@ -1123,7 +1127,7 @@ io.on('connection', (socket) => {
             if (player.seat_id in game_states[channel_id].night_actions) {
                 let data = game_states[channel_id].group_night_action.data
                 if (player.seat_id in data) {
-                    data[player.seat_id].players = players
+                    data[player.seat_id].players = players.slice(0, max_players).map((e) => {return parseInt(e)})
                     for (let seat_id in data) {
                         io.to(getPlayerBySeatID(game_states[channel_id], seat_id).socket_id).emit('group night action update', game_states[channel_id].group_night_action)
                     }
