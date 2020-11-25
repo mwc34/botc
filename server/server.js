@@ -423,6 +423,8 @@ io.on('connection', (socket) => {
                 game_states[channel_id].spectators.splice(game_states[channel_id].spectators.indexOf(socket.id), 1)
             }
             
+            socket.channel_id = channel_id
+            
             socket.emit('new host', censorState(game_states[channel_id], socket.id))
             channelEmit(channel_id, 'host update', true)
             printInfo()
@@ -451,6 +453,7 @@ io.on('connection', (socket) => {
         }
         else {
             // Send game info
+            socket.channel_id = channel_id
             socket.emit('new player', censorState(game_states[channel_id], socket.id))
             if (!game_states[channel_id].spectators.includes(socket.id)) {
                 game_states[channel_id].spectators.push(socket.id)
@@ -1331,8 +1334,8 @@ io.on('connection', (socket) => {
     
     // Disconnect
     socket.on('disconnect', () => {
-        for (let channel_id in game_states) {
-            let found_channel = false
+        if (socket.channel_id && socket.channel_id in game_states) {
+            channel_id = socket.channel_id
             if (game_states[channel_id].host_socket_id == socket.id) {
                 game_states[channel_id].host_socket_id = null
                 channelEmit(channel_id, 'host update', false)
@@ -1349,9 +1352,6 @@ io.on('connection', (socket) => {
             }
             if (game_states[channel_id].spectators.includes(socket.id)) {
                 game_states[channel_id].spectators.splice(game_states[channel_id].spectators.indexOf(socket.id), 1)
-            }
-            if (found_channel) {
-                break
             }
         }
         if (ip in ip_connections) {
