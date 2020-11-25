@@ -218,7 +218,7 @@ function printInfo() {
         players += game_states[key].player_info.reduce((a, b) => {return a + Boolean(b.socket_id)}, 0)
         spectators += game_states[key].spectators.length
     }
-    console.log(`Currently, ${games} game${games != 1 ? 's' : ''} ${games != 1 ? 'are' : 'is'} running with ${hosts} host${hosts != 1 ? 's' : ''}, ${players} player${players != 1 ? 's' : ''}, ${spectators} spectator${spectators != 1 ? 's' : ''} giving ${total_clients} connections in total.`)
+    console.log(`Currently, ${games} game${games != 1 ? 's' : ''} ${games != 1 ? 'are' : 'is'} running with ${hosts} host${hosts != 1 ? 's' : ''}, ${players} player${players != 1 ? 's' : ''}, ${spectators} spectator${spectators != 1 ? 's' : ''} giving ${total_clients} connection${total_clients != 1 ? 's' : ''} in total.`)
 }
 
 function endGame(channel_id) {
