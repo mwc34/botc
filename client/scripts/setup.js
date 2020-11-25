@@ -1159,7 +1159,14 @@ function setupGameMenu() {
             'func' : (res) => {
                 channel_id = res
                 if (channel_id) {
-                    socket.emit('new host', channel_id)
+                    if (socket.disconnected) {
+                        sessionStorage.channel_id = res
+                        sessionStorage.client_type = 1
+                        socket.open()
+                    }
+                    else {
+                        socket.emit('new host', channel_id)
+                    }
                 }
             }
         })
@@ -1174,7 +1181,14 @@ function setupGameMenu() {
             'func' : (res) => {
                 channel_id = res
                 if (channel_id) {
-                    socket.emit('new player', channel_id)
+                    if (socket.disconnected) {
+                        sessionStorage.channel_id = res
+                        sessionStorage.client_type = 0
+                        socket.open()
+                    }
+                    else {
+                        socket.emit('new player', channel_id)
+                    }
                 }
             }
         })

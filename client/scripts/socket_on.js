@@ -1,3 +1,10 @@
+socket.on('server message', (msg) => {
+    alert_box_info.push({
+        'text' : msg
+    })
+    alert_box.check()
+})
+
 socket.on('new host', (msg, reason) => {
     // Host rejected
     if (!msg) {
@@ -533,17 +540,15 @@ socket.on('host update', (host_update) => {
 })
 
 socket.on('finish', (finish_msg) => {
-    alert_box_info.push({'text' : finish_msg, 'func' : () => {
-        reDrawHUD()
-        reDrawFabledDemonBluffsHUD()
-        game_menu.style.visibility = ''
-        game.style.visibility = 'hidden'
-        non_square.style.visibility = 'hidden'
-        clearLog()
-        wipeSessionStorage()
-    }})
+    alert_box_info.push({'text' : finish_msg})
     alert_box.check()
-    
+    reDrawHUD()
+    reDrawFabledDemonBluffsHUD()
+    game_menu.style.visibility = ''
+    game.style.visibility = 'hidden'
+    non_square.style.visibility = 'hidden'
+    clearLog()
+    wipeSessionStorage()
 })
 
 socket.on('connect', () => {
@@ -570,21 +575,22 @@ socket.on('connect', () => {
             socket.emit('new player', channel_id)
         }
     }
-    
-    if (sessionStorage.log) {
-        setLog(sessionStorage.log)
+    else {
+        socket.disconnect()
     }
-    
 })
 
 socket.on('disconnect', () => {
+    if (game_menu.style.visibility == 'hidden') {
+        alert_box_info.push({
+            'text' : 'You have lost connection with the server'
+        })
+        alert_box.check()
+    }
     game_menu.style.visibility = ''
     game.style.visibility = 'hidden'
     non_square.style.visibility = 'hidden'
-    alert_box_info.push({
-        'text' : 'You have lost connection with the server'
-    })
-    alert_box.check()
+    
 })
 
 
