@@ -4,6 +4,7 @@ const server = require('http').createServer(app)
 const io = require('socket.io')(server, {
     pingInterval: 20000,
     pingTimeout: 10000,
+    maxHttpBufferSize: 50000,
 })
 
 const fs = require("fs")
