@@ -46,33 +46,33 @@ for (let page of getAllFiles('/home/societies/evabs/public_html/')) {
     })
 }
 
-app.get('/Reference%20Sheet', (req, res) => {
-    let channel_id = req.query.channel_id
-    let edition_id = req.query.edition_id
-    if (channel_id in game_states && edition_id) {
-        let edition = null
-        for (let e of game_states[channel_id].editions) {
-            if (e.id == edition_id) {
-                edition = e
-                break
-            }
-        }
-        if (edition && edition.reference_sheet) {
-            // Custom
-            if (edition.id in game_states[channel_id].edition_reference_sheets) {
-                let pdfData = game_states[channel_id].edition_reference_sheets[edition.id]
-                res.writeHead(200, {
-                'Content-Length': Buffer.byteLength(pdfData),
-                'Content-Type': 'application/pdf',})
-                //'Content-disposition': 'inline;filename=test.pdf',})
-                .end(pdfData);
-            }
-            else {
-                res.sendFile(`/home/societies/evabs/public_html/reference_sheets/${edition.id}.pdf`)
-            }
-        }
-    }
-})
+// app.get('/Reference%20Sheet', (req, res) => {
+    // let channel_id = req.query.channel_id
+    // let edition_id = req.query.edition_id
+    // if (channel_id in game_states && edition_id) {
+        // let edition = null
+        // for (let e of game_states[channel_id].editions) {
+            // if (e.id == edition_id) {
+                // edition = e
+                // break
+            // }
+        // }
+        // if (edition && edition.reference_sheet) {
+            // // Custom
+            // if (edition.id in game_states[channel_id].edition_reference_sheets) {
+                // let pdfData = game_states[channel_id].edition_reference_sheets[edition.id]
+                // res.writeHead(200, {
+                // 'Content-Length': Buffer.byteLength(pdfData),
+                // 'Content-Type': 'application/pdf',})
+                // //'Content-disposition': 'inline;filename=test.pdf',})
+                // .end(pdfData);
+            // }
+            // else {
+                // res.sendFile(`/home/societies/evabs/public_html/reference_sheets/${edition.id}.pdf`)
+            // }
+        // }
+    // }
+// })
 
 // Useful functions
 
@@ -143,7 +143,6 @@ function censorState(state, socket_id) {
     delete state.game_timeout
     delete state.roles_by_id
     delete state.ip
-    delete state.edition_reference_sheets
     state.group_night_action = {'name' : null, 'data' : {}}
     state.roles = roles.concat(state.roles)
     
@@ -305,7 +304,6 @@ const base_state = {
     'spectators' : [],
     'night_actions' : {},
     'roles_by_id' : {},
-    'edition_reference_sheets' : {},
     'group_night_action' : {
         'name' : null,
         'data' : {}, // seat_id : {'players' : []}
@@ -610,9 +608,8 @@ io.on('connection', (socket) => {
                 }
             }
             if (edition && !edition.reference_sheet) {
-                edition.reference_sheet = Boolean(reference_sheet)
+                edition.reference_sheet = String(reference_sheet).slice(0, 1000)
                 if (edition.reference_sheet) {
-                    game_states[channel_id].edition_reference_sheets[edition.id] = reference_sheet
                     channelEmit(channel_id, 'reference sheet update', {'id' : edition.id, 'reference_sheet' : edition.reference_sheet})
                 }
             }
@@ -1212,7 +1209,6 @@ io.on('connection', (socket) => {
             let copy_attributes = [
                 'host_socket_id',
                 'spectators',
-                'edition_reference_sheets',
                 'roles',
                 'fabled',
                 'edition',

@@ -1346,33 +1346,67 @@ function setupOpenReferenceSheet() {
     open_reference_sheet.onclick = () => {
         // Load
         if (client_type && !getEditionFromID(game_state.edition).reference_sheet && !getMenuOpen()) {
-            let input = document.createElement('input')
-            input.type = 'file'
-            input.accept=".pdf"
+            alert_box_info.push({
+                'text' : 'Enter the URL of the reference sheet',
+                'type' : 'prompt',
+                'func' : (res) => {
+                    socket.emit('reference sheet update', channel_id, game_state.edition, res)
+                }
+            })
+            alert_box.check()
             
-            input.onchange = (event) => {
-                if(!window.FileReader) return; // Browser is not compatible
+            // let input = document.createElement('input')
+            // input.type = 'file'
+            // input.accept=".pdf"
+            
+            // input.onchange = (event) => {
+                // if(!window.FileReader) return; // Browser is not compatible
 
-                var reader = new FileReader();
+                // var reader = new FileReader();
 
-                reader.onload = (evt) => {
-                    if(evt.target.readyState != 2) return;
-                    if(evt.target.error) {
-                        alert('Error while reading file');
-                        return;
-                    }
+                // reader.onload = (evt) => {
+                    // if(evt.target.readyState != 2) return;
+                    // if(evt.target.error) {
+                        // alert('Error while reading file');
+                        // return;
+                    // }
 
-                    let filecontent = evt.target.result;
-                    
-                    socket.emit('reference sheet update', channel_id, game_state.edition, filecontent)
-                };
+                    // let filecontent = evt.target.result;
+                    // console.log(typeof filecontent)
+                    // console.log(filecontent.length)
+                    // console.log(filecontent)
+                    // socket.emit('reference sheet update', channel_id, game_state.edition, filecontent)
+                // };
 
-                reader.readAsArrayBuffer(event.target.files[0]);
-            };
-            input.click()
+                // reader.readAsArrayBuffer(event.target.files[0]);
+            // };
+            // input.click()
         }
         else {
-            window.open(`Reference Sheet?channel_id=${channel_id}&edition_id=${game_state.edition}`)
+            // window.open(`Reference Sheet?channel_id=${channel_id}&edition_id=${game_state.edition}`)
+            let url = getEditionFromID(game_state.edition).reference_sheet
+            if (!url) {
+                alert_box_info.push({
+                    'text' : 'The host has not linked a reference sheet yet'
+                })
+                alert_box.check()
+                return
+            }
+            if (url.includes(website_url)) {
+                window.open(url)
+            }
+            else {
+                alert_box_info.push({
+                    'text' : `The reference sheet link is hosted on a foreign site:<br>${url}<br>Are you sure you wish to open it?`,
+                    'type' : 'confirm',
+                    'func' : (res) => {
+                        if (res) {
+                            window.open(url)
+                        }
+                    }
+                })
+                alert_box.check()
+            }
         }
     }
 }

@@ -887,7 +887,7 @@ function reDrawHUD() {
     current_edition.innerHTML = 'Edition: ' + (t ? t.name : '')
     
     if (client_type && !getEditionFromID(game_state.edition).reference_sheet) {
-        open_reference_sheet.innerHTML = 'Load Reference Sheet'
+        open_reference_sheet.innerHTML = 'Link Reference Sheet'
     }
     else {
         open_reference_sheet.innerHTML = 'Open Reference Sheet'
