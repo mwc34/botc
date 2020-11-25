@@ -2149,7 +2149,7 @@ function setupEditionMenu() {
                         }
                         
                         if (new_c.team == 'fabled') {
-                            if (!new_chars_added.includes(new_c.id)) {
+                            if (!new_chars_added.includes(new_c.id) && !getFabledFromID(new_c.id)) {
                                 fabled.push(new_c)
                                 new_chars_added.push(new_c.id)
                                 new_fabled_added_count++
@@ -2159,7 +2159,7 @@ function setupEditionMenu() {
                             if (!(new_c.team in characters)) {
                                 characters[new_c.team] = []
                             }
-                            if (!(characters[new_c.team].includes(new_c.id)) && !new_chars_added.includes(new_c.id)) {
+                            if (!(characters[new_c.team].includes(new_c.id)) && !new_chars_added.includes(new_c.id) && !getCharacterFromID(new_c.id)) {
                                 characters[new_c.team].push(new_c)
                                 max_counts[new_c.team]--
                                 new_chars_added.push(new_c.id)

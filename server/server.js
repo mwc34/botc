@@ -754,6 +754,7 @@ io.on('connection', (socket) => {
                                     }
                                     
                                     if (getCharacterFromID(game_states[channel_id], new_c.id)) {
+                                        socket.emit('server message', `The character with id ${new_c.id} already exists`) 
                                         return
                                     }
                                     
@@ -825,6 +826,7 @@ io.on('connection', (socket) => {
                             }
                             
                             if (ids.includes(new_f.id)) {
+                                socket.emit('server message', `The fabled with id ${new_f.id} already exists`) 
                                 return
                             }
                             
