@@ -2090,6 +2090,7 @@ function setupEditionMenu() {
                 characters = {}
                 fabled = []
                 new_chars_added = []
+                new_fabled_added_count = 0
                 for (let i of filecontent) {
                     let c = getCharacterFromID(i.id)
                     // Character
@@ -2151,6 +2152,7 @@ function setupEditionMenu() {
                             if (!new_chars_added.includes(new_c.id)) {
                                 fabled.push(new_c)
                                 new_chars_added.push(new_c.id)
+                                new_fabled_added_count++
                             }
                         }
                         else if (Object.keys(max_counts).includes(new_c.team)) {
@@ -2172,6 +2174,10 @@ function setupEditionMenu() {
                 }
                 else if (Math.min(... Object.values(max_counts)) < 0) {
                     alert_box_info.push({'text' : 'Your file has too many characters of one type'})
+                    alert_box.check()
+                }
+                else if (new_fabled_added_count > max_new_fabled_per_edition) {
+                    alert_box_info.push({'text' : `Your file has too many new fabled (max ${max_new_fabled_per_edition})`})
                     alert_box.check()
                 }
                 else {

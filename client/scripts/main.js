@@ -57,6 +57,7 @@ const nomination_status = document.getElementById('nominationStatus')
 const change_nomination_status = document.getElementById('changeNominationStatus')
 const urlParams = new URLSearchParams(window.location.search);
 const max_players = 20
+const max_new_fabled_per_edition = 5
 const max_reminders = 5
 const deselected_opacity = 0.5
 const roles_by_id = {}

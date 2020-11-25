@@ -257,6 +257,10 @@ function endGame(channel_id) {
     printInfo()
 }
 
+const max_new_editions = 5
+
+const max_new_fabled_per_edition = 5
+
 const max_players = 20
 
 const max_spectators = 20
@@ -618,6 +622,11 @@ io.on('connection', (socket) => {
     // New Edition update
     socket.on('new edition', (channel_id, edition) => {
         if (channel_id in game_states && socket.id == game_states[channel_id].host_socket_id && edition) {
+            if (game_states[channel_id].editions.length == editions.length + max_new_editions) {
+                socket.emit('server message', 'You have already added the maximum amount of new editions to this game. <br> Please restart the session to add another custom edition')
+                return
+            }
+            
             edition = {
                 'id' : edition.id, 
                 'name' : edition.name, 
@@ -626,7 +635,14 @@ io.on('connection', (socket) => {
                 'icon' : edition.icon, 
                 'reference_sheet' : false
             }
-            let valid = edition.id && edition.name && edition.characters && edition.characters.constructor == Object && edition.icon && Array.isArray(edition.fabled)
+            let valid = (edition.id 
+                      && edition.name 
+                      && edition.characters 
+                      && edition.characters.constructor == Object 
+                      && edition.icon 
+                      && Array.isArray(edition.fabled)
+            )
+            
             if (valid) {
                 // Check unique
                 for (let e of game_states[channel_id].editions) {
@@ -663,11 +679,11 @@ io.on('connection', (socket) => {
                                     }
                                     
                                     essential_keys = {
-                                        'id' : String,
-                                        'name' : String,
-                                        'ability' : String,
-                                        'team' : String,
-                                        'icon' : String,
+                                        'id' : (e) => {return String(e).slice(0, 20)},
+                                        'name' : (e) => {return String(e).slice(0, 20)},
+                                        'ability' : (e) => {return String(e).slice(0, 200)},
+                                        'team' : (e) => {return String(e).slice(0, 20)},
+                                        'icon' : (e) => {return String(e).slice(0, 1000)},
                                     }
                                     
                                     extra_keys = {
@@ -675,12 +691,40 @@ io.on('connection', (socket) => {
                                         'removes_self' : Boolean,
                                         'firstNight' : parseInt,
                                         'otherNight' : parseInt,
-                                        'firstNightReminder' : String,
-                                        'otherNightReminder' : String,
-                                        'reminders' : (e) => {return Array.isArray(e) ? e : []},
-                                        'remindersGlobal' : (e) => {return Array.isArray(e) ? e : []},
-                                        'night_actions' : (e) => {return Array.isArray(e) ? e : []},
-                                        'night_actions_scoped' : (e) => {return Array.isArray(e) ? e : []},
+                                        'firstNightReminder' : (e) => {return String(e).slice(0, 1000)},
+                                        'otherNightReminder' : (e) => {return String(e).slice(0, 1000)},
+                                        'reminders' : (e) => {return Array.isArray(e) ? e.slice(0, 20).map((x) => {return x.slice(0, 50)}) : []},
+                                        'remindersGlobal' : (e) => {return Array.isArray(e) ? e.slice(0, 20).map((x) => {return x.slice(0, 50)}) : []},
+                                        'night_actions' : (e) => {return Array.isArray(e) ? e.slice(0, 20).map((x) => {
+                                            for (let key of x) {
+                                                if (String(key).length > 50) {
+                                                    delete x[key]
+                                                }
+                                                else {
+                                                    if (Array.isArray(x[key])) {
+                                                        x[key] = x[key].slice(0, 10).map((y) => {return String(y).slice(0, 20)})
+                                                    }
+                                                    else {
+                                                        x[key] = String(x[key]).slice(0, 50)
+                                                    }
+                                                }
+                                            }
+                                        }) : []},
+                                        'night_actions_scoped' : (e) => {return Array.isArray(e) ? e.slice(0, 20).map((x) => {
+                                            for (let key of x) {
+                                                if (String(key).length > 50) {
+                                                    delete x[key]
+                                                }
+                                                else {
+                                                    if (Array.isArray(x[key])) {
+                                                        x[key] = x[key].slice(0, 10).map((y) => {return String(y).slice(0, 20)})
+                                                    }
+                                                    else {
+                                                        x[key] = String(x[key]).slice(0, 50)
+                                                    }
+                                                }
+                                            }
+                                        }) : []},
                                     }
                                     
                                     blank_keys = {
@@ -748,15 +792,15 @@ io.on('connection', (socket) => {
                                 return
                             }
                             essential_keys = {
-                                'id' : String,
-                                'name' : String,
-                                'ability' : String,
-                                'team' : String,
-                                'icon' : String,
+                                'id' : (e) => {return String(e).slice(0, 20)},
+                                'name' : (e) => {return String(e).slice(0, 20)},
+                                'ability' : (e) => {return String(e).slice(0, 200)},
+                                'team' : (e) => {return String(e).slice(0, 20)},
+                                'icon' : (e) => {return String(e).slice(0, 1000)},
                             }
                             
                             extra_keys = {
-                                'reminders' : (e) => {Array.isArray(e) ? e : []},
+                                'reminders' : (e) => {return Array.isArray(e) ? e.slice(0, 20).map((x) => {return x.slice(0, 50)}) : []},
                             }
                             
                             blank_keys = {
@@ -797,6 +841,10 @@ io.on('connection', (socket) => {
                             f = new_f     
                         }
                         fabled_checked.push(f)
+                    }
+                    
+                    if (new_fabled.length > max_new_fabled_per_edition) {
+                        return
                     }
 
                     if (valid) {
