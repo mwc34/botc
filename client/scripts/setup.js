@@ -1392,9 +1392,7 @@ function setupAddPlayer() {
                     'multi_line' : true,
                     'func' : (res) => {
                         if (res) {
-                            for (let name of res.split('\n')) {
-                                socket.emit('add update', channel_id, name)
-                            }
+                            socket.emit('add update', channel_id, res.split('\n'))
                         }
                         reDrawHUD()
                     }
@@ -1485,8 +1483,11 @@ function setupSyncCharacters() {
             let to_send = []
             for (let player of game_state.player_info) {
                 if (!player.synced) {
-                    socket.emit('character update', channel_id, {'seat_id' : player.seat_id, 'character' : player.character})
+                    to_send.push({'seat_id' : player.seat_id, 'character' : player.character})
                 }
+            }
+            if (to_send.length > 0) {
+                socket.emit('character update', channel_id, to_send)
             }
         }
     }
