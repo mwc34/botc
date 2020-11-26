@@ -275,6 +275,8 @@ const max_new_editions = 5
 
 const max_new_fabled_per_edition = 5
 
+const max_reminders = 5
+
 const max_players = 20
 
 const max_spectators = 20
@@ -330,6 +332,7 @@ const base_state = {
         'data' : {}, // seat_id : {'players' : []}
     },
     'next_seat_id' : 0,
+    'log_status' : 0, // 0 full, 1 last night, 2 only clock, 3 none
     'edition' : 'tb',
     'editions' : copy(editions),
     'roles' : [],
@@ -728,8 +731,8 @@ io.on('connection', (socket) => {
                         extra_keys = {
                             'setup' : Boolean,
                             'removes_self' : Boolean,
-                            'firstNight' : parseInt,
-                            'otherNight' : parseInt,
+                            'firstNight' : (e) => {return Number.isInteger(e) && e >= 0 ? parseInt(e) : 0},
+                            'otherNight' : (e) => {return Number.isInteger(e) && e >= 0 ? parseInt(e) : 0},
                             'firstNightReminder' : (e) => {return String(e).slice(0, 1000)},
                             'otherNightReminder' : (e) => {return String(e).slice(0, 1000)},
                             'reminders' : (e) => {return Array.isArray(e) ? e.slice(0, 20).map((x) => {return String(x).slice(0, 50)}) : []},
@@ -962,7 +965,7 @@ io.on('connection', (socket) => {
             let player = getPlayerBySeatID(game_states[channel_id], reminder_update.seat_id)
             if (player != null && reminder_update.reminders && Array.isArray(reminder_update.reminders)) {
                 let new_reminders = []
-                for (let r of reminder_update.reminders.slice(0, 10)) {
+                for (let r of reminder_update.reminders.slice(0, max_reminders)) {
                     new_reminders.push({'icon' : String(r.icon).slice(0, 20), 'text' : String(r.text).slice(0, 20)})
                 }
                 player.reminders = new_reminders
@@ -1184,6 +1187,9 @@ io.on('connection', (socket) => {
                             socket.emit('demon bluff update', game_states[channel_id].demon_bluffs)
                         }
                         
+                        // Night Actions Processed
+                        socket.emit('night action received', night_action.seat_id)
+                        
                         
                         if (night_action.group) {
                             if (!game_states[channel_id].group_night_action.name) {
@@ -1247,6 +1253,17 @@ io.on('connection', (socket) => {
                         io.to(game_states[channel_id].host_socket_id).emit('group night action update', game_states[channel_id].group_night_action)
                     }
                 }
+            }
+        }
+    })
+    
+    // Change Log status
+    socket.on('log status update', (channel_id, status) => {
+        if (!rateLimit(socket)) {return}
+        if (channel_id in game_states && socket.id == game_states[channel_id].host_socket_id) {
+            if (Number.isInteger(status) && status >= 0 && status <= 2 && status != game_states[channel_id].log_status) {
+                game_states[channel_id].log_status = parseInt(status)
+                channelEmit(channel_id, 'log status update', game_states[channel_id].log_status)
             }
         }
     })

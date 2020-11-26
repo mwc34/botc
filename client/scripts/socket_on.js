@@ -275,13 +275,15 @@ socket.on('finish vote update', () => {
     }
     
     let clock_info = game_state.clock_info
-    appendLog(getLogNominationStyle(
-        getLogPlayerStyle(getPlayerBySeatID(clock_info.nominator).name) 
-        + (clock_info.free ? " free" : "") 
-        + " nominated " 
-        + getLogPlayerStyle(getPlayerBySeatID(clock_info.nominatee).name)  
-        + " and got " + votes + " vote" + (votes == 1 ? '' : "s")
-        + (votes ? " from " + vote_names : ".")))
+    if (client_type || game_state.log_status < 2) {
+        appendLog(getLogNominationStyle(
+            getLogPlayerStyle(getPlayerBySeatID(clock_info.nominator).name) 
+            + (clock_info.free ? " free" : "") 
+            + " nominated " 
+            + getLogPlayerStyle(getPlayerBySeatID(clock_info.nominatee).name)  
+            + " and got " + votes + " vote" + (votes == 1 ? '' : "s")
+            + (votes ? " from " + vote_names : ".")))
+    }
         
         
     for (let player of game_state.player_info) {
@@ -385,6 +387,18 @@ socket.on('reveal grimoire', (grimoire) => {
     
 })
 
+socket.on('log status update', (status) => {
+    game_state.log_status = status
+    reDrawHUD()
+})
+
+socket.on('night action received', (seat_id) => {
+    if (client_type) {
+        getPlayerBySeatID(seat_id).night_action = true
+        reDrawNightActionPendings()
+    }
+})
+
 socket.on('demon bluff update', (demon_bluffs) => {
     game_state.demon_bluffs = demon_bluffs
     setSSDemonBluffs(game_state.demon_bluffs)
@@ -420,11 +434,12 @@ socket.on('night action', (night_action) => {
     else {
         new Notification(`BotC: ${channel_id}`, { "body": `Night Action: ${night_action.name}`});
         let timer = (new Date()).getTime()
+        let delay_response = night_action.players || night_action.characters || night_action.confirm
         let msg = getLogNightActionStyle('Received Night Action from ' + getLogPlayerStyle('The Host') + ':<br>' + nightAlert(night_action))
         alert_box_info.push({'text' : msg, 'func' : () => {
             
             // Only log if had info
-            if (night_action.info.players.length > 0 || night_action.info.characters.length > 0 || night_action.info.info.length > 0) {
+            if (game_state.log_status == 0 && (night_action.info.players.length > 0 || night_action.info.characters.length > 0 || night_action.info.info.length > 0)) {
                 appendLog(msg)
             }
             
@@ -446,13 +461,16 @@ socket.on('night action', (night_action) => {
                     }
                 })
             }
-            else {
+            else if (delay_response) {
                 afterInfoNightAction(night_action, timer, null)
             }
             
             
         }})
         alert_box.check()
+        if (!delay_response) {
+            afterInfoNightAction(night_action, timer, null)
+        }
     }
 })
 

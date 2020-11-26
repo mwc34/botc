@@ -69,6 +69,8 @@ function setup() {
     setupResetGame()
     setupSyncCharacters()
     setupTokenMenu()
+    setupChangeLogStatus()
+    setupLogStatus()
     setupChooseFabled()
     setupChooseCharacters()
     setupOpenReferenceSheet()
@@ -720,9 +722,9 @@ function setupClock() {
         // Voting onclicks for player
         else {
             button.onclick = () => {
-                let vote = channel_id, i==5 ? true : false
+                let vote = i==5 ? true : false
                 if (game_state.clock_info.active && getPlayerBySeatID(your_seat_id) && getPlayerBySeatID(your_seat_id).voting != vote) {
-                    socket.emit('vote update', vote)
+                    socket.emit('vote update', channel_id, vote)
                 }
             }
         }
@@ -1529,6 +1531,19 @@ function setupSyncCharacters() {
             }
         }
     }
+}
+
+function setupChangeLogStatus() {
+    change_log_status.style.position = 'absolute'
+    change_log_status.onclick = () => {
+        if (client_type) {
+            socket.emit('log status update', channel_id, (game_state.log_status + 1) % 3)
+        }
+    }
+}
+
+function setupLogStatus() {
+    log_status.style.position = 'absolute'
 }
 
 function setupChooseFabled() {

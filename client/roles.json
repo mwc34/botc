@@ -41,7 +41,11 @@
             "name":"Librarian Info",
             "in_players":2,
             "in_characters":1,
-            "character_restrictions" : ["outsider", "cancel"]
+            "character_restrictions" : ["outsider"]
+         },
+         {
+            "name":"Librarian Zero",
+            "info":"There are <> outsiders in play."
          }
       ]
    },
@@ -1593,7 +1597,8 @@
          {
             "name":"You Are Cerenovus Mad",
             "in_characters":1,
-            "scope":"local"
+            "scope":"local",
+            "character_restrictions":["townsfolk","outsider"]
          }
       ]
    },

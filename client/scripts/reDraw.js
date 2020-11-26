@@ -876,11 +876,18 @@ function reDrawHUD() {
     shuffle_players.style.visibility = client_type || client_type == null ? shuffle_players.style.visibility : 'hidden'
     change_edition.style.visibility = client_type || client_type == null ? change_edition.style.visibility : 'hidden'
     choose_fabled.style.visibility = client_type || client_type == null ? choose_fabled.style.visibility : 'hidden'
+    change_log_status.style.visibility = client_type || client_type == null ? change_log_status.style.visibility : 'hidden'
     change_phase.style.visibility = client_type || client_type == null ? change_phase.style.visibility : 'hidden'
     reveal_grimoire.style.visibility = client_type || client_type == null ? reveal_grimoire.style.visibility : 'hidden'
     reset_game.style.visibility = client_type || client_type == null ? reset_game.style.visibility : 'hidden'
     change_nomination_status.style.visibility = client_type || client_type == null ? change_nomination_status.style.visibility : 'hidden'
     
+    log_status_list = [
+        'Night + Votes',
+        'Votes',
+        'Base',
+    ]
+    log_status.innerHTML = `Log Status: ${log_status_list[game_state.log_status]}`
     host_connected.innerHTML = 'Host Status: ' + (game_state.host_socket_id ? (client_type ? 'You are the Host' : 'Hosted') : 'Hostless')
     channel_ID.innerHTML = 'Channel: ' + channel_id
     let t = getEditionFromID(game_state.edition)

@@ -48,6 +48,8 @@ const info_HUD = document.getElementById('infoHUD')
 const action_HUD = document.getElementById('actionHUD')
 const info_hover_box = document.getElementById('infoHoverBox')
 const open_reference_sheet = document.getElementById('openReferenceSheet')
+const log_status = document.getElementById('logStatus')
+const change_log_status = document.getElementById('changeLogStatus')
 const alert_box = document.getElementById('alertBox')
 const game_log = document.getElementById('gameLog')
 const edition_menu = document.getElementById('editionMenu')
@@ -67,6 +69,7 @@ Notification.requestPermission()
 var size = Math.min(window.innerWidth, window.innerHeight)
 var game_state = {
     'host_socket_id' : null,
+    'log_status' : 0,
     'edition' : 'tb',
     'roles' : [],
     'editions' : [],
@@ -153,14 +156,9 @@ var night_action_info = {
                 }
             }
             // Only send if had info in or is host
-            if (client_type || (to_send.info.players.length > 0 || to_send.info.characters.length > 0 || to_send.info.info.length > 0)) {
+            if (client_type || game_state.log_status == 0 && (to_send.info.players.length > 0 || to_send.info.characters.length > 0 || to_send.info.info.length > 0)) {
                 appendLog(getLogNightActionStyle(`Sent Night Action to ${getLogPlayerStyle(client_type ? getPlayerBySeatID(night_action_info.seat_id).name : 'The Host')}:<br>` + nightAlert(to_send, true)))
             }   
-            
-            if (client_type) {
-                getPlayerBySeatID(to_send.seat_id).night_action = true
-                reDrawNightActionPendings()
-            }
             
             socket.emit('night action', channel_id, to_send)
         }
