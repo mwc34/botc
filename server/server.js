@@ -676,228 +676,229 @@ io.on('connection', (socket) => {
                 'icon' : edition.icon, 
                 'reference_sheet' : false
             }
-            let valid = (edition.id 
-                      && edition.name 
-                      && edition.characters 
-                      && edition.characters.constructor == Object 
-                      && edition.icon 
-                      && Array.isArray(edition.fabled)
-            )
             
-            if (valid) {
-                // Check unique
-                for (let e of game_states[channel_id].editions) {
-                    if (e.id == edition.id || e.name == edition.name) {
-                        valid = false
-                    }
+            if (!(edition.id 
+               && edition.name 
+               && edition.characters 
+               && edition.characters.constructor == Object 
+               && edition.icon 
+               && Array.isArray(edition.fabled))) {
+                
+                return
+            }
+            // Check unique
+            for (let e of game_states[channel_id].editions) {
+                if (e.id == edition.id || e.name == edition.name) {
+                    return
                 }
-                if (valid) {
-                    let max_counts = {
-                        'townsfolk' : 14,
-                        'outsider' : 7,
-                        'minion' : 7,
-                        'demon' : 7,
-                        'traveler' : 7,
-                    }
-                    // Check characters
-                    let chars_checked = []
-                    let new_chars = []
-                    for (let team in edition.characters) {
-                        if (!Array.isArray(edition.characters[team])) {
-                            return
-                        }
-                        for (let i=0; i < edition.characters[team].length; i++) {
-                            let id = edition.characters[team][i]
-                            let c = getCharacterFromID(game_states[channel_id], id)
-                            if (c && (c.team != team || chars_checked.includes(c.id))) {
-                                valid = false
-                            }
-                            else {
-                                // New Character!!
-                                if (!c) {
-                                    if (!id || id.constructor != Object) {
-                                        return
-                                    }
-                                    
-                                    essential_keys = {
-                                        'id' : (e) => {return String(e).slice(0, 20)},
-                                        'name' : (e) => {return String(e).slice(0, 20)},
-                                        'ability' : (e) => {return String(e).slice(0, 200)},
-                                        'team' : (e) => {return String(e).slice(0, 20)},
-                                        'icon' : (e) => {return String(e).slice(0, 1000)},
-                                    }
-                                    
-                                    extra_keys = {
-                                        'setup' : Boolean,
-                                        'removes_self' : Boolean,
-                                        'firstNight' : parseInt,
-                                        'otherNight' : parseInt,
-                                        'firstNightReminder' : (e) => {return String(e).slice(0, 1000)},
-                                        'otherNightReminder' : (e) => {return String(e).slice(0, 1000)},
-                                        'reminders' : (e) => {return Array.isArray(e) ? e.slice(0, 20).map((x) => {return String(x).slice(0, 50)}) : []},
-                                        'remindersGlobal' : (e) => {return Array.isArray(e) ? e.slice(0, 20).map((x) => {return String(x).slice(0, 50)}) : []},
-                                        'night_actions' : (e) => {return Array.isArray(e) ? e.slice(0, 20).map((x) => {
-                                            for (let key of x) {
-                                                if (String(key).length > 50) {
-                                                    delete x[key]
-                                                }
-                                                else {
-                                                    if (Array.isArray(x[key])) {
-                                                        x[key] = x[key].slice(0, 10).map((y) => {return String(y).slice(0, 20)})
-                                                    }
-                                                    else {
-                                                        x[key] = String(x[key]).slice(0, 50)
-                                                    }
-                                                }
-                                            }
-                                        }) : []},
-                                        'night_actions_scoped' : (e) => {return Array.isArray(e) ? e.slice(0, 20).map((x) => {
-                                            for (let key of x) {
-                                                if (String(key).length > 50) {
-                                                    delete x[key]
-                                                }
-                                                else {
-                                                    if (Array.isArray(x[key])) {
-                                                        x[key] = x[key].slice(0, 10).map((y) => {return String(y).slice(0, 20)})
-                                                    }
-                                                    else {
-                                                        x[key] = String(x[key]).slice(0, 50)
-                                                    }
-                                                }
-                                            }
-                                        }) : []},
-                                    }
-                                    
-                                    blank_keys = {
-                                        'setup' : false,
-                                        'firstNight' : 0,
-                                        'otherNight' : 0,
-                                        'firstNightReminder' : "",
-                                        'otherNightReminder' : "",
-                                        'reminders' : [],
-                                        'night_actions' : [],
-                                    }
-                                    
-                                    new_c = {}
-                                    for (let key of Object.keys(essential_keys).concat(Object.keys(extra_keys))) {
-                                        if (key in id) {
-                                            new_c[key] = key in essential_keys ? essential_keys[key](id[key]) : extra_keys[key](id[key])
-                                        }
-                                        else if (key in essential_keys) {
-                                            return
-                                        }
-                                    }
-                                    
-                                    for (let key in blank_keys) {
-                                        if (!(key in new_c)) {
-                                            new_c[key] = copy(blank_keys[key])
-                                        }
-                                    }
-                                    
-                                    if (getCharacterFromID(game_states[channel_id], new_c.id)) { 
-                                        return
-                                    }
-                                    
-                                    if (new_c.team != team) {
-                                        return
-                                    }
-                                    if (chars_checked.includes(new_c.id)) {
-                                        return
-                                    }
-                                    
-                                    edition.characters[team][i] = new_c.id
-                                    new_chars.push(new_c)
-                                    c = new_c
-                                    
-                                }
-                                max_counts[team]--
-                                chars_checked.push(c.id)
-                                if (max_counts[team] < 0) {
-                                    valid = false
-                                }
-                            }
-                        }
-                    }
-
-                    // Check fabled
-                    let ids = []
-                    let fabled_checked = []
-                    let new_fabled = []
-                    for (let f of game_states[channel_id].fabled) {
-                        ids.push(f.id)
-                    }
-                    for (let i=0; i < edition.fabled.length; i++) {
-                        let f = edition.fabled[i]
-                        if (!ids.includes(f) || fabled_checked.includes(f)) {
-                            if (!f || f.constructor != Object) {
-                                return
-                            }
-                            essential_keys = {
-                                'id' : (e) => {return String(e).slice(0, 20)},
-                                'name' : (e) => {return String(e).slice(0, 20)},
-                                'ability' : (e) => {return String(e).slice(0, 200)},
-                                'team' : (e) => {return String(e).slice(0, 20)},
-                                'icon' : (e) => {return String(e).slice(0, 1000)},
-                            }
-                            
-                            extra_keys = {
-                                'reminders' : (e) => {return Array.isArray(e) ? e.slice(0, 20).map((x) => {return String(x).slice(0, 50)}) : []},
-                            }
-                            
-                            blank_keys = {
-                                'reminders' : []
-                            }
-                            
-                            new_f = {}
-                            
-                            for (let key of Object.keys(essential_keys).concat(Object.keys(extra_keys))) {
-                                if (key in f) {
-                                    new_f[key] = key in essential_keys ? essential_keys[key](f[key]) : extra_keys[key](f[key])
-                                }
-                                else if (key in essential_keys) {
-                                    return
-                                }
-                            }
-                            
-                            for (let key in blank_keys) {
-                                if (!(key in new_f)) {
-                                    new_f[key] = copy(blank_keys[key])
-                                }
-                            }
-                            
-                            if (ids.includes(new_f.id)) {
-                                socket.emit('server message', `The fabled with id ${new_f.id} already exists`) 
-                                return
-                            }
-                            
-                            if (new_f.team != 'fabled') {
-                                return
-                            }
-                            
-                            if (fabled_checked.includes(new_f.id)) {
-                                return
-                            }
-                            
-                            edition.fabled[i] = new_f.id
-                            new_fabled.push(new_f)
-                            f = new_f     
-                        }
-                        fabled_checked.push(f)
-                    }
-                    
-                    if (new_fabled.length > max_new_fabled_per_edition) {
-                        socket.emit('server message', `Your edition has too many new fabled (max ${max_new_fabled_per_edition})`)
+            }
+            let max_counts = {
+                'townsfolk' : 14,
+                'outsider' : 7,
+                'minion' : 7,
+                'demon' : 7,
+                'traveler' : 7,
+            }
+            
+            // Check characters
+            let chars_checked = []
+            let new_chars = []
+            for (let team in edition.characters) {
+                if (!(team in max_counts) || !Array.isArray(edition.characters[team])) {
+                    return
+                }
+                for (let i=0; i < edition.characters[team].length; i++) {
+                    let id = edition.characters[team][i]
+                    let c = getCharacterFromID(game_states[channel_id], id)
+                    if (c && (c.team != team || chars_checked.includes(c.id))) {
                         return
                     }
-
-                    if (valid) {
-                        game_states[channel_id].fabled = game_states[channel_id].fabled.concat(new_fabled)
-                        game_states[channel_id].roles = game_states[channel_id].roles.concat(new_chars)
-                        game_states[channel_id].editions.push(edition)
-                        channelEmit(channel_id, 'new edition', {'edition' : edition, 'new_roles' : new_chars, 'new_fabled' : new_fabled})
+                    // New Character!!
+                    if (!c) {
+                        if (!id || id.constructor != Object) {
+                            return
+                        }
+                        
+                        essential_keys = {
+                            'id' : (e) => {return String(e).slice(0, 20)},
+                            'name' : (e) => {return String(e).slice(0, 20)},
+                            'ability' : (e) => {return String(e).slice(0, 200)},
+                            'team' : (e) => {return String(e).slice(0, 20)},
+                            'icon' : (e) => {return String(e).slice(0, 1000)},
+                        }
+                        
+                        extra_keys = {
+                            'setup' : Boolean,
+                            'removes_self' : Boolean,
+                            'firstNight' : parseInt,
+                            'otherNight' : parseInt,
+                            'firstNightReminder' : (e) => {return String(e).slice(0, 1000)},
+                            'otherNightReminder' : (e) => {return String(e).slice(0, 1000)},
+                            'reminders' : (e) => {return Array.isArray(e) ? e.slice(0, 20).map((x) => {return String(x).slice(0, 50)}) : []},
+                            'remindersGlobal' : (e) => {return Array.isArray(e) ? e.slice(0, 20).map((x) => {return String(x).slice(0, 50)}) : []},
+                            'night_actions' : (e) => {return Array.isArray(e) ? e.slice(0, 20).map((x) => {
+                                for (let key of x) {
+                                    if (String(key).length > 50) {
+                                        delete x[key]
+                                    }
+                                    else {
+                                        if (Array.isArray(x[key])) {
+                                            x[key] = x[key].slice(0, 10).map((y) => {return String(y).slice(0, 20)})
+                                        }
+                                        else {
+                                            x[key] = String(x[key]).slice(0, 50)
+                                        }
+                                    }
+                                }
+                            }) : []},
+                            'night_actions_scoped' : (e) => {return Array.isArray(e) ? e.slice(0, 20).map((x) => {
+                                for (let key of x) {
+                                    if (String(key).length > 50) {
+                                        delete x[key]
+                                    }
+                                    else {
+                                        if (Array.isArray(x[key])) {
+                                            x[key] = x[key].slice(0, 10).map((y) => {return String(y).slice(0, 20)})
+                                        }
+                                        else {
+                                            x[key] = String(x[key]).slice(0, 50)
+                                        }
+                                    }
+                                }
+                            }) : []},
+                        }
+                        
+                        blank_keys = {
+                            'setup' : false,
+                            'firstNight' : 0,
+                            'otherNight' : 0,
+                            'firstNightReminder' : "",
+                            'otherNightReminder' : "",
+                            'reminders' : [],
+                            'night_actions' : [],
+                        }
+                        
+                        new_c = {}
+                        for (let key of Object.keys(essential_keys).concat(Object.keys(extra_keys))) {
+                            if (key in id) {
+                                new_c[key] = key in essential_keys ? essential_keys[key](id[key]) : extra_keys[key](id[key])
+                            }
+                            else if (key in essential_keys) {
+                                return
+                            }
+                        }
+                        
+                        for (let key in blank_keys) {
+                            if (!(key in new_c)) {
+                                new_c[key] = copy(blank_keys[key])
+                            }
+                        }
+                        
+                        if (getCharacterFromID(game_states[channel_id], new_c.id)) { 
+                            return
+                        }
+                        
+                        if (new_c.team != team) {
+                            return
+                        }
+                        if (chars_checked.includes(new_c.id)) {
+                            return
+                        }
+                        
+                        edition.characters[team][i] = new_c.id
+                        new_chars.push(new_c)
+                        c = new_c
+                        
+                    }
+                    max_counts[team]--
+                    chars_checked.push(c.id)
+                    if (max_counts[team] < 0) {
+                        return
                     }
                 }
             }
+
+            // Check fabled
+            let ids = []
+            let fabled_checked = []
+            let new_fabled = []
+            for (let f of game_states[channel_id].fabled) {
+                ids.push(f.id)
+            }
+            for (let i=0; i < edition.fabled.length; i++) {
+                let f = edition.fabled[i]
+                
+                if (ids.includes(f) && fabled_checked.includes(f)) {
+                    return
+                }
+                
+                if (!ids.includes(f)) {
+                    if (!f || f.constructor != Object) {
+                        return
+                    }
+                    essential_keys = {
+                        'id' : (e) => {return String(e).slice(0, 20)},
+                        'name' : (e) => {return String(e).slice(0, 20)},
+                        'ability' : (e) => {return String(e).slice(0, 200)},
+                        'team' : (e) => {return String(e).slice(0, 20)},
+                        'icon' : (e) => {return String(e).slice(0, 1000)},
+                    }
+                    
+                    extra_keys = {
+                        'reminders' : (e) => {return Array.isArray(e) ? e.slice(0, 20).map((x) => {return String(x).slice(0, 50)}) : []},
+                    }
+                    
+                    blank_keys = {
+                        'reminders' : []
+                    }
+                    
+                    new_f = {}
+                    
+                    for (let key of Object.keys(essential_keys).concat(Object.keys(extra_keys))) {
+                        if (key in f) {
+                            new_f[key] = key in essential_keys ? essential_keys[key](f[key]) : extra_keys[key](f[key])
+                        }
+                        else if (key in essential_keys) {
+                            return
+                        }
+                    }
+                    
+                    for (let key in blank_keys) {
+                        if (!(key in new_f)) {
+                            new_f[key] = copy(blank_keys[key])
+                        }
+                    }
+                    
+                    if (ids.includes(new_f.id)) {
+                        socket.emit('server message', `The fabled with id ${new_f.id} already exists`) 
+                        return
+                    }
+                    
+                    if (new_f.team != 'fabled') {
+                        return
+                    }
+                    
+                    if (fabled_checked.includes(new_f.id)) {
+                        return
+                    }
+                    
+                    edition.fabled[i] = new_f.id
+                    new_fabled.push(new_f)
+                    f = new_f     
+                }
+                fabled_checked.push(f)
+            }
+            
+            if (new_fabled.length > max_new_fabled_per_edition) {
+                socket.emit('server message', `Your edition has too many new fabled (max ${max_new_fabled_per_edition})`)
+                return
+            }
+            
+            // Valid new edition
+            game_states[channel_id].fabled = game_states[channel_id].fabled.concat(new_fabled)
+            game_states[channel_id].roles = game_states[channel_id].roles.concat(new_chars)
+            game_states[channel_id].editions.push(edition)
+            channelEmit(channel_id, 'new edition', {'edition' : edition, 'new_roles' : new_chars, 'new_fabled' : new_fabled})
         }
     })
     

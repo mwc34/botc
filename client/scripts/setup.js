@@ -2080,6 +2080,7 @@ function setupEditionMenu() {
                 alert('Error while reading file');
                 return;
             }
+            
             let filecontent = null
             try {
                 filecontent = JSON.parse(evt.target.result);
@@ -2099,7 +2100,11 @@ function setupEditionMenu() {
             let name = event.target.files[0].name.replace(/\.[^\.]*/, "")
             let id = name.replaceAll(/[^\w]/g, "").toLowerCase()
             
-            if (getEditionFromID(id)) {
+            if (!id || !name) {
+                alert_box_info.push({'text' : 'Your file doesn\'t have a valid name'})
+                alert_box.check()
+            }
+            else if (getEditionFromID(id)) {
                 alert_box_info.push({'text' : 'An edition with that id already exists'})
                 alert_box.check()
             }
