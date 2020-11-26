@@ -524,6 +524,7 @@ function revealGrimoire(grimoire) {
     reDrawFabledDemonBluffsHUD()
 }
 
+// For host after maybe done creation 
 function startNightAction(night_action) {
     // Action specific data
     night_action_info.player_restrictions = night_action.player_restrictions || []
@@ -557,6 +558,7 @@ function startNightAction(night_action) {
     }
 }
 
+// For host after giving info prompt
 function continueNightAction(night_action, prompt) {
     if (prompt) {
         if (night_action_info.in_players > 0) {

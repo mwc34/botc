@@ -287,11 +287,9 @@ const max_games = 100
 
 const max_ip_games = 5
 
-const max_ip_connections = max_ip_games * max_players
+const max_ip_connections = max_ip_games * (max_players + 1)
 
-// Per second
-
-const max_requests = 5
+const max_requests = 5 // Per second
 
 const max_ip_requests = max_requests * max_ip_connections
 
