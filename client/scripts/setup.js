@@ -1543,23 +1543,25 @@ function setupChangeBackgroundImage() {
             'text' : 'Enter the url of the new image',
             'type' : 'prompt',
             'func' : (res) => {
-                alert_box_info.push({
-                    'text' : `Do you want to change both day and night or just ${game_state.day_phase ? 'day' : 'night'}?`,
-                    'type' : 'confirm',
-                    'func' : (res2) => {
-                        // Day
-                        if (res2 || game_state.day_phase) {
-                            day_bg_image = `url("${res}")`
+                if (res) {
+                    alert_box_info.push({
+                        'text' : `Do you want to change both day and night or just ${game_state.day_phase ? 'day' : 'night'}?`,
+                        'type' : 'confirm',
+                        'func' : (res2) => {
+                            // Day
+                            if (res2 || game_state.day_phase) {
+                                day_bg_image = `url("${res}")`
+                            }
+                            
+                            // Night
+                            if (res2 || !game_state.day_phase) {
+                                night_bg_image = `url("${res}")`
+                            }
+                            reDrawChangePhase()
                         }
-                        
-                        // Night
-                        if (res2 || !game_state.day_phase) {
-                            night_bg_image = `url("${res}")`
-                        }
-                        reDrawChangePhase()
-                    }
-                })
-                alert_box.check()
+                    })
+                    alert_box.check()
+                }
             }
         })
         alert_box.check()
