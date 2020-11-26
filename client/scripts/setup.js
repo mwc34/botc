@@ -1598,17 +1598,11 @@ function setupShufflePlayers() {
 function setupLeaveGame() {
     leave_game.style.position = 'absolute'
     leave_game.onclick = () => {
-        if (!client_type && your_seat_id) {
-            socket.emit('kick update', channel_id, your_seat_id, true)
-        }
         game_menu.style.visibility = ''
         game.style.visibility = 'hidden'
         non_square.style.visibility = 'hidden'
         clearLog()
         wipeSessionStorage()
-        if (client_type) {
-            socket.emit('host leave', channel_id)
-        }
         client_type = null
         channel_id = null
         socket.disconnect()
