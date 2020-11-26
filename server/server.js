@@ -644,7 +644,7 @@ io.on('connection', (socket) => {
     // Edition Reference Sheet Update
     socket.on('reference sheet update', (channel_id, edition_id, reference_sheet) => {
         if (!rateLimit(socket)) {return}
-        if (channel_id in game_states && socket.id == game_states[channel_id].host_socket_id) {
+        if (channel_id in game_states && socket.id == game_states[channel_id].host_socket_id && reference_sheet) {
             let edition = null
             for (let e of game_states[channel_id].editions) {
                 if (e.id == edition_id) {
