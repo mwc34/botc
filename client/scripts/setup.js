@@ -407,7 +407,9 @@ function setupTokenMenu() {
             let ids = getTeamIDs(game_state.edition, teams[i])
             let count = player_split[Math.min(15, token_menu_info.choices) - 5][teams[i]]
             for (let j=0; j < count; j++) {
-                token_menu_info.selected.push(ids.splice(Math.floor(Math.random() * ids.length), 1)[0])
+                if (ids.length > 0) {
+                    token_menu_info.selected.push(ids.splice(Math.floor(Math.random() * ids.length), 1)[0])
+                }
             }
         }
         reDrawTokenMenu()
