@@ -718,5 +718,24 @@ function main() {
     setup()
     style()
     reSize()
-    socket.open()
+    
+    // Rescue channel_id, client_type from storage or params
+    if (sessionStorage.channel_id) {
+        channel_id = sessionStorage.channel_id
+    }
+    else if (urlParams.get('id')) {
+        channel_id = urlParams.get('id')
+    }
+    
+    if (sessionStorage.client_type) {
+        client_type = Number(sessionStorage.client_type)
+    }
+    else if (urlParams.get('type')) {
+        client_type = urlParams.get('type') == 'host' ? 1 : 0
+    }
+    
+    // Try to connect
+    if (channel_id && client_type != null) {
+        socket.open()
+    }
 }

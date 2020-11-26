@@ -585,21 +585,6 @@ socket.on('finish', (finish_msg) => {
 })
 
 socket.on('connect', () => {
-    // Rescue channel_id, client_type from storage or params
-    if (sessionStorage.channel_id) {
-        channel_id = sessionStorage.channel_id
-    }
-    else if (urlParams.get('id')) {
-        channel_id = urlParams.get('id')
-    }
-    
-    if (sessionStorage.client_type) {
-        client_type = Number(sessionStorage.client_type)
-    }
-    else if (urlParams.get('type')) {
-        client_type = urlParams.get('type') == 'host' ? 1 : 0
-    }
-    
     if (channel_id && client_type != null) {
         if (client_type) {
             socket.emit('new host', channel_id)
@@ -607,7 +592,6 @@ socket.on('connect', () => {
         else {
             socket.emit('new player', channel_id)
         }
-        console.log('hi')
     }
     else {
         socket.disconnect()

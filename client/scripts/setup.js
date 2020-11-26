@@ -1166,11 +1166,10 @@ function setupGameMenu() {
             'text' : 'Enter the channel id: (max 20 characters)',
             'type' : 'prompt',
             'func' : (res) => {
-                channel_id = res.slice(0, 20)
-                if (channel_id) {
+                if (res) {
+                    channel_id = res.slice(0, 20)
+                    client_type = 1
                     if (socket.disconnected) {
-                        sessionStorage.channel_id = channel_id
-                        sessionStorage.client_type = 1
                         socket.open()
                     }
                     else {
@@ -1188,11 +1187,10 @@ function setupGameMenu() {
             'text' : 'Enter the channel id: (max 20 characters)',
             'type' : 'prompt',
             'func' : (res) => {
-                channel_id = res.slice(0, 20)
-                if (channel_id) {
+                if (res) {
+                    channel_id = res.slice(0, 20)
+                    client_type = 0
                     if (socket.disconnected) {
-                        sessionStorage.channel_id = channel_id
-                        sessionStorage.client_type = 0
                         socket.open()
                     }
                     else {
