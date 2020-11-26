@@ -134,14 +134,6 @@ var night_action_info = {
         night_action_info.start_time = null
         if (!client_type || getPlayerBySeatID(night_action_info.seat_id).socket_id) {
             
-            
-            if (client_type && night_action_info.name == 'Demon Info') {
-                game_state.demon_bluffs = night_action_info.characters
-                setSSDemonBluffs(game_state.demon_bluffs)
-                socket.emit('demon bluff update', channel_id, game_state.demon_bluffs)
-                reDrawFabledDemonBluffsHUD()
-            }
-            
             let to_send = {
                 'timed_out' : night_action_info.timed_out,
                 'name' : night_action_info.name,

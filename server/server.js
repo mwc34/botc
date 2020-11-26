@@ -928,15 +928,6 @@ io.on('connection', (socket) => {
         }
     })
     
-    // Demon Bluff Update
-    socket.on('demon bluff update', (channel_id, demon_bluffs) => {
-        if (channel_id in game_states && game_states[channel_id].host_socket_id == socket.id && Array.isArray(demon_bluffs)) {
-            game_states[channel_id].demon_bluffs = demon_bluffs.slice(0, 3).filter((e) => {
-                return getCharacterFromID(game_states[channel_id], e)
-            })
-        }
-    })
-    
     // Vote update
     socket.on('vote update', (channel_id, vote_update) => {
         if (channel_id in game_states && game_states[channel_id].clock_info.active) {
@@ -1134,6 +1125,15 @@ io.on('connection', (socket) => {
                                 
                                 io.to(game_states[channel_id].host_socket_id).emit('night action', {'seat_id' : player.seat_id, 'name' : night_action.name, 'server_response' : true, 'info' : {'info' : [player.name + ' didn\'t respond', '']}})
                             }, wait_time + 5000) // MAGIC NUMBER
+
+                        // Demon Bluffs
+                        if (night_action.name == 'Demon Info' && night_action.info && Array.isArray(night_action.info.characters)) {
+                            game_states[channel_id].demon_bluffs = night_action.info.characters.slice(0, 3).filter((e) => {
+                                return getCharacterFromID(game_states[channel_id], e)
+                            })
+                            socket.emit('demon bluff update', game_states[channel_id].demon_bluffs)
+                        }
+                        
                         
                         if (night_action.group) {
                             if (!game_states[channel_id].group_night_action.name) {

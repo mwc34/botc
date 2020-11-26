@@ -385,6 +385,12 @@ socket.on('reveal grimoire', (grimoire) => {
     
 })
 
+socket.on('demon bluff update', (demon_bluffs) => {
+    game_state.demon_bluffs = demon_bluffs
+    setSSDemonBluffs(game_state.demon_bluffs)
+    reDrawFabledDemonBluffsHUD()
+})
+
 socket.on('group night action update', (group_night_action) => {
     game_state.group_night_action = group_night_action
     reDrawTokens()
