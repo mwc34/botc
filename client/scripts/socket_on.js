@@ -5,6 +5,10 @@ socket.on('server message', (msg) => {
     alert_box.check()
 })
 
+socket.on('pong', (latency) => {
+    current_ping.innerHTML = `Ping: ${latency}ms`
+})
+
 socket.on('new host', (msg, reason) => {
     // Host rejected
     if (!msg) {
@@ -603,6 +607,7 @@ socket.on('connect', () => {
         else {
             socket.emit('new player', channel_id)
         }
+        console.log('hi')
     }
     else {
         socket.disconnect()

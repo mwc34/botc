@@ -72,6 +72,7 @@ function setup() {
     setupChangeLogStatus()
     setupChangeBackgroundImage()
     setupLogStatus()
+    setupCurrentPing()
     setupChooseFabled()
     setupChooseCharacters()
     setupOpenReferenceSheet()
@@ -1581,6 +1582,10 @@ function setupChangeLogStatus() {
 
 function setupLogStatus() {
     log_status.style.position = 'absolute'
+}
+
+function setupCurrentPing() {
+    current_ping.style.position = 'absolute'
 }
 
 function setupChooseFabled() {
