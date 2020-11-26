@@ -864,7 +864,7 @@ function reDrawClock() {
 }
 
 function reDrawChangePhase() {
-    document.body.style.backgroundImage = (game_state.day_phase) ? 'url("assets/other/day.png")' : 'url("assets/other/night.jpg")'
+    document.body.style.backgroundImage = (game_state.day_phase) ? day_bg_image : night_bg_image
     day_phase.innerHTML = ((game_state.day_phase) ? 'Phase: Day' : 'Phase: Night') + ` ${game_state.phase_counter}`
 }
 

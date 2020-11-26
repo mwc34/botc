@@ -50,6 +50,7 @@ const info_hover_box = document.getElementById('infoHoverBox')
 const open_reference_sheet = document.getElementById('openReferenceSheet')
 const log_status = document.getElementById('logStatus')
 const change_log_status = document.getElementById('changeLogStatus')
+const change_background_image = document.getElementById('changeBackgroundImage')
 const alert_box = document.getElementById('alertBox')
 const game_log = document.getElementById('gameLog')
 const edition_menu = document.getElementById('editionMenu')
@@ -90,6 +91,9 @@ var game_state = {
     'phase_counter' : 0,
     'nominations_open' : false,
 }
+
+var day_bg_image = 'url("assets/other/day.png")'
+var night_bg_image = 'url("assets/other/night.jpg")'
 
 var client_type = null // 0 Player, 1 Client
 var your_seat_id = null

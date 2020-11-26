@@ -1,8 +1,8 @@
 function setup() {
     game.style.position = 'absolute'
-    preloadImage('assets/other/day.png')
-    preloadImage('assets/other/night.jpg')
-    document.body.style.backgroundImage = 'url("assets/other/night.jpg")'
+    preloadImage(day_bg_image)
+    preloadImage(night_bg_image)
+    document.body.style.backgroundImage = night_bg_image
     document.body.style.backgroundRepeat = 'no-repeat'
     document.body.style.backgroundAttachment = 'fixed'
     document.body.style.backgroundSize = 'cover'
@@ -70,6 +70,7 @@ function setup() {
     setupSyncCharacters()
     setupTokenMenu()
     setupChangeLogStatus()
+    setupChangeBackgroundImage()
     setupLogStatus()
     setupChooseFabled()
     setupChooseCharacters()
@@ -1532,6 +1533,36 @@ function setupSyncCharacters() {
                 socket.emit('character update', channel_id, to_send)
             }
         }
+    }
+}
+
+function setupChangeBackgroundImage() {
+    change_background_image.style.position = 'absolute'
+    change_background_image.onclick = () => {
+        alert_box_info.push({
+            'text' : 'Enter the url of the new image',
+            'type' : 'prompt',
+            'func' : (res) => {
+                alert_box_info.push({
+                    'text' : `Do you want to change both day and night or just ${game_state.day_phase ? 'day' : 'night'}?`,
+                    'type' : 'confirm',
+                    'func' : (res2) => {
+                        // Day
+                        if (res2 || game_state.day_phase) {
+                            day_bg_image = `url("${res}")`
+                        }
+                        
+                        // Night
+                        if (res2 || !game_state.day_phase) {
+                            night_bg_image = `url("${res}")`
+                        }
+                        reDrawChangePhase()
+                    }
+                })
+                alert_box.check()
+            }
+        })
+        alert_box.check()
     }
 }
 
