@@ -720,7 +720,10 @@ function setupClock() {
         // Voting onclicks for player
         else {
             button.onclick = () => {
-                socket.emit('vote update', channel_id, i==5 ? true : false)
+                let vote = channel_id, i==5 ? true : false
+                if (game_state.clock_info.active && getPlayerBySeatID(your_seat_id) && getPlayerBySeatID(your_seat_id).voting != vote) {
+                    socket.emit('vote update', vote)
+                }
             }
         }
         button.style.zIndex = 'inherit'

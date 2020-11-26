@@ -240,6 +240,37 @@ function kickAll(channel_id) {
     }
 }
 
+function rateLimit(socket) {
+    let ip = socket.request.headers['x-forwarded-for']
+    
+    let curr_time = (new Date()).getTime()
+    
+    if (!socket.rate_limit_requests) {
+        socket.rate_limit_requests = []
+    }
+    if (socket.rate_limit_requests.length == max_requests && socket.rate_limit_requests[0] > curr_time - 1000) {
+        return false
+    }
+    
+    if (!(ip in ip_requests)) {
+        ip_requests[ip] = []
+    }
+    if (ip_requests[ip].length == max_ip_requests && ip_requests[ip][0] > curr_time - 1000) {
+        return false
+    }
+    
+    socket.rate_limit_requests.push(curr_time)
+    if (socket.rate_limit_requests.length > max_requests) {
+        socket.rate_limit_requests.splice(0, 1)
+    }
+    
+    ip_requests[ip].push(curr_time)
+    if (ip_requests[ip].length > max_ip_requests) {
+        ip_requests[ip].splice(0, 1)
+    }
+    return true
+}
+
 const max_new_editions = 5
 
 const max_new_fabled_per_edition = 5
@@ -258,9 +289,17 @@ const max_ip_games = 5
 
 const max_ip_connections = max_ip_games * max_players
 
+// Per second
+
+const max_requests = 5
+
+const max_ip_requests = max_requests * max_ip_connections
+
 const ip_connections = {}
 
 const ip_games = {}
+
+const ip_requests = {}
 
 // Roles json
 
@@ -341,6 +380,11 @@ io.on('connection', (socket) => {
         return
     }
     
+    if (!rateLimit(socket)) {
+        socket.disconnect()
+        return
+    }
+    
     if (!(ip in ip_connections)) {
         ip_connections[ip] = 0
     }
@@ -354,6 +398,7 @@ io.on('connection', (socket) => {
     
     // Host connecting
     socket.on('new host', (channel_id) => {
+        if (!rateLimit(socket)) {return}
         
         if (socket.timeout_to_join_game) {
             clearTimeout(socket.timeout_to_join_game)
@@ -419,6 +464,7 @@ io.on('connection', (socket) => {
     
     // Player connecting
     socket.on('new player', (channel_id) => {
+        if (!rateLimit(socket)) {return}
         
         if (socket.timeout_to_join_game) {
             clearTimeout(socket.timeout_to_join_game)
@@ -450,6 +496,7 @@ io.on('connection', (socket) => {
     
     // Sit update
     socket.on('sit update', (channel_id, seat) => {
+        if (!rateLimit(socket)) {return}
         if (channel_id in game_states) {
             let player = getPlayerBySeat(game_states[channel_id], seat)
             if (player != null) {
@@ -481,6 +528,7 @@ io.on('connection', (socket) => {
     
     // Add update(s)
     socket.on('add update', (channel_id, names) => {
+        if (!rateLimit(socket)) {return}
         if (channel_id in game_states && socket.id == game_states[channel_id].host_socket_id && !game_states[channel_id].clock_info.active) {
             for (let name of names) {
                 name = String(name).slice(0, 20)
@@ -505,6 +553,7 @@ io.on('connection', (socket) => {
     
     // Name Update
     socket.on('name update', (channel_id, name_update) => {
+        if (!rateLimit(socket)) {return}
         if (channel_id in game_states && socket.id == game_states[channel_id].host_socket_id && name_update) {
             let player = getPlayerBySeatID(game_states[channel_id], name_update.seat_id)
             if (player != null) {
@@ -520,6 +569,7 @@ io.on('connection', (socket) => {
     
     // Character(s) Update
     socket.on('character update', (channel_id, character_update_list) => {
+        if (!rateLimit(socket)) {return}
         if (channel_id in game_states && socket.id == game_states[channel_id].host_socket_id && Array.isArray(character_update_list)) {
             for (let character_update of character_update_list) {
                 if (character_update && character_update.constructor == Object) {
@@ -561,6 +611,7 @@ io.on('connection', (socket) => {
     
     // Alive update
     socket.on('alive update', (channel_id, alive_update) => {
+        if (!rateLimit(socket)) {return}
         if (channel_id in game_states && socket.id == game_states[channel_id].host_socket_id && alive_update) {
             let player = getPlayerBySeatID(game_states[channel_id], alive_update.seat_id)
             if (player != null) {
@@ -575,6 +626,7 @@ io.on('connection', (socket) => {
     
     // Edition update
     socket.on('edition update', (channel_id, edition_update) => {
+        if (!rateLimit(socket)) {return}
         if (channel_id in game_states && socket.id == game_states[channel_id].host_socket_id) {
             for (let edition of game_states[channel_id].editions) {
                 if (edition.id == edition_update) {
@@ -590,6 +642,7 @@ io.on('connection', (socket) => {
     
     // Edition Reference Sheet Update
     socket.on('reference sheet update', (channel_id, edition_id, reference_sheet) => {
+        if (!rateLimit(socket)) {return}
         if (channel_id in game_states && socket.id == game_states[channel_id].host_socket_id) {
             let edition = null
             for (let e of game_states[channel_id].editions) {
@@ -608,9 +661,10 @@ io.on('connection', (socket) => {
     
     // New Edition update
     socket.on('new edition', (channel_id, edition) => {
+        if (!rateLimit(socket)) {return}
         if (channel_id in game_states && socket.id == game_states[channel_id].host_socket_id && edition) {
             if (game_states[channel_id].editions.length == editions.length + max_new_editions) {
-                socket.emit('server message', 'You have already added the maximum amount of new editions to this game. <br> Please restart the session to add another custom edition')
+                socket.emit('server message', 'You have already added the maximum amount (${max_new_editions}) of new editions to this game. <br> Please restart the session to add another custom edition')
                 return
             }
             
@@ -849,6 +903,7 @@ io.on('connection', (socket) => {
     
     // Fabled update
     socket.on('fabled in play update', (channel_id, fabled_in_play) => {
+        if (!rateLimit(socket)) {return}
         if (channel_id in game_states && socket.id == game_states[channel_id].host_socket_id && Array.isArray(fabled_in_play)) {
             game_states[channel_id].fabled_in_play = fabled_in_play.slice(0, game_states[channel_id].fabled.length).filter((e) => {
                 for (let i of game_states[channel_id].fabled) {
@@ -864,6 +919,7 @@ io.on('connection', (socket) => {
     
     // Open Nominations Update
     socket.on('open nominations update', (channel_id, open_update) => {
+        if (!rateLimit(socket)) {return}
         let state = game_states[channel_id]
         if (state && socket.id == state.host_socket_id) {
             if (state.day_phase && open_update != state.nominations_open) {
@@ -875,6 +931,7 @@ io.on('connection', (socket) => {
     
     // Seat update
     socket.on('seat update', (channel_id, seat_update) => {
+        if (!rateLimit(socket)) {return}
         if (channel_id in game_states && socket.id == game_states[channel_id].host_socket_id && !game_states[channel_id].clock_info.active && seat_update && seat_update.constructor == Object) {
             let new_player_info = copy(game_states[channel_id].player_info)
             let seats_unused = [...Array(new_player_info.length).keys()]
@@ -901,6 +958,7 @@ io.on('connection', (socket) => {
     
     // Reminder update
     socket.on('reminder update', (channel_id, reminder_update) => {
+        if (!rateLimit(socket)) {return}
         if (channel_id in game_states && game_states[channel_id].host_socket_id == socket.id && reminder_update) {
             let player = getPlayerBySeatID(game_states[channel_id], reminder_update.seat_id)
             if (player != null && reminder_update.reminders && Array.isArray(reminder_update.reminders)) {
@@ -915,6 +973,7 @@ io.on('connection', (socket) => {
     
     // Vote update
     socket.on('vote update', (channel_id, vote_update) => {
+        if (!rateLimit(socket)) {return}
         if (channel_id in game_states && game_states[channel_id].clock_info.active) {
             let player = getPlayerBySocketID(game_states[channel_id], socket.id)
             if (player != null) {
@@ -937,6 +996,7 @@ io.on('connection', (socket) => {
     
     // Interval update
     socket.on('interval update', (channel_id, interval_update) => {
+        if (!rateLimit(socket)) {return}
         if (channel_id in game_states && game_states[channel_id].host_socket_id == socket.id) {
             // Vote hasn't started
             let clock_info = game_states[channel_id].clock_info
@@ -949,6 +1009,7 @@ io.on('connection', (socket) => {
     
     // Nomination update
     socket.on('nomination update', (channel_id, nomination_update) => {
+        if (!rateLimit(socket)) {return}
         if (channel_id in game_states && !game_states[channel_id].clock_info.active && game_states[channel_id].day_phase && nomination_update) {
             let state = game_states[channel_id]
             let clock_info = state.clock_info
@@ -970,6 +1031,7 @@ io.on('connection', (socket) => {
     
     // Start vote update
     socket.on('start vote update', (channel_id) => {
+        if (!rateLimit(socket)) {return}
         if (channel_id in game_states 
                 && game_states[channel_id].host_socket_id == socket.id 
                 && game_states[channel_id].clock_info.active 
@@ -987,6 +1049,7 @@ io.on('connection', (socket) => {
     
     // Reset vote update
     socket.on('reset vote update', (channel_id) => {
+        if (!rateLimit(socket)) {return}
         if (channel_id in game_states 
                 && game_states[channel_id].host_socket_id == socket.id 
                 && game_states[channel_id].clock_info.active 
@@ -1003,6 +1066,7 @@ io.on('connection', (socket) => {
     
     // Finish vote update
     socket.on('finish vote update', (channel_id) => {
+        if (!rateLimit(socket)) {return}
         if (channel_id in game_states 
                 && game_states[channel_id].host_socket_id == socket.id 
                 && game_states[channel_id].clock_info.active 
@@ -1046,6 +1110,7 @@ io.on('connection', (socket) => {
     
     // Phase update
     socket.on('phase update', (channel_id, day_phase, phase_counter) => {
+        if (!rateLimit(socket)) {return}
         if (channel_id in game_states && socket.id == game_states[channel_id].host_socket_id && !game_states[channel_id].clock_info.active && Object.getOwnPropertyNames(game_states[channel_id].night_actions).length == 0 && Number.isInteger(phase_counter)) {
             let state = game_states[channel_id]
             phase_counter = parseInt(phase_counter)
@@ -1065,6 +1130,7 @@ io.on('connection', (socket) => {
     
     // Night Action
     socket.on('night action', (channel_id, night_action) => {
+        if (!rateLimit(socket)) {return}
         if (channel_id in game_states && !game_states[channel_id].day_phase && night_action && night_action.name) {
             night_action.name = String(night_action.name).slice(0, 40)
             if (socket.id == game_states[channel_id].host_socket_id) {
@@ -1168,6 +1234,7 @@ io.on('connection', (socket) => {
     
     // Group Night Action Update
     socket.on('group night action update', (channel_id, players) => {
+        if (!rateLimit(socket)) {return}
         if (channel_id in game_states && Array.isArray(players)) {
             let player = getPlayerBySocketID(game_states[channel_id], socket.id)
             if (player.seat_id in game_states[channel_id].night_actions) {
@@ -1187,11 +1254,15 @@ io.on('connection', (socket) => {
     
     // Reveal Grimoire
     socket.on('reveal grimoire', (channel_id, state) => {
-        channelEmit(channel_id, 'reveal grimoire', state, false)
+        if (!rateLimit(socket)) {return}
+        if (channel_id in game_states && socket.id == game_states[channel_id].host_socket_id) {
+            channelEmit(channel_id, 'reveal grimoire', state, false)
+        }
     })
     
     // Reset Game
     socket.on('reset game', (channel_id) => {
+        if (!rateLimit(socket)) {return}
         if (channel_id in game_states && socket.id == game_states[channel_id].host_socket_id) {
             let old_state = game_states[channel_id]
             let state = copy(base_state)
@@ -1265,6 +1336,7 @@ io.on('connection', (socket) => {
     
     // Remove update
     socket.on('remove update', (channel_id, seat_id) => {
+        if (!rateLimit(socket)) {return}
         if (channel_id in game_states && socket.id == game_states[channel_id].host_socket_id && !game_states[channel_id].clock_info.active) {
             let state = game_states[channel_id]
             let player = getPlayerBySeatID(state, seat_id)
@@ -1285,6 +1357,7 @@ io.on('connection', (socket) => {
     
     // Kick update
     socket.on('kick update', (channel_id, seat_id) => {
+        if (!rateLimit(socket)) {return}
         if (channel_id in game_states) {
             let player = getPlayerBySeatID(game_states[channel_id], seat_id)
             if (socket.id == game_states[channel_id].host_socket_id || (player != null && player.socket_id == socket.id)) {
@@ -1316,6 +1389,7 @@ io.on('connection', (socket) => {
     
     // Game finish
     socket.on('finish', (channel_id) => {
+        if (!rateLimit(socket)) {return}
         if (channel_id in game_states && socket.id == game_states[channel_id].host_socket_id) {
             channelEmit(channel_id, 'finish', 'Your game has closed')
             kickAll(channel_id)
@@ -1378,6 +1452,7 @@ io.on('connection', (socket) => {
             ip_connections[ip]--
             if (ip_connections[ip] == 0) {
                 delete ip_connections[ip]
+                delete ip_requests[ip]
             }
         }
         printInfo()
