@@ -1162,13 +1162,13 @@ function setupGameMenu() {
     // Host onclick
     game_menu.children[0].onclick = () => {
         alert_box_info.push({
-            'text' : 'Enter the channel id:',
+            'text' : 'Enter the channel id: (max 20 characters)',
             'type' : 'prompt',
             'func' : (res) => {
-                channel_id = res
+                channel_id = res.slice(0, 20)
                 if (channel_id) {
                     if (socket.disconnected) {
-                        sessionStorage.channel_id = res
+                        sessionStorage.channel_id = channel_id
                         sessionStorage.client_type = 1
                         socket.open()
                     }
@@ -1184,13 +1184,13 @@ function setupGameMenu() {
     // Player onclick
     game_menu.children[1].onclick = () => {
         alert_box_info.push({
-            'text' : 'Enter the channel id:',
+            'text' : 'Enter the channel id: (max 20 characters)',
             'type' : 'prompt',
             'func' : (res) => {
-                channel_id = res
+                channel_id = res.slice(0, 20)
                 if (channel_id) {
                     if (socket.disconnected) {
-                        sessionStorage.channel_id = res
+                        sessionStorage.channel_id = channel_id
                         sessionStorage.client_type = 0
                         socket.open()
                     }

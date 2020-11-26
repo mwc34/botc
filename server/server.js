@@ -410,6 +410,8 @@ io.on('connection', (socket) => {
             return
         }
         
+        channel_id = String(channel_id).slice(0, 20)
+        
         // Room already taken
         if (channel_id in game_states && game_states[channel_id].host_socket_id != null) {
             socket.emit('new host', false, `Channel ${channel_id} is already in use`)
