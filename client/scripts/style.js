@@ -296,11 +296,13 @@ function styleGameMenu() {
 
 
 function styleInfo() {
+    info.style.display = 'flex'
+    info.style.alignItems = 'center'
+    info.style.justifyContent = 'center'
     info.style.textAlign = 'center'
     info.style.backgroundColor = getSolidBackgroundColour()
     info.style.color = getFontColour()
     info.style.borderColor = getBorderColour()
-    
     info.style.borderStyle = 'solid'
     info.style.fontFamily = getFontFamily()
 }

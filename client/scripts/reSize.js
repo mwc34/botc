@@ -352,7 +352,7 @@ function reSizeInfo() {
     info.style.height = getInfoRowHeight() + 'px'
     info.style.left = (size - width)/2 - getBorderSize() + 'px'
     info.style.fontSize = getInfoFontSize() + 'px'
-    info.style.lineHeight = info.style.height
+    //info.style.lineHeight = info.style.height
     info.style.borderWidth = getBorderSize() + 'px'
 }
 
