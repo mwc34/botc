@@ -388,6 +388,7 @@ io.on('connection', (socket) => {
         }
         // Room available
         else {
+            // Make new rule
             if (!(channel_id in game_states)) {
                 if (Object.keys(game_states).length == max_games) {
                     socket.emit('new host', false, `There are already the maximum number of games active`)
@@ -694,8 +695,8 @@ io.on('connection', (socket) => {
                                         'otherNight' : parseInt,
                                         'firstNightReminder' : (e) => {return String(e).slice(0, 1000)},
                                         'otherNightReminder' : (e) => {return String(e).slice(0, 1000)},
-                                        'reminders' : (e) => {return Array.isArray(e) ? e.slice(0, 20).map((x) => {return x.slice(0, 50)}) : []},
-                                        'remindersGlobal' : (e) => {return Array.isArray(e) ? e.slice(0, 20).map((x) => {return x.slice(0, 50)}) : []},
+                                        'reminders' : (e) => {return Array.isArray(e) ? e.slice(0, 20).map((x) => {return String(x).slice(0, 50)}) : []},
+                                        'remindersGlobal' : (e) => {return Array.isArray(e) ? e.slice(0, 20).map((x) => {return String(x).slice(0, 50)}) : []},
                                         'night_actions' : (e) => {return Array.isArray(e) ? e.slice(0, 20).map((x) => {
                                             for (let key of x) {
                                                 if (String(key).length > 50) {
@@ -802,7 +803,7 @@ io.on('connection', (socket) => {
                             }
                             
                             extra_keys = {
-                                'reminders' : (e) => {return Array.isArray(e) ? e.slice(0, 20).map((x) => {return x.slice(0, 50)}) : []},
+                                'reminders' : (e) => {return Array.isArray(e) ? e.slice(0, 20).map((x) => {return String(x).slice(0, 50)}) : []},
                             }
                             
                             blank_keys = {
@@ -1288,23 +1289,20 @@ io.on('connection', (socket) => {
     socket.on('kick update', (channel_id, seat_id, full_leave) => {
         if (channel_id in game_states) {
             let player = getPlayerBySeatID(game_states[channel_id], seat_id)
-            if (socket.id == game_states[channel_id].host_socket_id || (player != null && player.socket_id == socket.id) || game_states[channel_id].spectators.includes(socket.id)) {
+            if (socket.id == game_states[channel_id].host_socket_id || (player != null && player.socket_id == socket.id)) {
                 if (player != null && player.socket_id != null) {
                     let self_kick = socket.id != game_states[channel_id].host_socket_id
                     channelEmit(channel_id, 'kick update', {'seat_id' : player.seat_id, 'self_kick' : self_kick})
                     if (!full_leave) {
-                        game_states[channel_id].spectators.push(player.socket_id)
+                        if (!game_states[channel_id].spectators.includes(player.socket_id)) {
+                            game_states[channel_id].spectators.push(player.socket_id)
+                        }
+                        player.socket_id = null
                         printInfo()
                     }
                     else {
                         io.sockets.sockets[player.socket_id].disconnect()
                     }
-                    player.socket_id = null
-                }
-                // Spectator
-                else {
-                    game_states[channel_id].spectators.splice(game_states[channel_id].spectators.indexOf(socket.id), 1)
-                    socket.disconnect()
                 }
             }
         }
