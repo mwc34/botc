@@ -1120,9 +1120,11 @@ io.on('connection', (socket) => {
                 state.day_phase = Boolean(day_phase)
                 state.phase_counter = phase_counter
                 // Wipe nominations
-                for (let player of state.player_info) {
-                    player.nominated = false
-                    player.nominateed = false
+                if (state.day_phase) {
+                    for (let player of state.player_info) {
+                        player.nominated = false
+                        player.nominateed = false
+                    }
                 }
                 state.nominations_open = false
                 channelEmit(channel_id, 'phase update', {'day_phase' : state.day_phase, 'phase_counter' : phase_counter})
