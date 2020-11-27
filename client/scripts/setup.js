@@ -1361,6 +1361,7 @@ function setupOpenReferenceSheet() {
             alert_box_info.push({
                 'text' : 'Enter the URL of the reference sheet',
                 'type' : 'prompt',
+                'multi_line' : true,
                 'func' : (res) => {
                     if (res) {
                         socket.emit('reference sheet update', channel_id, game_state.edition, res)
@@ -1548,6 +1549,7 @@ function setupChangeBackgroundImage() {
         alert_box_info.push({
             'text' : 'Enter the URL of the new image',
             'type' : 'prompt',
+            'multi_line' : true,
             'func' : (res) => {
                 if (res) {
                     alert_box_info.push({

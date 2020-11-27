@@ -533,6 +533,9 @@ function styleAlertBox() {
             else if (i==1) {
                 div.children[j].style.backgroundColor = 'transparent'
             }
+            else {
+                div.children[j].style.wordWrap = 'break-word'
+            }
         
         }
         
