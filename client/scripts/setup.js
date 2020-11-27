@@ -1167,8 +1167,9 @@ function setupGameMenu() {
             'type' : 'prompt',
             'func' : (res) => {
                 if (res) {
-                    channel_id = res.slice(0, 20)
-                    client_type = 1
+                    res = res.slice(0, 20)
+                    sessionStorage.channel_id = res
+                    sessionStorage.client_type = 1
                     if (socket.disconnected) {
                         socket.open()
                     }
@@ -1188,8 +1189,9 @@ function setupGameMenu() {
             'type' : 'prompt',
             'func' : (res) => {
                 if (res) {
-                    channel_id = res.slice(0, 20)
-                    client_type = 0
+                    res = res.slice(0, 20)
+                    sessionStorage.channel_id = res
+                    sessionStorage.client_type = 0
                     if (socket.disconnected) {
                         socket.open()
                     }
@@ -1663,13 +1665,11 @@ function setupShufflePlayers() {
 function setupLeaveGame() {
     leave_game.style.position = 'absolute'
     leave_game.onclick = () => {
+        channel_id = null
+        client_type = null
         game_menu.style.visibility = ''
         game.style.visibility = 'hidden'
         non_square.style.visibility = 'hidden'
-        clearLog()
-        wipeSessionStorage()
-        client_type = null
-        channel_id = null
         socket.disconnect()
         // socket.disconnect()
         // let t = window.location.href.replace(/\?.*/, '')

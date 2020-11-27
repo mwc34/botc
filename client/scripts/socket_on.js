@@ -1,35 +1,43 @@
 socket.on('server message', (msg) => {
     alert_box_info.push({
-        'text' : msg
+        'text' : msg,
+        'func' : () => {appendLog(msg)}
     })
     alert_box.check()
 })
 
-socket.on('pong', (latency) => {
-    current_ping.innerHTML = `Ping: ${latency}ms`
+socket.on('pong', (ping) => {
+    latency = ping
+    reDrawHUD()
 })
 
-socket.on('new host', (msg, reason) => {
+socket.on('new host', (msg, extra) => {
     // Host rejected
     if (!msg) {
+        reason = extra
         alert_box_info.push({'text' : reason})
         alert_box.check()
     }
     // Host accepted
     else {
+        new_room = extra
+        
+        channel_id = sessionStorage.channel_id
+        if (sessionStorage.saved_channel_id != sessionStorage.channel_id) {
+            wipeSessionStorage()
+        }
         
         if (sessionStorage.log) {
             setLog(sessionStorage.log)
         }
-        if (sessionStorage.channel_id == channel_id) {
-            appendLog(getLogDefaultStyle('Reconnected'))
-        }
         else {
-            appendLog(getLogDefaultStyle('Connected'))
+            clearLog()
         }
-        sessionStorage.channel_id = channel_id
-        client_type = 1
-        sessionStorage.client_type = client_type
+        
+        appendLog(getLogDefaultStyle('Connected'))
+        
+        sessionStorage.saved_channel_id = sessionStorage.channel_id = channel_id
+        client_type = sessionStorage.client_type = 1
         game_state = msg
         for (let key in roles_by_id) {
             delete roles_by_id[key]
@@ -42,20 +50,73 @@ socket.on('new host', (msg, reason) => {
         night_action_menu.style.visibility = 'hidden'
         edition_menu.style.visibility = 'hidden'
         token_selected_seat_id = null
+        
+        let sspi = {}
+        for (let p of game_state.player_info) {
+            sspi[p.seat_id] = {'character' : p.character, 'reminders' : p.reminders}
+        }
+        setSSPlayerInfo(sspi)
+        
         reSize()
         reDraw()
         game.style.visibility = ''
         non_square.style.visibility = ''
         game_menu.style.visibility = 'hidden'
         
-        if (!sessionStorage.player_info) {
-            setSSPlayerInfo({})
+        if (new_room && sessionStorage.game_recovery) {
+            for (let e of alert_box_info) {
+                alert_box_info.pop()
+            }
+            alert_box_info.push({
+                'text' : 'Would you like to restore the previous game state for this session?',
+                'type' : 'confirm',
+                'func' : (res) => {
+                    if (res) {
+                        let state = JSON.parse(sessionStorage.game_recovery)
+                        
+                        let new_e = state.curr_edition
+                        for (let team in new_e.characters) {
+                            for (let i=0; i<new_e.characters[team].length; i++) {
+                                let role = new_e.characters[team][i]
+                                if (!getCharacterFromID(role)) {
+                                    for (let r of state.roles) {
+                                        if (r.id == role) {
+                                            new_e.characters[team][i] = r
+                                            break
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        
+                        if (new_e.fabled) {
+                            for (let i=0; i<new_e.fabled.length; i++) {
+                                let fabled = new_e.fabled[i]
+                                if (!getFabledFromID(fabled)) {
+                                    for (let f of state.fabled) {
+                                        if (f.id == fabled) {
+                                            new_e.fabled[i] = f
+                                            break
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        socket.emit('new edition', channel_id, new_e)
+                        delete state.curr_edition
+                        delete state.roles
+                        delete state.fabled
+                        
+                        socket.emit('reset game', channel_id, state)
+                    }
+                }
+            })
+            alert_box.check()
         }
-        let sspi = getSSPlayerInfo()
-        for (let p of game_state.player_info) {
-            sspi[p.seat_id] = {'character' : p.character, 'reminders' : p.reminders}
+        else {
+            delete sessionStorage.game_recovery
         }
-        setSSPlayerInfo(sspi)
     }
 })
 
@@ -66,18 +127,22 @@ socket.on('new player', (msg, reason) => {
     }
     else {
         
+        channel_id = sessionStorage.channel_id
+        if (sessionStorage.saved_channel_id != sessionStorage.channel_id) {
+            wipeSessionStorage()
+        }
+        
         if (sessionStorage.log) {
             setLog(sessionStorage.log)
         }
-        if (sessionStorage.channel_id == channel_id) {
-            appendLog(getLogDefaultStyle('Reconnected'))
-        }
         else {
-            appendLog(getLogDefaultStyle('Connected'))
+            clearLog()
         }
-        sessionStorage.channel_id = channel_id
-        client_type = 0
-        sessionStorage.client_type = client_type
+        
+        appendLog(getLogDefaultStyle('Connected'))
+        
+        sessionStorage.saved_channel_id = sessionStorage.channel_id = channel_id
+        client_type = sessionStorage.client_type = 0
         game_state = msg
         for (let key in roles_by_id) {
             delete roles_by_id[key]
@@ -90,11 +155,8 @@ socket.on('new player', (msg, reason) => {
         night_action_menu.style.visibility = 'hidden'
         edition_menu.style.visibility = 'hidden'
         token_selected_seat_id = null
-        reSize()
-        reDraw()
-        game.style.visibility = ''
-        non_square.style.visibility = ''
-        game_menu.style.visibility = 'hidden'
+        
+        
         if (sessionStorage.seat_id != null && getPlayerBySeatID(sessionStorage.seat_id) && !getPlayerBySeatID(sessionStorage.seat_id).socket_id) {
             socket.emit('sit update', channel_id, getPlayerBySeatID(sessionStorage.seat_id).seat)
         }
@@ -120,11 +182,19 @@ socket.on('new player', (msg, reason) => {
                 }
             }
         }
+
+        setSSPlayerInfo(sspi)
         
         if (getSSDemonBluffs()) {
             game_state.demon_bluffs = getSSDemonBluffs()
         }
-        setSSPlayerInfo(sspi)
+        
+        reSize()
+        reDraw()
+        game.style.visibility = ''
+        non_square.style.visibility = ''
+        game_menu.style.visibility = 'hidden'
+        
     }
 })
 
@@ -370,10 +440,7 @@ socket.on('new edition', (new_edition_update) => {
         roles_by_id[role.id] = role
     }
     game_state.fabled = game_state.fabled.concat(new_edition_update.new_fabled)
-    reDrawEditionMenu()
-    if (client_type) {
-        socket.emit('edition update', channel_id, new_edition_update.edition.id)
-    }
+    reDraw()
 })
 
 socket.on('open nominations update', (state) => {
@@ -400,6 +467,7 @@ socket.on('log status update', (status) => {
 
 socket.on('night action received', (seat_id) => {
     if (client_type) {
+        appendLog(getPlayerBySeatID(seat_id).night_action)
         getPlayerBySeatID(seat_id).night_action = true
         reDrawNightActionPendings()
     }
@@ -484,28 +552,16 @@ socket.on('reset game', (state) => {
     for (let e of alert_box_info) {
         alert_box_info.pop()
     }
-    
+
     alert_box_info.push({
         'text' : 'The Host has reset the game',
     })
     alert_box.check()
-    clearLog()
-    wipeSessionStorage()
-    sessionStorage.channel_id = channel_id
-    sessionStorage.client_type = client_type
-    if (your_seat_id != null) {
-        sessionStorage.seat_id = your_seat_id
-    }
-    game_state = state
-    for (let key in roles_by_id) {
-        delete roles_by_id[key]
-    }
     
-    let sspi = {}
-    for (let p of game_state.player_info) {
-        sspi[p.seat_id] = {'character' : p.character, 'reminders' : p.reminders}
-    }
-    setSSPlayerInfo(sspi)
+    let game_recovery = game_state.player_info.length == 0
+    console.log(state.fabled_in_play)
+    console.log("hi")
+    game_state = state
     
     token_click_type = 0
     token_menu_info.active = false
@@ -514,6 +570,41 @@ socket.on('reset game', (state) => {
     night_action_menu.style.visibility = 'hidden'
     edition_menu.style.visibility = 'hidden'
     token_selected_seat_id = null
+    
+    if (your_seat_id == null && !client_type) {
+        if (sessionStorage.seat_id != null && getPlayerBySeatID(sessionStorage.seat_id) && !getPlayerBySeatID(sessionStorage.seat_id).socket_id) {
+            socket.emit('sit update', channel_id, getPlayerBySeatID(sessionStorage.seat_id).seat)
+        }
+        else {
+            requestSitDown()
+        }
+    }
+    
+    for (let key in roles_by_id) {
+        delete roles_by_id[key]
+    }
+    
+    let sspi = getSSPlayerInfo()
+    if (game_recovery) {
+        for (let p of game_state.player_info) {
+            if (p.seat_id in sspi) {
+                p.character = sspi[p.seat_id].character
+                p.reminders = sspi[p.seat_id].reminders
+            }
+        }
+    }
+    
+    clearLog()
+    wipeSessionStorage()
+    sessionStorage.channel_id = sessionStorage.saved_channel_id = channel_id
+    sessionStorage.client_type = client_type
+    
+    sspi = {}
+    for (let p of game_state.player_info) {
+        sspi[p.seat_id] = {'character' : p.character, 'reminders' : p.reminders}
+    }
+    setSSPlayerInfo(sspi)
+    
     reSize()
     reDraw()
     
@@ -573,24 +664,35 @@ socket.on('host update', (host_update) => {
 })
 
 socket.on('finish', (finish_msg) => {
+    for (let e of alert_box_info) {
+        alert_box_info.pop()
+    }
     alert_box_info.push({'text' : finish_msg})
     alert_box.check()
+    appendLog(finish_msg)
     reDrawHUD()
     reDrawFabledDemonBluffsHUD()
-    game_menu.style.visibility = ''
-    game.style.visibility = 'hidden'
-    non_square.style.visibility = 'hidden'
-    clearLog()
     wipeSessionStorage()
+    client_type = null
+    channel_id = null
+    token_click_type = 0
+    token_menu_info.active = false
+    night_action_info.start_time = null
+    reminder_menu.style.visibility = 'hidden'
+    night_action_menu.style.visibility = 'hidden'
+    edition_menu.style.visibility = 'hidden'
+    token_selected_seat_id = null
 })
 
 socket.on('connect', () => {
-    if (channel_id && client_type != null) {
-        if (client_type) {
-            socket.emit('new host', channel_id)
+    channel_id = null
+    client_type = null
+    if (sessionStorage.channel_id != null && sessionStorage.client_type != null) {
+        if (parseInt(sessionStorage.client_type)) {
+            socket.emit('new host', sessionStorage.channel_id)
         }
         else {
-            socket.emit('new player', channel_id)
+            socket.emit('new player', sessionStorage.channel_id)
         }
     }
     else {
@@ -599,16 +701,38 @@ socket.on('connect', () => {
 })
 
 socket.on('disconnect', () => {
-    if (game_menu.style.visibility == 'hidden') {
+    if (game_menu.style.visibility == 'hidden' && client_type != null && channel_id != null) {
+        for (let e of alert_box_info) {
+            alert_box_info.pop()
+        }
         alert_box_info.push({
             'text' : 'You have lost connection with the server'
         })
         alert_box.check()
     }
-    game_menu.style.visibility = ''
-    game.style.visibility = 'hidden'
-    non_square.style.visibility = 'hidden'
     
+    if (client_type) {
+        let state = {
+            'log_status' : game_state.log_status,
+            'edition' : game_state.edition,
+            'curr_edition' : getEditionFromID(game_state.edition),
+            'roles' : game_state.roles,
+            'fabled' : game_state.fabled,
+            'fabled_in_play' : game_state.fabled_in_play,
+            'demon_bluffs' : game_state.demon_bluffs,
+            'day_phase' : game_state.day_phase,
+            'phase_counter' : game_state.phase_counter,
+            'nominations_open' : game_state.nominations_open,
+            'player_info' : game_state.player_info,
+        }
+        
+        sessionStorage.game_recovery = JSON.stringify(state)
+    }
+    
+    client_type = null
+    channel_id = null
+    reDrawHUD()
+    reDrawSocketIcons()
 })
 
 

@@ -78,7 +78,6 @@ var game_state = {
     'fabled' : [],
     'fabled_in_play' : [],
     'group_night_action' : [null, []],
-    'next_seat_id' : 0,
     'demon_bluffs' : [],
     'player_info' : [],
     'clock_info' : {
@@ -96,6 +95,7 @@ var game_state = {
 var day_bg_image = 'url("assets/other/day.png")'
 var night_bg_image = 'url("assets/other/night.jpg")'
 
+var latency = null
 var client_type = null // 0 Player, 1 Client
 var your_seat_id = null
 var channel_id = null
@@ -161,8 +161,12 @@ var night_action_info = {
                 }
             }
             // Only send if had info in or is host
-            if (client_type || game_state.log_status == 0 && (to_send.info.players.length > 0 || to_send.info.characters.length > 0 || to_send.info.info.length > 0)) {
-                appendLog(getLogNightActionStyle(`Sent Night Action to ${getLogPlayerStyle(client_type ? getPlayerBySeatID(night_action_info.seat_id).name : 'The Host')}:<br>` + nightAlert(to_send, true)))
+            let msg = getLogNightActionStyle(`Sent Night Action to ${getLogPlayerStyle(client_type ? getPlayerBySeatID(night_action_info.seat_id).name : 'The Host')}:<br>` + nightAlert(to_send, true))
+            if (client_type) {
+                getPlayerBySeatID(to_send.seat_id).night_action = msg
+            }
+            else if (game_state.log_status == 0 && (to_send.info.players.length > 0 || to_send.info.characters.length > 0 || to_send.info.info.length > 0)) {
+                appendLog()
             }   
             
             socket.emit('night action', channel_id, to_send)
@@ -492,12 +496,13 @@ function nightActionAnimation() {
 }
 
 function revealGrimoire(grimoire) {
+    let sspi = getSSPlayerInfo()
     for (let p of grimoire.player_info) {
         // Change characters
         let player = getPlayerBySeatID(p.seat_id)
         player.character = p.character
         player.synced = true
-        let sspi = getSSPlayerInfo()
+        
         sspi[player.seat_id].character = p.character
         
         // Add reminders
@@ -516,8 +521,8 @@ function revealGrimoire(grimoire) {
         }
         
         sspi[player.seat_id].reminders = player.reminders
-        setSSPlayerInfo(sspi)
     }
+    setSSPlayerInfo(sspi)
     game_state.demon_bluffs = grimoire.demon_bluffs
     setSSDemonBluffs(game_state.demon_bluffs)
     
@@ -652,7 +657,7 @@ function getMenuOpen() {
 
 function clearLog() {
     game_log.children[0].innerHTML = ''
-    sessionStorage.log = game_log.children[0].innerHTML
+    delete sessionStorage.log
 }
 
 function setLog(content) {
@@ -702,6 +707,7 @@ function setSSDemonBluffs(demon_bluffs) {
 
 function requestSitDown() {
     // Joining a game
+    your_seat_id = null
     token_click_type = 1
     reDrawHUD()
 }
@@ -719,23 +725,17 @@ function main() {
     style()
     reSize()
     
-    // Rescue channel_id, client_type from storage or params
-    if (sessionStorage.channel_id) {
-        channel_id = sessionStorage.channel_id
-    }
-    else if (urlParams.get('id')) {
-        channel_id = urlParams.get('id')
+    // Rescue channel_id, client_type from params
+    if (sessionStorage.channel_id == null && urlParams.get('id')) {
+        sessionStorage.channel_id = urlParams.get('id')
     }
     
-    if (sessionStorage.client_type) {
-        client_type = Number(sessionStorage.client_type)
-    }
-    else if (urlParams.get('type')) {
-        client_type = urlParams.get('type') == 'host' ? 1 : 0
+    if (sessionStorage.client_type == null && urlParams.get('type')) {
+        sessionStorage.client_type = urlParams.get('type') == 'host' ? 1 : 0
     }
     
     // Try to connect
-    if (channel_id && client_type != null) {
+    if (sessionStorage.channel_id != null && sessionStorage.client_type != null) {
         socket.open()
     }
 }

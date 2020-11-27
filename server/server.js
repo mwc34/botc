@@ -84,11 +84,13 @@ function copy(state) {
     if (state && state.constructor == Object && (
             'night_actions' in state ||
             'game_timeout' in state ||
-            'hostless_timeout' in state)) {
+            'hostless_timeout' in state ||
+            'clientless_timeout' in state)) {
         for (let i in state) {
             if (i != 'night_actions' &&
                 i != 'game_timeout' &&
-                i != 'hostless_timeout') {
+                i != 'hostless_timeout' &&
+                i != 'clientless_timeout') {
                 new_state[i] = state[i]
             }
             else if (i == 'night_actions') {
@@ -122,7 +124,7 @@ function channelEmit(channel_id, eventName, msg, emitToHost = true) {
 }
 
 // Censor state
-function censorState(state, socket_id) {
+function censorState(state, socket_id = false) { // undefined clashes with player.socket_id = null
     state = copy(state)
     
     for (let player of state.player_info) {
@@ -142,6 +144,7 @@ function censorState(state, socket_id) {
     delete state.night_actions
     delete state.hostless_timeout
     delete state.game_timeout
+    delete state.clientless_timeout
     delete state.roles_by_id
     delete state.ip
     state.group_night_action = {'name' : null, 'data' : {}}
@@ -221,7 +224,9 @@ function printInfo() {
     console.log(`Currently, ${games} game${games != 1 ? 's' : ''} ${games != 1 ? 'are' : 'is'} running with ${hosts} host${hosts != 1 ? 's' : ''}, ${players} player${players != 1 ? 's' : ''}, ${spectators} spectator${spectators != 1 ? 's' : ''} giving ${total_clients} connection${total_clients != 1 ? 's' : ''} in total.`)
 }
 
-function kickAll(channel_id) {
+function endGame(channel_id) {
+    if (!(channel_id in game_states)) {return}
+    
     let state = game_states[channel_id]
     
     // Disconnect
@@ -238,6 +243,33 @@ function kickAll(channel_id) {
     for (let s of state.spectators) {
         io.sockets.sockets[s].disconnect()
     }
+    
+    // Clear timeouts
+    if (state.game_timeout) {
+        clearTimeout(state.game_timeout)
+        state.game_timeout = null
+    }
+    if (state.hostless_timeout) {
+        clearTimeout(state.hostless_timeout)
+        state.hostless_timeout = null
+    }
+    
+    if (state.clientless_timeout) {
+        clearTimeout(state.clientless_timeout)
+        state.clientless_timeout = null
+    }
+    
+    let ip = game_states[channel_id].ip
+    
+    if (ip in ip_games) {
+        ip_games[ip]--
+        if (ip_games[ip] == 0) {
+            delete ip_games[ip]
+        }
+    }
+    
+    delete game_states[channel_id]
+    printInfo()
 }
 
 function rateLimit(socket) {
@@ -310,6 +342,8 @@ const game_timeout = 1000 * 3600 * 24 // 24 Hours
 
 const hostless_timeout = 1000 * 3600 // Hour
 
+const clientless_timeout = 1000 * 300 // 5 minutes
+
 const max_games = 100
 
 const max_ip_games = 5
@@ -353,6 +387,7 @@ const base_state = {
     'host_socket_id' : null,
     'hostless_timeout' : null,
     'game_timeout' : null,
+    'clientless_timeout' : null,
     'ip' : null,
     'spectators' : [],
     'night_actions' : {},
@@ -449,8 +484,10 @@ io.on('connection', (socket) => {
         }
         // Room available
         else {
+            let new_room = false
             // Make new room
             if (!(channel_id in game_states)) {
+                new_room = true
                 if (Object.keys(game_states).length == max_games) {
                     socket.emit('new host', false, `There are already the maximum number of games active`)
                     socket.disconnect()
@@ -470,26 +507,37 @@ io.on('connection', (socket) => {
                 
                 game_states[channel_id] = copy(base_state)
                 game_states[channel_id].game_timeout = setTimeout(() => {
-                    channelEmit(channel_id, 'finish', 'Your game has closed due to it running for too long')
-                    game_states[channel_id].game_timeout = null
-                    kickAll(channel_id)
+                    if (channel_id in game_states) {
+                        channelEmit(channel_id, 'finish', 'Your game has closed due to it running for too long')
+                        game_states[channel_id].game_timeout = null
+                        endGame(channel_id)
+                    }
                 }, game_timeout)
                 
                 game_states[channel_id].ip = ip
             }
+            
             game_states[channel_id].host_socket_id = socket.id
+            
+            // Timeouts
             if (game_states[channel_id].hostless_timeout) {
                 clearTimeout(game_states[channel_id].hostless_timeout)
                 game_states[channel_id].hostless_timeout = null
             }
             
+            if (game_states[channel_id].clientless_timeout) {
+                clearTimeout(game_states[channel_id].clientless_timeout)
+                game_states[channel_id].clientless_timeout = null
+            }
+            
+            // Remove from spectators (erroneous)
             if (game_states[channel_id].spectators.includes(socket.id)) {
                 game_states[channel_id].spectators.splice(game_states[channel_id].spectators.indexOf(socket.id), 1)
             }
             
             socket.channel_id = channel_id
             
-            socket.emit('new host', censorState(game_states[channel_id], socket.id))
+            socket.emit('new host', censorState(game_states[channel_id], socket.id), new_room)
             channelEmit(channel_id, 'host update', true)
             printInfo()
         }
@@ -517,12 +565,19 @@ io.on('connection', (socket) => {
             socket.disconnect()
         }
         else {
+            
+            if (game_states[channel_id].clientless_timeout) {
+                clearTimeout(game_states[channel_id].clientless_timeout)
+                game_states[channel_id].clientless_timeout = null
+            }
+            
             // Send game info
             socket.channel_id = channel_id
             socket.emit('new player', censorState(game_states[channel_id], socket.id))
             if (!game_states[channel_id].spectators.includes(socket.id)) {
                 game_states[channel_id].spectators.push(socket.id)
             }
+            
             printInfo()
         }
     })
@@ -576,8 +631,17 @@ io.on('connection', (socket) => {
                             player.name = name
                         }
                     }
-                    state.next_seat_id++
+
+                    
                     state.player_info.push(player)
+                    
+                    while (getPlayerBySeatID(state, state.next_seat_id)) {
+                        state.next_seat_id++
+                        if (state.next_seat_id == 2**30) {
+                            state.next_seat_id = 0
+                        }
+                    }
+                    
                     channelEmit(channel_id, 'add update', player)
                 }
             }
@@ -932,6 +996,10 @@ io.on('connection', (socket) => {
             game_states[channel_id].roles = game_states[channel_id].roles.concat(new_chars)
             game_states[channel_id].editions.push(edition)
             channelEmit(channel_id, 'new edition', {'edition' : edition, 'new_roles' : new_chars, 'new_fabled' : new_fabled})
+            game_states[channel_id].edition = edition.id
+            channelEmit(channel_id, 'edition update', game_states[channel_id].edition)
+            game_states[channel_id].fabled_in_play = edition.fabled || []
+            channelEmit(channel_id, 'fabled in play update', game_states[channel_id].fabled_in_play)
         }
     })
     
@@ -998,7 +1066,7 @@ io.on('connection', (socket) => {
             if (player != null && reminder_update.reminders && Array.isArray(reminder_update.reminders)) {
                 let new_reminders = []
                 for (let r of reminder_update.reminders.slice(0, max_reminders)) {
-                    new_reminders.push({'icon' : String(r.icon).slice(0, 20), 'text' : String(r.text).slice(0, 20)})
+                    new_reminders.push({'icon' : String(r.icon).slice(0, 20), 'text' : String(r.text).slice(0, 50)})
                 }
                 player.reminders = new_reminders
             }
@@ -1311,7 +1379,7 @@ io.on('connection', (socket) => {
     })
     
     // Reset Game
-    socket.on('reset game', (channel_id) => {
+    socket.on('reset game', (channel_id, recovery_state) => {
         if (!rateLimit(socket)) {return}
         if (channel_id in game_states && socket.id == game_states[channel_id].host_socket_id) {
             let old_state = game_states[channel_id]
@@ -1330,57 +1398,129 @@ io.on('connection', (socket) => {
             for (let a of copy_attributes) {
                 state[a] = old_state[a]
             }
-            
-            for (let i=0; i < old_state.player_info.length; i++) {
-                let p = getPlayerBySeat(old_state, i)
-                let player = copy(base_player_info)
-                player.seat = p.seat
-                player.seat_id = p.seat_id
-                player.name = p.name
-                player.socket_id = p.socket_id
-                
-                state.player_info.push(player)
+
+            // From scratch
+            if (!recovery_state) {
+                for (let i=0; i < old_state.player_info.length; i++) {
+                    let p = getPlayerBySeat(old_state, i)
+                    let player = copy(base_player_info)
+                    player.seat = p.seat
+                    player.seat_id = p.seat_id
+                    player.name = p.name
+                    player.socket_id = p.socket_id
+                    
+                    state.player_info.push(player)
+                }
+            }
+            // From recovery state
+            else {
+
+                // Base
+                state.log_status = Number.isInteger(recovery_state.log_status) && recovery_state.log_status <= 2 && recovery_state.log_status >= 0 ? recovery_state.log_status : 0
+                state.day_phase = Boolean(recovery_state.day_phase)
+                state.phase_counter = Number.isInteger(recovery_state.phase_counter) && (recovery_state.phase_counter > 0 || (recovery_state.phase_counter == 0 && !state.day_phase)) ? recovery_state.phase_counter : 0
+                state.nominations_open = state.day_phase ? Boolean(recovery_state.nominations_open) : false
+
+                // Edition
+                for (let edition of state.editions) {
+                    if (edition.id == recovery_state.edition) {
+                        state.edition = edition.id
+                        break
+                    }
+                }
+                if (state.edition != recovery_state.edition) {return}
+
+                // Fabled in play
+                if (!Array.isArray(recovery_state.fabled_in_play)) {return}
+                for (let fabled of recovery_state.fabled_in_play) {
+                    for (let f of state.fabled) {
+                        if (fabled == f.id) {
+                            state.fabled_in_play.push(f.id)
+                            break
+                        }
+                    }
+                }
+
+                // Player info
+                if (!Array.isArray(recovery_state.player_info)) {return}
+                let seats_remaining = [...Array(recovery_state.player_info.length).keys()]
+                let seat_ids_used = []
+                for (let p of recovery_state.player_info) {
+                    if (!p) {return}
+
+                    let player = copy(base_player_info)
+                    
+                    player.name = String(p.name).slice(0, 20)
+                    
+                    let seat = parseInt(p.seat)
+                    if (!seats_remaining.includes(seat)) {return}
+                    player.seat = seat
+                    seats_remaining.splice(seats_remaining.indexOf(seat), 1)
+                    
+                    let seat_id = parseInt(p.seat_id)
+                    if (!Number.isInteger(seat_id) || seat_id < 0 || seat_ids_used.includes(seat_id)) {return}
+                    player.seat_id = seat_id
+                    seat_ids_used.push(seat_id)
+                    state.next_seat_id = Math.max(state.next_seat_id, seat_id+1)
+                    player.alive = Boolean(p.alive)
+                    player.nominated = Boolean(p.nominated)
+                    player.nominateed = Boolean(p.nominateed)
+                    player.dead_vote = Boolean(p.dead_vote)
+                    
+                    let c = getCharacterFromID(state, p.character)
+                    player.character = c ? c.id : null
+                    
+                    if (!Array.isArray(p.reminders)) {return}
+                    for (let r of p.reminders) {
+                        player.reminders.push({'icon' : String(r.icon).slice(0, 20), 'text' : String(r.text).slice(0, 50)})
+                    }
+                    
+                    state.player_info.push(player)
+                }
+
+                // Demon bluffs
+                if (!Array.isArray(recovery_state.demon_bluffs)) {return}
+                for (let d_b of recovery_state.demon_bluffs) {
+                    let c = getCharacterFromID(state, d_b)
+                    if (c) {
+                        state.demon_bluffs.push(c.id)
+                    }
+                }
+
             }
             
             // Clear timeouts
             if (game_states[channel_id].game_timeout) {
                 clearTimeout(game_states[channel_id].game_timeout)
+                game_states[channel_id].game_timeout = null
             }
             
             if (game_states[channel_id].hostless_timeout) {
                 clearTimeout(game_states[channel_id].hostless_timeout)
+                game_states[channel_id].hostless_timeout = null
+            }
+            
+            if (game_states[channel_id].clientless_timeout) {
+                clearTimeout(game_states[channel_id].clientless_timeout)
+                game_states[channel_id].clientless_timeout = null
             }
             
             game_states[channel_id] = state
             
             // Redo timeout timers
             game_states[channel_id].game_timeout = setTimeout(() => {
-                channelEmit(channel_id, 'finish', 'Your game has closed due to it running for too long')
-                game_states[channel_id].game_timeout = null
-                kickAll(channel_id)
+                if (channel_id in game_states) {
+                    channelEmit(channel_id, 'finish', 'Your game has closed due to it running for too long')
+                    game_states[channel_id].game_timeout = null
+                    endGame(channel_id)
+                }
             }, game_timeout)
-            
-            if (!game_states[channel_id].host_socket_id) {
-                game_states[channel_id].hostless_timeout = setTimeout(() => {
-                    channelEmit(channel_id, 'finish', 'Your game has closed due to it not having a host')
-                    game_states[channel_id].hostless_timeout = null
-                    kickAll(channel_id)
-                }, hostless_timeout)
-            }
-            
+
             // Send it out
             if (state.host_socket_id != null) {
-                io.to(state.host_socket_id).emit('reset game', censorState(state))
+                io.to(state.host_socket_id).emit('reset game', censorState(state, state.host_socket_id))
             }
-            
-            for (let player of state.player_info) {
-                if (player.socket_id != null) {
-                    io.to(player.socket_id).emit('reset game', censorState(state))
-                }
-            }
-            for (let spectator of state.spectators) {
-                io.to(spectator).emit('reset game', censorState(state))
-            }
+            channelEmit(channel_id, 'reset game', censorState(state), false)
         }
     })
     
@@ -1431,7 +1571,7 @@ io.on('connection', (socket) => {
             // channelEmit(channel_id, 'host update', false)
             // game_states[channel_id].hostless_timeout = setTimeout(() => {
                 // channelEmit(channel_id, 'finish', 'Your game has closed due to it not having a host')
-                // kickAll(channel_id)
+                // endGame(channel_id)
             // }, hostless_timeout)
             // socket.disconnect()
         // }
@@ -1442,7 +1582,7 @@ io.on('connection', (socket) => {
         if (!rateLimit(socket)) {return}
         if (channel_id in game_states && socket.id == game_states[channel_id].host_socket_id) {
             channelEmit(channel_id, 'finish', 'Your game has closed')
-            kickAll(channel_id)
+            endGame(channel_id)
         }
     })
     
@@ -1460,9 +1600,11 @@ io.on('connection', (socket) => {
                     game_states[channel_id].hostless_timeout = null
                 }
                 game_states[channel_id].hostless_timeout = setTimeout(() => {
-                    channelEmit(channel_id, 'finish', 'Your game has closed due to it not having a host')
-                    game_states[channel_id].hostless_timeout = null
-                    kickAll(channel_id)
+                    if (channel_id in game_states) {
+                        channelEmit(channel_id, 'finish', 'Your game has closed due to it not having a host')
+                        game_states[channel_id].hostless_timeout = null
+                        endGame(channel_id)
+                    }
                 }, hostless_timeout)
             }
             else if (game_states[channel_id].host_socket_id) {
@@ -1509,27 +1651,12 @@ io.on('connection', (socket) => {
         
         // Close the game as no remaining connections
         if (connection_exists == false && channel_id in game_states) {
-            let state = game_states[channel_id]
-    
-            // Clear timeouts
-            if (state.game_timeout) {
-                clearTimeout(state.game_timeout)
-            }
-            if (state.hostless_timeout) {
-                clearTimeout(state.hostless_timeout)
-            }
-            
-            let ip = game_states[channel_id].ip
-            
-            if (ip in ip_games) {
-                ip_games[ip]--
-                if (ip_games[ip] == 0) {
-                    delete ip_games[ip]
+            game_states[channel_id].clientless_timeout = setTimeout(() => {
+                if (channel_id in game_states) {
+                    game_states[channel_id].clientless_timeout = null
+                    endGame(channel_id)
                 }
-            }
-            
-            delete game_states[channel_id]
-            printInfo()
+            }, clientless_timeout)
         }
     })
 })
