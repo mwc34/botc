@@ -243,31 +243,56 @@ function kickAll(channel_id) {
 function rateLimit(socket) {
     let ip = socket.request.headers['x-forwarded-for']
     
-    let curr_time = (new Date()).getTime()
-    
+    // Initialise
     if (!socket.rate_limit_requests) {
-        socket.rate_limit_requests = []
+        socket.rate_limit_requests = {
+            'time' : null,
+            'count' : null,
+        }
     }
-    if (socket.rate_limit_requests.length == max_requests && socket.rate_limit_requests[0] > curr_time - 1000) {
+    
+    // Update if behind
+    if (socket.rate_limit_requests.time != requests_timer.time) {
+        if (!requests_timer.requested) {
+            // Set a timer
+            setTimeout(() => {
+                requests_timer.time++
+                requests_timer.requested = false
+            }, 1000)
+            requests_timer.requested = true
+        }
+        socket.rate_limit_requests.time = requests_timer.time
+        socket.rate_limit_requests.count = 0
+    }
+    
+    // False if too many socket requests
+    if (socket.rate_limit_requests.count == max_requests) {
         return false
     }
     
+    // Initialise
     if (!(ip in ip_requests)) {
-        ip_requests[ip] = []
+        ip_requests[ip] = {
+            'time' : null,
+            'count' : null,
+        }
     }
-    if (ip_requests[ip].length == max_ip_requests && ip_requests[ip][0] > curr_time - 1000) {
+    
+    // Update if behind
+    if (ip_requests[ip].time != requests_timer.time) {
+        ip_requests[ip].time = requests_timer.time
+        ip_requests[ip].count = 0
+    }
+    
+    // False if too many ip requests
+    if (ip_requests[ip].count == max_ip_requests) {
         return false
     }
     
-    socket.rate_limit_requests.push(curr_time)
-    if (socket.rate_limit_requests.length > max_requests) {
-        socket.rate_limit_requests.splice(0, 1)
-    }
+    // Increment
+    socket.rate_limit_requests.count++
+    ip_requests[ip].count++
     
-    ip_requests[ip].push(curr_time)
-    if (ip_requests[ip].length > max_ip_requests) {
-        ip_requests[ip].splice(0, 1)
-    }
     return true
 }
 
@@ -295,11 +320,16 @@ const max_requests = 5 // Per second
 
 const max_ip_requests = max_requests * max_ip_connections
 
-const ip_connections = {}
+const ip_connections = {} // ip -> count
 
-const ip_games = {}
+const ip_games = {} // ip -> count
 
-const ip_requests = {}
+const ip_requests = {} // ip -> {time, count}
+
+const requests_timer = {
+    'time' : 0,
+    'requested' : false,
+}
 
 // Roles json
 

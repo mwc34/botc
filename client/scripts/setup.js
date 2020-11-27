@@ -1293,7 +1293,34 @@ function setupDayPhase() {
 
 function setupChangePhase() {
     change_phase.style.position = 'absolute'
-    change_phase.children[0].onclick = () => {
+    
+    // Forward
+    change_phase.onclick = () => {
+        if (client_type && !getMenuOpen() && !game_state.clock_info.active) {
+            let curr_night_action = false
+            if (!game_state.day_phase) {
+                for (let p of game_state.player_info) {
+                    if (p.night_action) {
+                        curr_night_action = true
+                        break
+                    }
+                }
+            }
+            if (!curr_night_action) {
+                socket.emit('phase update', channel_id, !game_state.day_phase, game_state.phase_counter + !game_state.day_phase)
+            }
+            else {
+                alert_box_info.push({
+                    'text' : 'You can\'t change the phase whilst there are still night actions being processed'
+                })
+                alert_box.check()
+            }
+        }
+    }
+    
+    // Back
+    change_phase.children[0].onclick = (e) => {
+        e.stopPropagation()
         if (client_type && !getMenuOpen() && !game_state.clock_info.active) {
             if (game_state.day_phase || game_state.phase_counter > 0) {
                 let curr_night_action = false
@@ -1317,29 +1344,7 @@ function setupChangePhase() {
             }
         }
     }
-    change_phase.children[2].onclick = () => {
-        if (client_type && !getMenuOpen() && !game_state.clock_info.active) {
-            let curr_night_action = false
-            if (!game_state.day_phase) {
-                for (let p of game_state.player_info) {
-                    if (p.night_action) {
-                        curr_night_action = true
-                        break
-                    }
-                }
-            }
-            if (!curr_night_action) {
-                socket.emit('phase update', channel_id, !game_state.day_phase, game_state.phase_counter + !game_state.day_phase)
-            }
-            else {
-                alert_box_info.push({
-                    'text' : 'You can\'t change the phase whilst there are still night actions being processed'
-                })
-                alert_box.check()
-            }
-        }
-    }
-    change_phase.children[1].onclick = change_phase.children[2].onclick
+    
 }
 
 function setupCurrentEdition() {
