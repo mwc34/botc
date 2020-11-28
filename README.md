@@ -3,10 +3,12 @@
 ## Features
 
 - Server side game hosting
+- Broadcasting of characters with "Sync Characters"
 - Day/Night phases
 - Nomination tracking
-- Night Actions
+- Interactive night actions
 - Toggleable log tracking
+- Grimoire reveal
 - Custom editions / characters / fabled
 
 ## Custom Edition/Characters/Fabled
