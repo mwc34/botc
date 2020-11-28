@@ -863,14 +863,14 @@ io.on('connection', (socket) => {
                         
                         extra_keys = {
                             'setup' : Boolean,
-                            'removes_self' : Boolean,
+                            'removesSelf' : Boolean,
                             'firstNight' : (e) => {return Number.isInteger(e) && e >= 0 ? parseInt(e) : 0},
                             'otherNight' : (e) => {return Number.isInteger(e) && e >= 0 ? parseInt(e) : 0},
                             'firstNightReminder' : (e) => {return String(e).slice(0, 1000)},
                             'otherNightReminder' : (e) => {return String(e).slice(0, 1000)},
                             'reminders' : (e) => {return Array.isArray(e) ? e.slice(0, 20).map((x) => {return String(x).slice(0, 50)}) : []},
                             'remindersGlobal' : (e) => {return Array.isArray(e) ? e.slice(0, 20).map((x) => {return String(x).slice(0, 50)}) : []},
-                            'night_actions' : (e) => {return Array.isArray(e) ? e.slice(0, 20).map((x) => {
+                            'nightActions' : (e) => {return Array.isArray(e) ? e.slice(0, 20).map((x) => {
                                 for (let key of x) {
                                     if (String(key).length > 50) {
                                         delete x[key]
@@ -885,7 +885,7 @@ io.on('connection', (socket) => {
                                     }
                                 }
                             }) : []},
-                            'night_actions_scoped' : (e) => {return Array.isArray(e) ? e.slice(0, 20).map((x) => {
+                            'nightActionsScoped' : (e) => {return Array.isArray(e) ? e.slice(0, 20).map((x) => {
                                 for (let key of x) {
                                     if (String(key).length > 50) {
                                         delete x[key]
@@ -909,7 +909,7 @@ io.on('connection', (socket) => {
                             'firstNightReminder' : "",
                             'otherNightReminder' : "",
                             'reminders' : [],
-                            'night_actions' : [],
+                            'nightActions' : [],
                         }
                         
                         new_c = {}

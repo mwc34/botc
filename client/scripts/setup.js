@@ -274,7 +274,7 @@ function setupMenu() {
                 let c = getCharacterFromID(player.character)
                 let temp = []
                 if (c != null) {
-                    temp = JSON.parse(JSON.stringify(c.night_actions))
+                    temp = JSON.parse(JSON.stringify(c.nightActions))
                 }
                 for (let a of default_night_action) {
                     temp.push(a)
@@ -297,13 +297,13 @@ function setupMenu() {
                         night_action = created_night_actions[night_action.name] = created_night_actions[night_action.name] || night_action
                         
                         // Pop up form to calculate data
-                        night_action_menu.children[1].children[1].children[1].innerHTML = night_action.in_players || 0
-                        night_action_menu.children[2].children[1].children[1].innerHTML = night_action.in_characters || 0
+                        night_action_menu.children[1].children[1].children[1].innerHTML = night_action.inPlayers || 0
+                        night_action_menu.children[2].children[1].children[1].innerHTML = night_action.inCharacters || 0
                         night_action_menu.children[3].children[1].children[1].innerHTML = night_action.players || 0
                         night_action_menu.children[4].children[1].children[1].innerHTML = night_action.characters || 0
                         
                         // Player restrictions
-                        let list = night_action.player_restrictions || []
+                        let list = night_action.playerRestrictions || []
                         night_action_menu.children[5].children[1].style.opacity = deselected_opacity + (1 - deselected_opacity) * list.includes("cancel")
                         night_action_menu.children[5].children[2].style.opacity = deselected_opacity + (1 - deselected_opacity) * list.includes("others")
                         night_action_menu.children[5].children[3].style.opacity = deselected_opacity + (1 - deselected_opacity) * (list.includes("alive") || !list.includes("dead"))
@@ -311,7 +311,7 @@ function setupMenu() {
                         
                         
                         // Character restrictions
-                        list = night_action.character_restrictions || []
+                        list = night_action.characterRestrictions || []
                         night_action_menu.children[6].children[1].style.opacity = deselected_opacity + (1 - deselected_opacity) * list.includes("cancel")
                         let teams = ['traveler', 'townsfolk', 'outsider', 'minion', 'demon']
                         let present_teams = []
@@ -438,7 +438,7 @@ function setupTokenMenu() {
     finish_button.onclick = () => {
         if (token_menu_info.type < 2) {
             for (let c of token_menu_info.selected) {
-                if (getCharacterFromID(c) && getCharacterFromID(c).removes_self) {
+                if (getCharacterFromID(c) && getCharacterFromID(c).removesSelf) {
                     alert_box_info.push({
                         'text' : `You have chosen the ${getLogCharacterStyle(getCharacterFromID(c).name)}.<br>You may need to make adjustments to the setup.`
                     })
@@ -850,7 +850,7 @@ function setupTokens() {
                             if (!game_state.day_phase) {
                                 let c = getCharacterFromID(getPlayerBySeatID(token_selected_seat_id).character)
                                 if (c != null) {
-                                    temp = JSON.parse(JSON.stringify(c.night_actions))
+                                    temp = JSON.parse(JSON.stringify(c.nightActions))
                                 }
                                 for (let a of default_night_action) {
                                     temp.push(a)
@@ -980,7 +980,7 @@ function setupTokens() {
                                 if (token_menu_info.valid_teams.length == 0) {
                                     token_menu_info.valid_teams = ['traveler', 'townsfolk', 'outsider', 'minion', 'demon']
                                 }
-                                token_menu_info.out_of_play = night_action_info.character_restrictions.includes("out_of_play")
+                                token_menu_info.out_of_play = night_action_info.character_restrictions.includes("outOfPlay")
                                 token_menu_info.active = true
                                 reDrawTokenMenu()
                                 
@@ -1239,7 +1239,7 @@ function setupCancelSelect() {
                     if (token_menu_info.valid_teams.length == 0) {
                         token_menu_info.valid_teams = ['traveler', 'townsfolk', 'outsider', 'minion', 'demon']
                     }
-                    token_menu_info.out_of_play = night_action_info.character_restrictions.includes("out_of_play")
+                    token_menu_info.out_of_play = night_action_info.character_restrictions.includes("outOfPlay")
                     token_menu_info.active = true
                     reDrawTokenMenu()
                     
@@ -1750,24 +1750,24 @@ function setupNightActionMenu() {
                         let night_action = created_night_actions[night_action_info.name]
                         
                         // Assign values to night action
-                        night_action.in_players = night_action_menu.children[1].children[1].children[1].innerHTML
-                        night_action.in_characters = night_action_menu.children[2].children[1].children[1].innerHTML
+                        night_action.inPlayers = night_action_menu.children[1].children[1].children[1].innerHTML
+                        night_action.inCharacters = night_action_menu.children[2].children[1].children[1].innerHTML
                         night_action.players = night_action_menu.children[3].children[1].children[1].innerHTML
                         night_action.characters = night_action_menu.children[4].children[1].children[1].innerHTML
                         
                         let list = ['cancel', 'others', 'alive', 'dead']
-                        night_action.player_restrictions = []
+                        night_action.playerRestrictions = []
                         for (let k=0; k<list.length; k++) {
                             if (night_action_menu.children[5].children[1 + k].style.opacity == 1 && (k < 2 || night_action_menu.children[5].children[1 + k + 1 - 2 * (k%2)].style.opacity != 1)) {
-                                night_action.player_restrictions.push(list[k])
+                                night_action.playerRestrictions.push(list[k])
                             }
                         }
                         
                         list = ['cancel', 'traveler', 'townsfolk', 'outsider', 'minion', 'demon']
-                        night_action.character_restrictions = []
+                        night_action.characterRestrictions = []
                         for (let k=0; k<list.length; k++) {
                             if (night_action_menu.children[6].children[1 + k].style.opacity == 1) {
-                                night_action.character_restrictions.push(list[k])
+                                night_action.characterRestrictions.push(list[k])
                             }
                         }
                         
@@ -2204,15 +2204,15 @@ function setupEditionMenu() {
                         
                         extra_keys = [
                             'setup',
-                            'removes_self',
+                            'removesSelf',
                             'firstNight',
                             'otherNight',
                             'firstNightReminder',
                             'otherNightReminder',
                             'reminders',
                             'remindersGlobal',
-                            'night_actions',
-                            'night_actions_scoped',
+                            'nightActions',
+                            'nightActionsScoped',
                         ]
                         
                         new_c = {}

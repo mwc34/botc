@@ -272,10 +272,10 @@ function getScopedNightActions(c) {
         for (let team in edition.characters) {
             for (let id of edition.characters[team]) {
                 let role = getCharacterFromID(id)
-                if (role.night_actions_scoped) {
-                    for (let a of role.night_actions_scoped) {
+                if (role.nightActionsScoped) {
+                    for (let a of role.nightActionsScoped) {
                         let team_restrictions = false
-                        let r = a.scope_restrictions || []
+                        let r = a.scopeRestrictions || []
                         for (let i of ['traveler', 'townsfolk', 'outsider', 'minion', 'demon']) {
                             if (r.includes(i)) {
                                 team_restrictions = true
@@ -283,7 +283,7 @@ function getScopedNightActions(c) {
                             }
                         }
                         
-                        if (!team_restrictions || (c != null && a.scope_restrictions.includes(c.team))) {
+                        if (!team_restrictions || (c != null && a.scopeRestrictions.includes(c.team))) {
                             if (a.scope == 'global') {
                                 to_return.push(a)
                             }
@@ -424,18 +424,29 @@ function nightActionAnimation() {
         
 
         if (token_click_type == 5) {
+            let p_r = night_action_info.player_restrictions
             let up_to = ''
-            if (night_action_info.player_restrictions.includes("cancel")) {
+            if (p_r.includes("cancel")) {
                 up_to = 'up to '
             }
-            info.innerHTML = 'Choose ' + up_to + night_action_info.in_players + ' player(s) (' + (night_action_info.in_players - night_action_info.players.length) + ' remaining) in ' + remaining_time + ' seconds'
+            let others = p_r.includes("others") ? ' other' : ''
+            let alive_status = ''
+            if (p_r.includes('alive') && !p_r.includes('dead')) {
+                alive_status = ' alive'
+            }
+            else if (p_r.includes('dead') && !p_r.includes('alive')) {
+                alive_status = ' dead'
+            }
+            let players = night_action_info.in_players == 1 ? ' player (' : ' players ('
+            info.innerHTML = 'Choose ' + up_to + night_action_info.in_players + others + alive_status + players + (night_action_info.in_players - night_action_info.players.length) + ' remaining) in ' + remaining_time + ' seconds'
         }
         else {
             let up_to = ''
             if (night_action_info.character_restrictions.includes("cancel")) {
                 up_to = 'up to '
             }
-            token_menu.children[0].innerHTML = 'Choose ' + up_to + token_menu_info.choices + ' character(s) (' + (token_menu_info.choices - token_menu_info.selected.length) + ' remaining) in ' + remaining_time + ' seconds'
+            let characters = token_menu_info.choices == 1 ? ' character (' : ' characters ('
+            token_menu.children[0].innerHTML = 'Choose ' + up_to + token_menu_info.choices + characters + (token_menu_info.choices - token_menu_info.selected.length) + ' remaining) in ' + remaining_time + ' seconds'
         }
         
         if (remaining_time > 0) {
@@ -459,7 +470,7 @@ function nightActionAnimation() {
                     if (token_menu_info.valid_teams.length == 0) {
                         token_menu_info.valid_teams = ['traveler', 'townsfolk', 'outsider', 'minion', 'demon']
                     }
-                    token_menu_info.out_of_play = night_action_info.character_restrictions.includes("out_of_play")
+                    token_menu_info.out_of_play = night_action_info.character_restrictions.includes("outOfPlay")
                     token_menu_info.active = true
                     reDrawTokenMenu()
                     nightActionAnimation()
@@ -517,14 +528,14 @@ function revealGrimoire(grimoire) {
 // For host after maybe done creation 
 function startNightAction(night_action) {
     // Action specific data
-    night_action_info.player_restrictions = night_action.player_restrictions || []
-    night_action_info.character_restrictions = night_action.character_restrictions || []
+    night_action_info.player_restrictions = night_action.playerRestrictions || []
+    night_action_info.character_restrictions = night_action.characterRestrictions || []
     night_action_info.info = night_action.info ? [night_action.info] : []
     night_action_info.confirm = night_action.confirm ? night_action.confirm : null
     night_action_info.grimoire = Boolean(night_action.grimoire)
     night_action_info.group = Boolean(night_action.group)
-    night_action_info.in_players = night_action.in_players || 0
-    night_action_info.in_characters = night_action.in_characters || 0
+    night_action_info.in_players = night_action.inPlayers || 0
+    night_action_info.in_characters = night_action.inCharacters || 0
     night_action_info.to_send_in_players = night_action.players || 0
     night_action_info.to_send_in_characters = night_action.characters || 0
     
@@ -571,7 +582,7 @@ function continueNightAction(night_action, prompt) {
             if (token_menu_info.valid_teams.length == 0) {
                 token_menu_info.valid_teams = ['traveler', 'townsfolk', 'outsider', 'minion', 'demon']
             }
-            token_menu_info.out_of_play = night_action_info.character_restrictions.includes("out_of_play")
+            token_menu_info.out_of_play = night_action_info.character_restrictions.includes("outOfPlay")
             token_menu_info.active = true
             reDrawTokenMenu()
             nightActionAnimation()
@@ -624,7 +635,7 @@ function afterInfoNightAction(night_action, timer, res) {
         if (token_menu_info.valid_teams.length == 0) {
             token_menu_info.valid_teams = ['traveler', 'townsfolk', 'outsider', 'minion', 'demon']
         }
-        token_menu_info.out_of_play = night_action_info.character_restrictions.includes("out_of_play")
+        token_menu_info.out_of_play = night_action_info.character_restrictions.includes("outOfPlay")
         token_menu_info.active = true
         reDrawTokenMenu()
         nightActionAnimation()

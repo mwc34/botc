@@ -129,6 +129,11 @@ function getSocketIconSize(number_of_players) {
     return t * size/50
 }
 
+function getDeadVoteSize(number_of_players) {
+    let t = getPlayerNumberFraction(number_of_players)
+    return t * size/40
+}
+
 function getNightReminderSize(number_of_players) {
     let t = getPlayerNumberFraction(number_of_players)
     return t * size/25

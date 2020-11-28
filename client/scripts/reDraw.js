@@ -982,12 +982,22 @@ function reDrawHUD() {
             break;
         case 5:
             cancel_select.innerHTML = 'Finish Choosing'
-            cancel_select.style.visibility = (night_action_info.player_restrictions.includes("cancel") || client_type) ? '' : 'hidden'
+            let p_r = night_action_info.player_restrictions
+            cancel_select.style.visibility = (p_r.includes("cancel") || client_type) ? '' : 'hidden'
             let up_to = ''
-            if (night_action_info.player_restrictions.includes("cancel")) {
+            if (p_r.includes("cancel")) {
                 up_to = 'up to '
             }
-            info.innerHTML = 'Choose ' + up_to + night_action_info.in_players + ' player(s) (' + (night_action_info.in_players - night_action_info.players.length) + ' remaining)'
+            let others = p_r.includes("others") ? ' other' : ''
+            let alive_status = ''
+            if (p_r.includes('alive') && !p_r.includes('dead')) {
+                alive_status = ' alive'
+            }
+            else if (p_r.includes('dead') && !p_r.includes('alive')) {
+                alive_status = ' dead'
+            }
+            let players = night_action_info.in_players == 1 ? ' player (' : ' players ('
+            info.innerHTML = 'Choose ' + up_to + night_action_info.in_players + others + alive_status + players + (night_action_info.in_players - night_action_info.players.length) + ' remaining)'
             if (!client_type) {
                 let time = (new Date()).getTime()
                 remaining_time = Math.ceil(Math.max(0, night_action_info.time - (time - (night_action_info.start_time ? night_action_info.start_time : time))) / 1000)

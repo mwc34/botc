@@ -13,12 +13,12 @@
       ],
       "setup":false,
       "ability":"You start knowing 1 of 2 players is a particular Townsfolk.",
-      "night_actions":[
+      "nightActions":[
          {
             "name":"Washerwoman Info",
-            "in_players":2,
-            "in_characters":1,
-            "character_restrictions" : ["townsfolk"]
+            "inPlayers":2,
+            "inCharacters":1,
+            "characterRestrictions" : ["townsfolk"]
          }
       ]
    },
@@ -36,12 +36,12 @@
       ],
       "setup":false,
       "ability":"You start knowing that 1 of 2 players is a particular Outsider. (Or that zero are in play)",
-      "night_actions":[
+      "nightActions":[
          {
             "name":"Librarian Info",
-            "in_players":2,
-            "in_characters":1,
-            "character_restrictions" : ["outsider"]
+            "inPlayers":2,
+            "inCharacters":1,
+            "characterRestrictions" : ["outsider"]
          },
          {
             "name":"Librarian Zero",
@@ -63,12 +63,12 @@
       ],
       "setup":false,
       "ability":"You start knowing 1 of 2 players is a particular Minion.",
-      "night_actions":[
+      "nightActions":[
          {
             "name":"Investigator Info",
-            "in_players":2,
-            "in_characters":1,
-            "character_restrictions" : ["minion"]
+            "inPlayers":2,
+            "inCharacters":1,
+            "characterRestrictions" : ["minion"]
          }
       ]
    },
@@ -85,7 +85,7 @@
       ],
       "setup":false,
       "ability":"You start knowing how many pairs of evil players there are.",
-      "night_actions":[
+      "nightActions":[
          {
             "name":"Chef Info",
             "info":"You start knowing that the number of evil pairs is <>."
@@ -105,7 +105,7 @@
       ],
       "setup":false,
       "ability":"Each night, you learn how many of your 2 alive neighbours are evil.",
-      "night_actions":[
+      "nightActions":[
          {
             "name":"Empath Info",
             "info":"You learn that <> of your alive neighbours are evil."
@@ -125,7 +125,7 @@
       ],
       "setup":false,
       "ability":"Each night, choose 2 players: you learn if either is a Demon. There is 1 good player that registers falsely to you.",
-      "night_actions":[
+      "nightActions":[
          {
             "name":"Fortune Choice",
             "players":2
@@ -149,10 +149,10 @@
       ],
       "setup":false,
       "ability":"Each night*, you learn which character died by execution today.",
-      "night_actions":[
+      "nightActions":[
          {
             "name":"Undertaker Info",
-            "in_characters":1
+            "inCharacters":1
          }
       ]
    },
@@ -169,11 +169,11 @@
       ],
       "setup":false,
       "ability":"Each night*, choose a player (not yourself): they are safe from the Demon tonight.",
-      "night_actions":[
+      "nightActions":[
          {
             "name":"Monk Protection",
             "players":1,
-            "player_restrictions":[
+            "playerRestrictions":[
                "others"
             ]
          }
@@ -192,14 +192,14 @@
       ],
       "setup":false,
       "ability":"If you die at night, you are woken to choose a player: you learn their character.",
-      "night_actions":[
+      "nightActions":[
          {
             "name":"Ravenkeeper Choice",
             "players":1
          },
          {
             "name":"Ravenkeeper Info",
-            "in_characters":1
+            "inCharacters":1
          }
       ]
    },
@@ -216,7 +216,7 @@
       ],
       "setup":false,
       "ability":"If only 3 players live and no execution occurs, your team wins. If you die at night, another player might die instead.",
-      "night_actions":[
+      "nightActions":[
          
       ]
    },
@@ -233,7 +233,7 @@
       ],
       "setup":false,
       "ability":"Once per game, during the day, publicly choose a player: if they are the Demon, they die.",
-      "night_actions":[
+      "nightActions":[
          
       ]
    },
@@ -250,7 +250,7 @@
       ],
       "setup":false,
       "ability":"You are safe from the Demon.",
-      "night_actions":[
+      "nightActions":[
          
       ]
    },
@@ -267,7 +267,7 @@
       ],
       "setup":false,
       "ability":"The first time you are nominated, if the nominator is a Townsfolk, they are executed immediately.",
-      "night_actions":[
+      "nightActions":[
          
       ]
    },
@@ -284,11 +284,11 @@
       ],
       "setup":false,
       "ability":"Each night, choose a player (not yourself): tomorrow, you may only vote if they are voting too.",
-      "night_actions":[
+      "nightActions":[
          {
             "name":"Butler Choice",
             "players":1,
-            "player_restrictions":[
+            "playerRestrictions":[
                "others"
             ]
          }
@@ -309,9 +309,9 @@
          "Drunk"
       ],
       "setup":true,
-      "removes_self":true,
+      "removesSelf":true,
       "ability":"You do not know you are the Drunk. You think you are a Townsfolk, but your ability malfunctions.",
-      "night_actions":[
+      "nightActions":[
          
       ]
    },
@@ -328,7 +328,7 @@
       ],
       "setup":false,
       "ability":"You might register as evil and as a Minion or Demon, even if dead.",
-      "night_actions":[
+      "nightActions":[
          
       ]
    },
@@ -345,7 +345,7 @@
       ],
       "setup":false,
       "ability":"If you die by execution, your team loses.",
-      "night_actions":[
+      "nightActions":[
          
       ]
    },
@@ -362,15 +362,15 @@
       ],
       "setup":true,
       "ability":"There are extra Outsiders in play. [+2 Outsiders]",
-      "night_actions":[
+      "nightActions":[
          {
             "name":"Minion Info: Demon",
-            "in_players":1
+            "inPlayers":1
          },
          {
             "name":"Minion Info: Minions",
-            "in_players":2,
-            "player_restrictions":[
+            "inPlayers":2,
+            "playerRestrictions":[
                "cancel"
             ]
          }
@@ -389,19 +389,19 @@
       ],
       "setup":false,
       "ability":"Each night, choose a player: their ability malfunctions tonight and tomorrow day.",
-      "night_actions":[
+      "nightActions":[
          {
             "name":"Poisoner Choice",
             "players":1
          },
          {
             "name":"Minion Info: Demon",
-            "in_players":1
+            "inPlayers":1
          },
          {
             "name":"Minion Info: Minions",
-            "in_players":2,
-            "player_restrictions":[
+            "inPlayers":2,
+            "playerRestrictions":[
                "cancel"
             ]
          }
@@ -420,19 +420,19 @@
       ],
       "setup":false,
       "ability":"Each night, you see the Grimoire. You might register as good and as a Townsfolk or Outsider, even if dead.",
-      "night_actions":[
+      "nightActions":[
          {
             "name":"Show Grimoire",
             "grimoire":1
          },
          {
             "name":"Minion Info: Demon",
-            "in_players":1
+            "inPlayers":1
          },
          {
             "name":"Minion Info: Minions",
-            "in_players":2,
-            "player_restrictions":[
+            "inPlayers":2,
+            "playerRestrictions":[
                "cancel"
             ]
          }
@@ -451,15 +451,15 @@
       ],
       "setup":false,
       "ability":"If there are 5 or more players alive (Travelers don't count) and the Demon dies, you become the Demon.",
-      "night_actions":[
+      "nightActions":[
          {
             "name":"Minion Info: Demon",
-            "in_players":1
+            "inPlayers":1
          },
          {
             "name":"Minion Info: Minions",
-            "in_players":2,
-            "player_restrictions":[
+            "inPlayers":2,
+            "playerRestrictions":[
                "cancel"
             ]
          }
@@ -478,19 +478,19 @@
       ],
       "setup":false,
       "ability":"Each night*, choose a player: they die. If you kill yourself this way, a Minion becomes the Imp.",
-      "night_actions":[
+      "nightActions":[
          {
             "name":"Imp Kill",
             "players":1
          },
          {
             "name":"Demon Info",
-            "in_players":3,
-            "player_restrictions":[
+            "inPlayers":3,
+            "playerRestrictions":[
                "cancel"
             ],
-            "in_characters":3,
-            "character_restrictions":["townsfolk","outsider","out_of_play"]
+            "inCharacters":3,
+            "characterRestrictions":["townsfolk","outsider","outOfPlay"]
          }
       ]
    },
@@ -507,12 +507,12 @@
       "name":"Grandmother",
       "team":"townsfolk",
       "ability":"You start knowing a good player and character. If the Demon kills them, you die too.",
-      "night_actions":[
+      "nightActions":[
          {
             "name":"Grandchild",
-            "in_players":1,
-            "in_characters":1,
-            "character_restrictions" : ["townsfolk", "outsider"]
+            "inPlayers":1,
+            "inCharacters":1,
+            "characterRestrictions" : ["townsfolk", "outsider"]
          }
       ]
    },
@@ -529,7 +529,7 @@
       "name":"Sailor",
       "team":"townsfolk",
       "ability":"Each night, choose a player: either you or they are drunk until dusk. You can not die.",
-      "night_actions":[
+      "nightActions":[
          {
             "name":"Sailor Drink",
             "players":1
@@ -549,11 +549,11 @@
       "name":"Chambermaid",
       "team":"townsfolk",
       "ability":"Each night, choose 2 alive players (not yourself): you learn how many woke tonight due to their ability.",
-      "night_actions":[
+      "nightActions":[
          {
             "name":"Chambermaid Choice",
             "players":2,
-            "player_restrictions":[
+            "playerRestrictions":[
                "alive",
                "others"
             ]
@@ -577,20 +577,20 @@
       "name":"Exorcist",
       "team":"townsfolk",
       "ability":"Each night*, choose a player (not the same as last night): the Demon, if chosen, learns who you are and does not act tonight.",
-      "night_actions":[
+      "nightActions":[
          {
             "name":"Exorcise",
             "players":1
          }
       ],
-      "night_actions_scoped":[
+      "nightActionsScoped":[
          {
             "name":"Learn Exorcist",
             "scope":"local",
-            "in_players":1,
-            "in_characters":1,
-            "character_restrictions" : ["townsfolk"],
-            "scope_restrictions":[
+            "inPlayers":1,
+            "inCharacters":1,
+            "characterRestrictions" : ["townsfolk"],
+            "scopeRestrictions":[
                "demon"
             ]
          }
@@ -610,7 +610,7 @@
       "name":"Innkeeper",
       "team":"townsfolk",
       "ability":"Each night*, choose 2 players: they cannot die tonight, but 1 is drunk until dusk.",
-      "night_actions":[
+      "nightActions":[
          {
             "name":"Innkeep",
             "players":2
@@ -630,7 +630,7 @@
       "name":"Gambler",
       "team":"townsfolk",
       "ability":"Each night*, choose a player and guess their character: if you guess wrong, you die.",
-      "night_actions":[
+      "nightActions":[
          {
             "name":"Gamble",
             "players":1,
@@ -651,7 +651,7 @@
       "name":"Gossip",
       "team":"townsfolk",
       "ability":"Each day, you may make a public statement. Tonight, if it was true, a player dies.",
-      "night_actions":[
+      "nightActions":[
          
       ]
    },
@@ -671,11 +671,11 @@
       "name":"Courtier",
       "team":"townsfolk",
       "ability":"Once per game, at night, choose a character: they are drunk for 3 nights and 3 days.",
-      "night_actions":[
+      "nightActions":[
          {
             "name":"Courtier Ability",
             "characters":1,
-            "character_restrictions":[
+            "characterRestrictions":[
                "cancel"
             ]
          }
@@ -695,11 +695,11 @@
       "name":"Professor",
       "team":"townsfolk",
       "ability":"Once per game, at night*, choose a dead player. If they are a Townsfolk, they are resurrected.",
-      "night_actions":[
+      "nightActions":[
          {
             "name":"Resurrect",
             "players":1,
-            "player_restrictions":[
+            "playerRestrictions":[
                "dead",
                "cancel"
             ]
@@ -719,7 +719,7 @@
       "name":"Minstrel",
       "team":"townsfolk",
       "ability":"If a Minion died today, all other players (except Travelers) are drunk all night, until dusk.",
-      "night_actions":[
+      "nightActions":[
          
       ]
    },
@@ -736,7 +736,7 @@
       "name":"Tea Lady",
       "team":"townsfolk",
       "ability":"If both your alive neighbors are good, they can not die.",
-      "night_actions":[
+      "nightActions":[
          
       ]
    },
@@ -753,7 +753,7 @@
       "name":"Pacifist",
       "team":"townsfolk",
       "ability":"Executed good players might not die.",
-      "night_actions":[
+      "nightActions":[
          
       ]
    },
@@ -770,7 +770,7 @@
       "name":"Fool",
       "team":"townsfolk",
       "ability":"The first time you die, you don't.",
-      "night_actions":[
+      "nightActions":[
          
       ]
    },
@@ -787,7 +787,7 @@
       "name":"Tinker",
       "team":"outsider",
       "ability":"You might die at any time.",
-      "night_actions":[
+      "nightActions":[
          
       ]
    },
@@ -804,7 +804,7 @@
       "name":"Moonchild",
       "team":"outsider",
       "ability":"When you learn that you died, choose 1 alive player: if good, they die tonight.",
-      "night_actions":[
+      "nightActions":[
          
       ]
    },
@@ -821,7 +821,7 @@
       "name":"Goon",
       "team":"outsider",
       "ability":"Each night, the 1st player to choose you with their ability is drunk until dusk. You become their alignment.",
-      "night_actions":[
+      "nightActions":[
          
       ]
    },
@@ -839,30 +839,30 @@
          "Decoy"
       ],
       "setup":true,
-      "removes_self":true,
+      "removesSelf":true,
       "name":"Lunatic",
       "team":"outsider",
       "ability":"You think you are a Demon, but your abilities malfunction. The Demon knows who you are and who you attack.",
-      "night_actions":[
+      "nightActions":[
          
       ],
-      "night_actions_scoped":[
+      "nightActionsScoped":[
          {
             "name":"Learn Lunatic Player",
-            "in_players":1,
+            "inPlayers":1,
             "scope":"global",
-            "scope_restrictions":[
+            "scopeRestrictions":[
                "demon"
             ]
          },
          {
             "name":"Learn Lunatic Attack",
-            "in_players":3,
+            "inPlayers":3,
             "scope":"global",
-            "player_restrictions":[
+            "playerRestrictions":[
                "cancel"
             ],
-            "scope_restrictions":[
+            "scopeRestrictions":[
                "demon"
             ]
          }
@@ -882,11 +882,11 @@
       "name":"Godfather",
       "team":"minion",
       "ability":"You start knowing which Outsiders are in-play. If 1 died today, choose a player tonight: they die. [-1 or +1 Outsider]",
-      "night_actions":[
+      "nightActions":[
          {
             "name":"Learn Outsiders",
-            "in_characters":4,
-            "character_restrictions":[
+            "inCharacters":4,
+            "characterRestrictions":[
                "cancel", "outsider"
             ]
          },
@@ -896,12 +896,12 @@
          },
          {
             "name":"Minion Info: Demon",
-            "in_players":1
+            "inPlayers":1
          },
          {
             "name":"Minion Info: Minions",
-            "in_players":2,
-            "player_restrictions":[
+            "inPlayers":2,
+            "playerRestrictions":[
                "cancel"
             ]
          }
@@ -920,22 +920,22 @@
       "name":"Devil's Advocate",
       "team":"minion",
       "ability":"Each night, choose a living player (not the same as last night): if executed tomorrow, they do not die.",
-      "night_actions":[
+      "nightActions":[
          {
             "name":"DA Protect Player",
             "players":1,
-            "player_restrictions":[
+            "playerRestrictions":[
                "alive"
             ]
          },
          {
             "name":"Minion Info: Demon",
-            "in_players":1
+            "inPlayers":1
          },
          {
             "name":"Minion Info: Minions",
-            "in_players":2,
-            "player_restrictions":[
+            "inPlayers":2,
+            "playerRestrictions":[
                "cancel"
             ]
          }
@@ -955,22 +955,22 @@
       "name":"Assassin",
       "team":"minion",
       "ability":"Once per game, at night*, choose a player: they die, even if for some reason they could not.",
-      "night_actions":[
+      "nightActions":[
          {
             "name":"Assassin Kill",
             "players":1,
-            "player_restrictions":[
+            "playerRestrictions":[
                "cancel"
             ]
          },
          {
             "name":"Minion Info: Demon",
-            "in_players":1
+            "inPlayers":1
          },
          {
             "name":"Minion Info: Minions",
-            "in_players":2,
-            "player_restrictions":[
+            "inPlayers":2,
+            "playerRestrictions":[
                "cancel"
             ]
          }
@@ -989,15 +989,15 @@
       "name":"Mastermind",
       "team":"minion",
       "ability":"If the Demon dies by execution, play for 1 more day. If a player is then executed, their team loses.",
-      "night_actions":[
+      "nightActions":[
          {
             "name":"Minion Info: Demon",
-            "in_players":1
+            "inPlayers":1
          },
          {
             "name":"Minion Info: Minions",
-            "in_players":2,
-            "player_restrictions":[
+            "inPlayers":2,
+            "playerRestrictions":[
                "cancel"
             ]
          }
@@ -1019,11 +1019,11 @@
       "name":"Po",
       "team":"demon",
       "ability":"Each night*, you may choose a player: they die. If you chose no-one last night, choose 3 players tonight.",
-      "night_actions":[
+      "nightActions":[
          {
             "name":"Po Kill",
             "players":1,
-            "player_restrictions":[
+            "playerRestrictions":[
                "cancel"
             ]
          },
@@ -1033,12 +1033,12 @@
          },
          {
             "name":"Demon Info",
-            "in_players":3,
-            "player_restrictions":[
+            "inPlayers":3,
+            "playerRestrictions":[
                "cancel"
             ],
-            "in_characters":3,
-            "character_restrictions":["townsfolk","outsider","out_of_play"]
+            "inCharacters":3,
+            "characterRestrictions":["townsfolk","outsider","outOfPlay"]
          }
       ]
    },
@@ -1056,19 +1056,19 @@
       "name":"Zombuul",
       "team":"demon",
       "ability":"Each night*, if no-one died today, choose a player: they die. The 1st time you die, you live but register as dead.",
-      "night_actions":[
+      "nightActions":[
          {
             "name":"Zombuul Kill",
             "players":1
          },
          {
             "name":"Demon Info",
-            "in_players":3,
-            "player_restrictions":[
+            "inPlayers":3,
+            "playerRestrictions":[
                "cancel"
             ],
-            "in_characters":3,
-            "character_restrictions":["townsfolk","outsider","out_of_play"]
+            "inCharacters":3,
+            "characterRestrictions":["townsfolk","outsider","outOfPlay"]
          }
       ]
    },
@@ -1086,19 +1086,19 @@
       "name":"Pukka",
       "team":"demon",
       "ability":"Each night, choose a player: they are poisoned until tomorrow night, then die. You act on the 1st night.",
-      "night_actions":[
+      "nightActions":[
          {
             "name":"Pukka Kill",
             "players":1
          },
          {
             "name":"Demon Info",
-            "in_players":3,
-            "player_restrictions":[
+            "inPlayers":3,
+            "playerRestrictions":[
                "cancel"
             ],
-            "in_characters":3,
-            "character_restrictions":["townsfolk","outsider","out_of_play"]
+            "inCharacters":3,
+            "characterRestrictions":["townsfolk","outsider","outOfPlay"]
          }
       ]
    },
@@ -1117,19 +1117,19 @@
       "name":"Shabaloth",
       "team":"demon",
       "ability":"Each night*, choose 2 players: they die. A dead player you chose last night might be regurgitated.",
-      "night_actions":[
+      "nightActions":[
          {
             "name":"Shabaloth Kill",
             "players":2
          },
          {
             "name":"Demon Info",
-            "in_players":3,
-            "player_restrictions":[
+            "inPlayers":3,
+            "playerRestrictions":[
                "cancel"
             ],
-            "in_characters":3,
-            "character_restrictions":["townsfolk","outsider","out_of_play"]
+            "inCharacters":3,
+            "characterRestrictions":["townsfolk","outsider","outOfPlay"]
          }
       ]
    },
@@ -1146,7 +1146,7 @@
       "name":"Clockmaker",
       "team":"townsfolk",
       "ability":"You start knowing how many steps from the Demon to its nearest Minion.",
-      "night_actions":[
+      "nightActions":[
          {
             "name":"Clockmaker Info",
             "info":"The nearest Minion is <> steps from the Demon."
@@ -1166,15 +1166,15 @@
       "name":"Dreamer",
       "team":"townsfolk",
       "ability":"Each night, choose a player (not yourself): you learn 1 good and 1 evil character, 1 of which is correct.",
-      "night_actions":[
+      "nightActions":[
          {
             "name":"Dream",
             "players":1,
-            "player_restrictions" : ["others"]
+            "playerRestrictions" : ["others"]
          },
          {
             "name":"Dreamed Players",
-            "in_characters":2
+            "inCharacters":2
          }
       ]
    },
@@ -1191,11 +1191,11 @@
       "name":"Snake Charmer",
       "team":"townsfolk",
       "ability":"Each night, choose an alive player: a chosen Demon swaps characters and alignments with you and is then poisoned.",
-      "night_actions":[
+      "nightActions":[
          {
             "name":"Snake Charm",
             "players":1,
-            "player_restrictions":[
+            "playerRestrictions":[
                "alive"
             ]
          }
@@ -1214,7 +1214,7 @@
       "name":"Mathematician",
       "team":"townsfolk",
       "ability":"Each night, you learn how many players' abilities worked abnormally (since dawn) due to another character's ability.",
-      "night_actions":[
+      "nightActions":[
          {
             "name":"Abnormal Abilities",
             "info":"<> abilities worked abnormally (since dawn) due to another character's ability."
@@ -1235,7 +1235,7 @@
       "name":"Flowergirl",
       "team":"townsfolk",
       "ability":"Each night*, you learn if the Demon voted today.",
-      "night_actions":[
+      "nightActions":[
          {
             "name":"Flowergirl Info",
             "info":"The Demon <> vote today."
@@ -1256,7 +1256,7 @@
       "name":"Town Crier",
       "team":"townsfolk",
       "ability":"Each night*, you learn if a Minion nominated today.",
-      "night_actions":[
+      "nightActions":[
          {
             "name":"Town Crier Info",
             "info":"A Minion <> nominate today."
@@ -1276,7 +1276,7 @@
       "name":"Oracle",
       "team":"townsfolk",
       "ability":"Each night*, you learn how many dead players are evil.",
-      "night_actions":[
+      "nightActions":[
          {
             "name":"Oracle Info",
             "info":"<> dead players are evil."
@@ -1296,7 +1296,7 @@
       "name":"Savant",
       "team":"townsfolk",
       "ability":"Each day, you may visit the Storyteller to learn 2 things in private: 1 is true and 1 is false.",
-      "night_actions":[
+      "nightActions":[
          
       ]
    },
@@ -1313,11 +1313,11 @@
       "name":"Seamstress",
       "team":"townsfolk",
       "ability":"Once per game, at night, choose 2 players (not yourself): you learn if they are the same alignment.",
-      "night_actions":[
+      "nightActions":[
          {
             "name":"Seamstress Choice",
             "players":2,
-            "player_restrictions":[
+            "playerRestrictions":[
                "cancel",
                "others"
             ]
@@ -1342,11 +1342,11 @@
       "name":"Philosopher",
       "team":"townsfolk",
       "ability":"Once per game, at night, choose a good character: become them. If you duplicate an in-play character, they are drunk.",
-      "night_actions":[
+      "nightActions":[
          {
             "name":"Philosophise",
             "characters":1,
-            "character_restrictions":[
+            "characterRestrictions":[
                "cancel",
                "townsfolk",
                "outsider"
@@ -1367,7 +1367,7 @@
       "name":"Artist",
       "team":"townsfolk",
       "ability":"Once per game, during the day, privately ask the Storyteller any yes/no question.",
-      "night_actions":[
+      "nightActions":[
          
       ]
    },
@@ -1384,7 +1384,7 @@
       "name":"Juggler",
       "team":"townsfolk",
       "ability":"On your 1st day, publicly guess up to 5 player's characters. That night, you learn how many you got correct.",
-      "night_actions":[
+      "nightActions":[
          {
             "name":"Juggler Info",
             "info":"You got <> correct."
@@ -1404,10 +1404,10 @@
       "name":"Sage",
       "team":"townsfolk",
       "ability":"If the Demon kills you, you learn that it is 1 of 2 players.",
-      "night_actions":[
+      "nightActions":[
          {
             "name":"Sage Info",
-            "in_players":2
+            "inPlayers":2
          }
       ]
    },
@@ -1424,7 +1424,7 @@
       "name":"Mutant",
       "team":"outsider",
       "ability":"If you are \"mad\" about being an Outsider, you might be executed.",
-      "night_actions":[
+      "nightActions":[
          
       ]
    },
@@ -1441,7 +1441,7 @@
       "name":"Sweetheart",
       "team":"outsider",
       "ability":"If you die, 1 player is drunk from now on.",
-      "night_actions":[
+      "nightActions":[
          
       ]
    },
@@ -1458,18 +1458,18 @@
       "name":"Barber",
       "team":"outsider",
       "ability":"If you die, tonight the Demon may choose 2 players (not another Demon) to swap characters.",
-      "night_actions":[
+      "nightActions":[
          
       ],
-      "night_actions_scoped":[
+      "nightActionsScoped":[
          {
             "name":"Barber Swap",
             "players":2,
             "scope":"local",
-            "scope_restrictions":[
+            "scopeRestrictions":[
                "demons"
             ],
-            "player_restrictions":[
+            "playerRestrictions":[
                 "cancel"
             ]
          }
@@ -1488,7 +1488,7 @@
       "name":"Klutz",
       "team":"outsider",
       "ability":"When you learn that you died, publicly choose 1 alive player: if they are evil, your team loses.",
-      "night_actions":[
+      "nightActions":[
          
       ]
    },
@@ -1505,24 +1505,24 @@
       "name":"Evil Twin",
       "team":"minion",
       "ability":"You and an opposing player know each other. If the good player is executed, evil wins. Good can't win if you both live.",
-      "night_actions":[
+      "nightActions":[
          {
             "name":"Minion Info: Demon",
-            "in_players":1
+            "inPlayers":1
          },
          {
             "name":"Minion Info: Minions",
-            "in_players":2,
-            "player_restrictions":[
+            "inPlayers":2,
+            "playerRestrictions":[
                "cancel"
             ]
          }
       ],
-      "night_actions_scoped":[
+      "nightActionsScoped":[
          {
             "name":"Evil Twin Info",
-            "in_players":1,
-            "in_characters":1,
+            "inPlayers":1,
+            "inCharacters":1,
             "scope":"local"
          }
       ]
@@ -1540,19 +1540,19 @@
       "name":"Witch",
       "team":"minion",
       "ability":"Each night, choose a player: if they nominate tomorrow, they die. If just 3 players live, you lose this ability.",
-      "night_actions":[
+      "nightActions":[
          {
             "name":"Witch Curse",
             "players":1
          },
          {
             "name":"Minion Info: Demon",
-            "in_players":1
+            "inPlayers":1
          },
          {
             "name":"Minion Info: Minions",
-            "in_players":2,
-            "player_restrictions":[
+            "inPlayers":2,
+            "playerRestrictions":[
                "cancel"
             ]
          }
@@ -1571,34 +1571,34 @@
       "name":"Cerenovus",
       "team":"minion",
       "ability":"Each night, choose a player and a good character: they are \"mad\" they are this character tomorrow, or might be executed.",
-      "night_actions":[
+      "nightActions":[
          {
             "name":"Cerenovus Ability",
             "players":1,
             "characters":1,
-            "character_restrictions":[
+            "characterRestrictions":[
                "townsfolk",
                "outsider"
             ]
          },
          {
             "name":"Minion Info: Demon",
-            "in_players":1
+            "inPlayers":1
          },
          {
             "name":"Minion Info: Minions",
-            "in_players":2,
-            "player_restrictions":[
+            "inPlayers":2,
+            "playerRestrictions":[
                "cancel"
             ]
          }
       ],
-      "night_actions_scoped":[
+      "nightActionsScoped":[
          {
             "name":"You Are Cerenovus Mad",
-            "in_characters":1,
+            "inCharacters":1,
             "scope":"local",
-            "character_restrictions":["townsfolk","outsider"]
+            "characterRestrictions":["townsfolk","outsider"]
          }
       ]
    },
@@ -1615,7 +1615,7 @@
       "name":"Pit-Hag",
       "team":"minion",
       "ability":"Each night*, choose a player and a character they become (if not-in-play). If a Demon is made, deaths tonight are arbitrary.",
-      "night_actions":[
+      "nightActions":[
          {
             "name":"Pit-Hag Ability",
             "players":1,
@@ -1623,12 +1623,12 @@
          },
          {
             "name":"Minion Info: Demon",
-            "in_players":1
+            "inPlayers":1
          },
          {
             "name":"Minion Info: Minions",
-            "in_players":2,
-            "player_restrictions":[
+            "inPlayers":2,
+            "playerRestrictions":[
                "cancel"
             ]
          }
@@ -1647,19 +1647,19 @@
       "name":"Fang Gu",
       "team":"demon",
       "ability":"Each night*, choose a player: they die. The 1st Outsider chosen becomes an evil Fang Gu and you die instead. [+1 Outsider]",
-      "night_actions":[
+      "nightActions":[
          {
             "name":"Fang Gu Kill",
             "players":1
          },
          {
             "name":"Demon Info",
-            "in_players":3,
-            "player_restrictions":[
+            "inPlayers":3,
+            "playerRestrictions":[
                "cancel"
             ],
-            "in_characters":3,
-            "character_restrictions":["townsfolk","outsider","out_of_play"]
+            "inCharacters":3,
+            "characterRestrictions":["townsfolk","outsider","outOfPlay"]
          }
       ]
    },
@@ -1678,19 +1678,19 @@
       "name":"Vigormortis",
       "team":"demon",
       "ability":"Each night*, choose a player: they die. Minions you kill keep their ability and poison 1 Townsfolk neighbor. [-1 Outsider].",
-      "night_actions":[
+      "nightActions":[
          {
             "name":"Vigormortis Kill",
             "players":1
          },
          {
             "name":"Demon Info",
-            "in_players":3,
-            "player_restrictions":[
+            "inPlayers":3,
+            "playerRestrictions":[
                "cancel"
             ],
-            "in_characters":3,
-            "character_restrictions":["townsfolk","outsider","out_of_play"]
+            "inCharacters":3,
+            "characterRestrictions":["townsfolk","outsider","outOfPlay"]
          }
       ]
    },
@@ -1708,19 +1708,19 @@
       "name":"No Dashii",
       "team":"demon",
       "ability":"Each night*, choose a player: they die. Your 2 Townsfolk neighbors are poisoned.",
-      "night_actions":[
+      "nightActions":[
          {
             "name":"No Dashii Kill",
             "players":1
          },
          {
             "name":"Demon Info",
-            "in_players":3,
-            "player_restrictions":[
+            "inPlayers":3,
+            "playerRestrictions":[
                "cancel"
             ],
-            "in_characters":3,
-            "character_restrictions":["townsfolk","outsider","out_of_play"]
+            "inCharacters":3,
+            "characterRestrictions":["townsfolk","outsider","outOfPlay"]
          }
       ]
    },
@@ -1737,19 +1737,19 @@
       "name":"Vortox",
       "team":"demon",
       "ability":"Each night*, choose a player: they die. Good abilities yield false information. Each day, if no-one was executed, evil wins.",
-      "night_actions":[
+      "nightActions":[
          {
             "name":"Vortox Kill",
             "players":1
          },
          {
             "name":"Demon Info",
-            "in_players":3,
-            "player_restrictions":[
+            "inPlayers":3,
+            "playerRestrictions":[
                "cancel"
             ],
-            "in_characters":3,
-            "character_restrictions":["townsfolk","outsider","out_of_play"]
+            "inCharacters":3,
+            "characterRestrictions":["townsfolk","outsider","outOfPlay"]
          }
       ]
    },
@@ -1766,7 +1766,7 @@
       "name":"Scapegoat",
       "team":"traveler",
       "ability":"If a player of your alignment is executed, you might be executed instead.",
-      "night_actions":[
+      "nightActions":[
          
       ]
    },
@@ -1783,7 +1783,7 @@
       "name":"Gunslinger",
       "team":"traveler",
       "ability":"Each day, after the 1st vote has been tallied, you may choose a player that voted: they die.",
-      "night_actions":[
+      "nightActions":[
          
       ]
    },
@@ -1800,7 +1800,7 @@
       "name":"Beggar",
       "team":"traveler",
       "ability":"You must use a vote token to vote. Dead players may choose to give you theirs. If so, you learn their alignment.",
-      "night_actions":[
+      "nightActions":[
          
       ]
    },
@@ -1817,11 +1817,11 @@
       "name":"Bureaucrat",
       "team":"traveler",
       "ability":"Each night, choose a player (not yourself): their vote counts as 3 votes tomorrow.",
-      "night_actions":[
+      "nightActions":[
          {
             "name":"Bureaucrat Choice",
             "players":1,
-            "player_restrictions":[
+            "playerRestrictions":[
                "others"
             ]
          }
@@ -1840,11 +1840,11 @@
       "name":"Thief",
       "team":"traveler",
       "ability":"Each night, choose a player (not yourself): their vote counts negatively tomorrow.",
-      "night_actions":[
+      "nightActions":[
          {
             "name":"Thief Choice",
             "players":1,
-            "player_restrictions":[
+            "playerRestrictions":[
                "others"
             ]
          }
@@ -1863,11 +1863,11 @@
       "name":"Apprentice",
       "team":"traveler",
       "ability":"On your 1st night, you gain a Townsfolk ability (if good), or a Minion ability (if evil).",
-      "night_actions":[
+      "nightActions":[
          {
             "name":"Apprentice Info",
-            "in_characters":1,
-            "character_restrictions" : ["townsfolk", "minion"]
+            "inCharacters":1,
+            "characterRestrictions" : ["townsfolk", "minion"]
          },
          {
             "name":"Apprentice Ability",
@@ -1888,7 +1888,7 @@
       "name":"Matron",
       "team":"traveler",
       "ability":"Each day, you may choose up to 3 pairs of players to swap seats. Players may not leave their seats to talk in private.",
-      "night_actions":[
+      "nightActions":[
          
       ]
    },
@@ -1905,7 +1905,7 @@
       "name":"Voudon",
       "team":"traveler",
       "ability":"Only you and the dead can vote. They don't need a vote token to do so. A 50% majority is not required.",
-      "night_actions":[
+      "nightActions":[
          
       ]
    },
@@ -1922,7 +1922,7 @@
       "name":"Judge",
       "team":"traveler",
       "ability":"Once per game, if another player nominated, you may choose to force the current execution to pass or fail.",
-      "night_actions":[
+      "nightActions":[
          
       ]
    },
@@ -1940,7 +1940,7 @@
       "name":"Bishop",
       "team":"traveler",
       "ability":"Only the Storyteller can nominate. At least 1 opposite player must be nominated each day.",
-      "night_actions":[
+      "nightActions":[
          
       ]
    },
@@ -1957,7 +1957,7 @@
       "name":"Butcher",
       "team":"traveler",
       "ability":"Each day, after the 1st execution, you nominate again.",
-      "night_actions":[
+      "nightActions":[
          
       ]
    },
@@ -1975,11 +1975,11 @@
       "name":"Bone Collector",
       "team":"traveler",
       "ability":"Once per game, at night, choose a dead player: they regain their ability until dusk.",
-      "night_actions":[
+      "nightActions":[
          {
             "name":"Bone Collect",
             "players":1,
-            "player_restrictions":[
+            "playerRestrictions":[
                "dead",
                "cancel"
             ]
@@ -1999,20 +1999,20 @@
       "name":"Harlot",
       "team":"traveler",
       "ability":"Each night*, choose a living player: if they agree, you learn their character, but you both might die.",
-      "night_actions":[
+      "nightActions":[
          {
             "name":"Harlot Choice",
             "players":1,
-            "player_restrictions":[
+            "playerRestrictions":[
                "alive"
             ]
          },
          {
             "name":"Harlot Info",
-            "in_characters":1
+            "inCharacters":1
          }
       ],
-      "night_actions_scoped":[
+      "nightActionsScoped":[
         {
             "name":"Picked By Harlot",
             "confirm":"Would you like to reveal your character?",
@@ -2034,8 +2034,8 @@
       "name":"Barista",
       "team":"traveler",
       "ability":"Each night, until dusk, 1) a player becomes sober, healthy and gets true info, or 2) their ability works twice. They learn which.",
-      "night_actions":[],
-      "night_actions_scoped":[
+      "nightActions":[],
+      "nightActionsScoped":[
          {
             "name":"Barista Ability",
             "info":"Tonight, you <>",
@@ -2056,7 +2056,7 @@
       "name":"Deviant",
       "team":"traveler",
       "ability":"If you were funny today, you can not be exiled.",
-      "night_actions":[
+      "nightActions":[
          
       ]
    },
@@ -2073,10 +2073,10 @@
       "name":"Balloonist",
       "team":"townsfolk",
       "ability":"Each night, you learn 1 player of each character type, until there are no more types to learn. [+1 Outsider]",
-      "night_actions":[
+      "nightActions":[
          {
             "name":"Balloonist Info",
-            "in_players":1
+            "inPlayers":1
          }
       ]
    },
@@ -2093,7 +2093,7 @@
       "name":"Amnesiac",
       "team":"townsfolk",
       "ability":"You do not know what your ability is. Each day, privately guess what it is: you learn how accurate you are.",
-      "night_actions":[
+      "nightActions":[
          {
             "name":"Amnesiac Ability",
             "create":1
@@ -2114,7 +2114,7 @@
       "name":"Cannibal",
       "team":"townsfolk",
       "ability":"You have the ability of the recently killed executee. If they are evil, you are poisoned until a good player dies this way.",
-      "night_actions":[
+      "nightActions":[
          {
             "name":"Cannibal Ability",
             "create":1
@@ -2134,7 +2134,7 @@
       "name":"Fisherman",
       "team":"townsfolk",
       "ability":"Once per game, during the day, visit the Storyteller for some advice to help you win.",
-      "night_actions":[
+      "nightActions":[
          
       ]
    },
@@ -2151,15 +2151,15 @@
       "name":"Goblin",
       "team":"minion",
       "ability":"When nominated, you may publicly claim to be the Goblin: if you are executed that day, your team wins.",
-      "night_actions":[
+      "nightActions":[
          {
             "name":"Minion Info: Demon",
-            "in_players":1
+            "inPlayers":1
          },
          {
             "name":"Minion Info: Minions",
-            "in_players":2,
-            "player_restrictions":[
+            "inPlayers":2,
+            "playerRestrictions":[
                "cancel"
             ]
          }
@@ -2179,7 +2179,7 @@
       "name":"Widow",
       "team":"minion",
       "ability":"On your 1st night, look at the Grimoire and choose a player: they are poisoned. 1 good player knows a Widow is in play.",
-      "night_actions":[
+      "nightActions":[
          {
             "name":"Widow Ability",
             "grimoire":1,
@@ -2187,17 +2187,17 @@
          },
          {
             "name":"Minion Info: Demon",
-            "in_players":1
+            "inPlayers":1
          },
          {
             "name":"Minion Info: Minions",
-            "in_players":2,
-            "player_restrictions":[
+            "inPlayers":2,
+            "playerRestrictions":[
                "cancel"
             ]
          }
       ],
-      "night_actions_scoped":[
+      "nightActionsScoped":[
          {
             "name":"The Widow is in Play",
             "scope":"local"
@@ -2222,15 +2222,15 @@
       "name":"Leviathan",
       "team":"demon",
       "ability":"All players know you are in play. After 5 days, evil wins. If more than 1 good player is executed, evil wins.",
-      "night_actions":[
+      "nightActions":[
          {
             "name":"Demon Info",
-            "in_players":3,
-            "player_restrictions":[
+            "inPlayers":3,
+            "playerRestrictions":[
                "cancel"
             ],
-            "in_characters":3,
-            "character_restrictions":["townsfolk","outsider","out_of_play"]
+            "inCharacters":3,
+            "characterRestrictions":["townsfolk","outsider","outOfPlay"]
          }
       ]
    },
@@ -2247,7 +2247,7 @@
       "name":"Acrobat",
       "team":"outsider",
       "ability":"Each night*, if either good living neighbor is drunk or poisoned, you die.",
-      "night_actions":[
+      "nightActions":[
          
       ]
    },
@@ -2264,10 +2264,10 @@
       "name":"Bounty Hunter",
       "team":"townsfolk",
       "ability":"You start knowing 1 evil player. If the evil player you know dies, you learn another that night. [1 Townsfolk is evil]",
-      "night_actions":[
+      "nightActions":[
          {
             "name":"Learn an Evil Player",
-            "in_players":1
+            "inPlayers":1
          }
       ]
    },
@@ -2284,7 +2284,7 @@
       "name":"Cult Leader",
       "team":"townsfolk",
       "ability":"Each night, you become the alignment of an alive neighbor. If all good players choose to join your cult, your team wins.",
-      "night_actions":[
+      "nightActions":[
          
       ]
    },
@@ -2301,18 +2301,18 @@
       "name":"Preacher",
       "team":"townsfolk",
       "ability":"Each night, choose a player: a Minion, if chosen, learns this. All chosen Minions have no ability.",
-      "night_actions":[
+      "nightActions":[
          {
             "name":"Preach",
             "players":1
          }
       ],
-      "night_actions_scoped":[
+      "nightActionsScoped":[
         {
             "name":"Chosen by Preacher",
             "info":"You were chosen by the preacher tonight",
             "scope":"local",
-            "scope_restrictions":["minion"]
+            "scopeRestrictions":["minion"]
         }
       ]
    },
@@ -2329,7 +2329,7 @@
       "name":"Politician",
       "team":"outsider",
       "ability":"If you were the player most responsible for your team losing, you change alignment & win, even if dead.",
-      "night_actions":[
+      "nightActions":[
          
       ]
    },
@@ -2347,28 +2347,28 @@
          "The Demon"
       ],
       "setup":true,
-      "removes_self":true,
+      "removesSelf":true,
       "name":"Lil' Monsta",
       "team":"demon",
       "ability":"Each night, Minions choose who babysits Lil' Monsta's token & \u201cis the Demon\u201d. A player dies each night*. [+1 Minion]",
-      "night_actions":[
+      "nightActions":[
          
       ],
-      "night_actions_scoped":[
+      "nightActionsScoped":[
          {
             "name":"Choose Lil' Monsta Sitter",
             "players":1,
             "scope":"global",
             "group":1,
-            "scope_restrictions":[
+            "scopeRestrictions":[
                "minion"
             ]
          },
          {
             "name":"Lil' Monsta Babysitter",
-            "in_players":1,
+            "inPlayers":1,
             "scope":"global",
-            "scope_restrictions":[
+            "scopeRestrictions":[
                "minion"
             ]
          }
@@ -2390,7 +2390,7 @@
       "name":"General",
       "team":"townsfolk",
       "ability":"Each night, you learn which alignment the Storyteller believes is winning: good, evil, or neither.",
-      "night_actions":[
+      "nightActions":[
          {
             "name":"General Ability",
             "info":"You learn that <> is winning."

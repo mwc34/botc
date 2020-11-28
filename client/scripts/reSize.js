@@ -138,12 +138,12 @@ function reSizePlayers() {
         socket_icon.style.left = left + 'px'
         socket_icon.style.top = top + height - socket_icon.height + 'px'
         
-        dead_vote.width = getSocketIconSize(game_state.player_info.length)
+        dead_vote.width = getDeadVoteSize(game_state.player_info.length)
         dead_vote.height = dead_vote.width * dead_vote.naturalHeight / dead_vote.naturalWidth
         dead_vote.style.left = left + width - dead_vote.width + 'px'
         dead_vote.style.top = top + height - dead_vote.height + 'px'
         
-        nap.width = getSocketIconSize(game_state.player_info.length)
+        nap.width = getDeadVoteSize(game_state.player_info.length)
         nap.height = nap.width
         nap.style.left = left + 'px'
         nap.style.top = top + 'px'
