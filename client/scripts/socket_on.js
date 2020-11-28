@@ -9,14 +9,19 @@ socket.on('server message', (msg) => {
 socket.on('pong', (ping) => {
     latency = ping
     reDrawHUD()
+    if (manual_ping.timeout) {
+        clearTimeout(manual_ping.timeout)
+        manual_ping.timeout = null
+    }
 })
 
 socket.on('manual pong', (time) => {
-    let ping = (new Date()).getTime() - ping_test_time
-    let time_diff = (new Date()).getTime() - time
-    console.log(ping, time_diff)
-    latency = Math.min(ping, Math.abs(time_diff*2))
-    reDrawHUD()
+    if (manual_ping.timeout) {
+        let ping = (new Date()).getTime() - manual_ping.time
+        latency = ping
+        reDrawHUD()
+        manual_ping.timeout = setTimeout(calculatePing, 2000)
+    }
 })
 
 socket.on('new host', (msg, extra) => {
@@ -126,7 +131,7 @@ socket.on('new host', (msg, extra) => {
             delete sessionStorage.game_recovery
         }
         
-        // calculatePing()
+        calculatePing()
     }
 })
 
@@ -205,7 +210,7 @@ socket.on('new player', (msg, reason) => {
         non_square.style.visibility = ''
         game_menu.style.visibility = 'hidden'
         
-        // calculatePing()
+        calculatePing()
     }
 })
 
@@ -570,8 +575,7 @@ socket.on('reset game', (state) => {
     alert_box.check()
     
     let game_recovery = game_state.player_info.length == 0
-    console.log(state.fabled_in_play)
-    console.log("hi")
+
     game_state = state
     
     token_click_type = 0

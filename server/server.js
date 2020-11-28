@@ -464,7 +464,7 @@ io.on('connection', (socket) => {
     
     socket.on('manual ping', () => {
         if (!rateLimit(socket)) {return}
-        socket.emit('manual pong', (new Date()).getTime())
+        socket.emit('manual pong')
     })
     
     // Host connecting

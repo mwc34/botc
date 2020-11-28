@@ -96,7 +96,10 @@ var day_bg_image = 'url("assets/other/day.png")'
 var night_bg_image = 'url("assets/other/night.jpg")'
 
 var latency = null
-var ping_test_time = null
+const manual_ping = {
+    'time' : null,
+    'timeout' : true,
+}
 var client_type = null // 0 Player, 1 Client
 var your_seat_id = null
 var channel_id = null
@@ -721,15 +724,12 @@ function preloadImage(url) {
     document.head.appendChild(preImg)
 }
 
-function calculatePing() {
-    ping_test_time = (new Date()).getTime()
-    
-    window.fetch(website_url + '/ping', {cache : 'no-cache'}).then(e => {
-        let time_diff = (new Date()).getTime() - ping_test_time
-        console.log("HTML", time_diff)
-    })
+function calculatePing(repeat) {
+    if (manual_ping.timeout) {
+        manual_ping.time = (new Date()).getTime()
 
-    socket.emit('manual ping')
+        socket.emit('manual ping')
+    }
 }
 
 function main() {
