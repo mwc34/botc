@@ -2134,7 +2134,7 @@ function setupEditionMenu() {
     input.onchange = (event) => {
         if(!window.FileReader) return; // Browser is not compatible
 
-        var reader = new FileReader();
+        let reader = new FileReader();
 
         reader.onload = (evt) => {
             if(evt.target.readyState != 2) return;
