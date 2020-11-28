@@ -386,7 +386,7 @@ function getTokenIDFromPath(path) {
 }
 
 function nightAlert(night_action, reverse_name = false) {
-    var msg = ''
+    let msg = ''
     let types = ['Info', 'Players', 'Characters']
     if (night_action.timed_out) {
         msg += 'Auto Response from Client<br>'
