@@ -22,6 +22,13 @@ function loadScript(src){
 
 Promise.resolve()
 .then(loadScript("socket.io/socket.io.js"))
+.catch((e) => {
+    document.body.style.backgroundImage = 'url("assets/other/night.jpg")'
+    document.body.style.backgroundRepeat = 'no-repeat'
+    document.body.style.backgroundAttachment = 'fixed'
+    document.body.style.backgroundSize = 'cover'
+    alert("Server not started")
+})
 .then(loadScript("scripts/main.js"))
 .then(loadScript("scripts/style.js"))
 .then(loadScript("scripts/reSize.js"))
@@ -29,9 +36,4 @@ Promise.resolve()
 .then(loadScript("scripts/socket_on.js"))
 .then(loadScript("scripts/reDraw.js"))
 .then(loadScript("scripts/size_definitions.js"))
-.then(function(){
-    main()
-})
-// .catch(function () {
-    // alert("Server not started")
-// })
+.then(() => {main()})

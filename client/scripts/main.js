@@ -717,7 +717,7 @@ function requestSitDown() {
 }
 
 function preloadImage(url) {
-    var preImg = document.createElement('link')
+    let preImg = document.createElement('link')
     preImg.href = url
     preImg.rel = 'preload'
     preImg.as = 'image'
@@ -736,6 +736,7 @@ function main() {
     setup()
     style()
     reSize()
+    game_menu.style.visibility = ''
     
     // Rescue channel_id, client_type from params
     if (sessionStorage.channel_id == null && urlParams.get('id')) {
