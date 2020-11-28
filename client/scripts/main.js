@@ -608,6 +608,7 @@ function continueNightAction(night_action, prompt) {
     }
 }
 
+// For player after info/confirm
 function afterInfoNightAction(night_action, timer, res) {
     let actions = (night_action.players > 0) + (night_action.characters > 0) + Boolean(night_action.grimoire) + Boolean(night_action.confirm)
     let time_left = (actions + 1) * night_action.time - ((new Date()).getTime() - timer)
@@ -622,8 +623,8 @@ function afterInfoNightAction(night_action, timer, res) {
     night_action_info.character_restrictions = night_action.character_restrictions || []
     night_action_info.name = night_action.name
     night_action_info.characters = []
-    night_action_info.in_players = night_action.players
-    night_action_info.in_characters = night_action.characters
+    night_action_info.in_players = night_action_info.to_send_in_players = night_action.players
+    night_action_info.in_characters = night_action_info.to_send_in_characters = night_action.characters
     
     if (night_action_info.in_players > 0) {
         night_action_info.start_time = (new Date()).getTime()

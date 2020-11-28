@@ -505,12 +505,12 @@ socket.on('group night action update', (group_night_action) => {
 socket.on('night action', (night_action) => {
     if (client_type) {
         let msg = getLogNightActionStyle('Received Night Action from ' + getLogPlayerStyle(getPlayerBySeatID(night_action.seat_id).name) + ':<br>' + nightAlert(night_action))
-        
+        console.log(night_action)
         // Only log if had info
         if (night_action.server_response ||
                 night_action.timed_out ||
-                night_action.info.players.length > 0 || 
-                night_action.info.characters.length > 0 || 
+                night_action.players > 0 || 
+                night_action.characters > 0 || 
                 night_action.info.info.length > 0
             ) {
             appendLog(msg)

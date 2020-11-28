@@ -2006,6 +2006,10 @@
             "player_restrictions":[
                "alive"
             ]
+         },
+         {
+            "name":"Harlot Info",
+            "in_characters":1
          }
       ],
       "night_actions_scoped":[
