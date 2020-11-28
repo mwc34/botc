@@ -363,35 +363,6 @@ function getIconPath(character) {
     }
 }
 
-function getIconIDFromPath(path) {
-    if (!path.includes(website_url)) {
-        for (let c of game_state.roles) {
-            if (c.icon == path) {
-                return c.id
-            }
-        }
-        for (let c of game_state.fabled) {
-            if (c.icon == path) {
-                return c.id
-            }
-        }
-        return null
-    }
-    else {
-        let t = path.match(/\/([^\/]*).png/)
-        return t ? t[1].toLowerCase() : null
-    }
-}
-
-function getTokenPath(character) {
-    return character ? "tokens/" + character + "_Token.png" : "token_Token.png"
-}
-
-function getTokenIDFromPath(path) {
-    let id = path.match(/\/([^\/]*)_Token.png/)[1].toLowerCase()
-    return id == "token" ? null : id
-}
-
 function nightAlert(night_action, reverse_name = false) {
     let msg = ''
     let types = ['Info', 'Players', 'Characters']

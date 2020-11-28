@@ -553,7 +553,7 @@ function setupTokenMenu() {
             t.appendChild(svg)
             
             t.onclick = () => {
-                let id = getIconIDFromPath(t.children[1].src)
+                let id = t.children[1].icon_id
                 if (token_menu_info.selected.includes(id)) {
                     token_menu_info.selected.splice(token_menu_info.selected.indexOf(id), 1)
                 }
@@ -576,27 +576,26 @@ function setupTokenMenu() {
                 }
                 reDrawTokenMenu()
             }
-            let e = t
             t.onmouseenter = () => {
-                let c = getCharacterFromID(getIconIDFromPath(t.children[1].src))
+                let c = getCharacterFromID(t.children[1].icon_id)
                 if (!c) {
-                    c = getFabledFromID(getIconIDFromPath(t.children[1].src))
+                    c = getFabledFromID(t.children[1].icon_id)
                 }
                 if (c) {
                     info_hover_box.children[0].innerHTML = c.ability
                     
                     // Show on left
-                    if (parseFloat(token_menu.style.left) + parseFloat(team.style.left) + parseFloat(e.style.left) + parseFloat(e.style.width)/2 > size/2) {
-                        info_hover_box.style.left = parseFloat(square.style.left) + parseFloat(token_menu.style.left) + parseFloat(team.style.left) + parseFloat(e.style.left) - getInfoHoverBoxOffset() - parseFloat(info_hover_box.style.width) + 'px'
+                    if (parseFloat(token_menu.style.left) + parseFloat(team.style.left) + parseFloat(t.style.left) + parseFloat(t.style.width)/2 > size/2) {
+                        info_hover_box.style.left = parseFloat(square.style.left) + parseFloat(token_menu.style.left) + parseFloat(team.style.left) + parseFloat(t.style.left) - getInfoHoverBoxOffset() - parseFloat(info_hover_box.style.width) + 'px'
                         info_hover_box.style.justifyContent = 'right'
                     }
                     // Show on right
                     else {
-                        info_hover_box.style.left = parseFloat(square.style.left) + parseFloat(token_menu.style.left) + parseFloat(team.style.left) + parseFloat(e.style.left) + parseFloat(e.style.width) + getInfoHoverBoxOffset() + 'px'
+                        info_hover_box.style.left = parseFloat(square.style.left) + parseFloat(token_menu.style.left) + parseFloat(team.style.left) + parseFloat(t.style.left) + parseFloat(t.style.width) + getInfoHoverBoxOffset() + 'px'
                         info_hover_box.style.justifyContent = 'left'
                     }
                     
-                    info_hover_box.style.top = parseFloat(square.style.top) + parseFloat(e.style.top) + parseFloat(e.style.height)/2 + parseFloat(team.style.top) + parseFloat(token_menu.style.top) + 'px'
+                    info_hover_box.style.top = parseFloat(square.style.top) + parseFloat(t.style.top) + parseFloat(t.style.height)/2 + parseFloat(team.style.top) + parseFloat(token_menu.style.top) + 'px'
                     
                     info_hover_box.style.visibility = ''
                 }
@@ -661,7 +660,7 @@ function setupReminderMenu() {
             reminder.onclick = () => {
                 let player = getPlayerBySeatID(token_selected_seat_id)
                 if (player.reminders.length < max_reminders) {
-                    let icon = getIconIDFromPath(icon_image.src)
+                    let icon = icon_image.icon_id
                     let text = ''
                     if (icon == 'custom') {
                         alert_box_info.push({
@@ -1833,7 +1832,7 @@ function setupFabled() {
             div.appendChild(svg)
             
             div.onmouseenter = () => {
-                let c = getFabledFromID(getIconIDFromPath(div.children[1].src))
+                let c = getFabledFromID(game_state.fabled_in_play[i-1])
                 if (c) {
                     info_hover_box.children[0].innerHTML = c.ability
 
@@ -1883,7 +1882,7 @@ function setupDemonBluffs() {
             let e = demon_bluffs.children[i]
             
             demon_bluffs.children[i].onmouseenter = () => {
-                let c = getCharacterFromID(getIconIDFromPath(e.children[1].src))
+                let c = getCharacterFromID(game_state.demon_bluffs[i-1])
                 if (c) {
                     info_hover_box.children[0].innerHTML = c.ability
 

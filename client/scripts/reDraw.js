@@ -372,6 +372,7 @@ function reDrawReminderMenu() {
                     reminder.style.visibility = ''
                     let icon_image = reminder.children[1]
                     icon_image.src = getIconPath(to_show[i*columns + j].icon)
+                    icon_image.icon_id = to_show[i*columns + j].icon
                     
                     let reminder_text = reminder.children[2]
                     reminder_text.innerHTML = to_show[i*columns + j].text
@@ -407,370 +408,373 @@ function reDrawReminderMenu() {
 
 function reDrawTokenMenu() {
     
-    if (token_menu_info.active) {
-
-        // Counting for positioning
-        if (token_menu_info.valid_teams.length == 0) {
-            token_menu_info.valid_teams = ['extra', 'traveler', 'townsfolk', 'outsider', 'minion', 'demon']
-        }
-        
-        let total_columns = 7 // Could be 0
-        for (let team of token_menu_info.valid_teams) {
-            if (team == 'fabled') {
-                total_columns = Math.max(total_columns, Math.min(7, base_fabled.concat(game_state.fabled).length))
-            }
-            else {
-                total_columns = Math.max(total_columns, Math.min(7, getTeamIDs(game_state.edition, team).length))
-            }
-        }
-        
-        let rows = 0
-        
-        let width = total_columns * (getTokenMenuSize() + 2 * getTokenMenuPaddingSize())
-        let height = (getTokenMenuSize() + 2 * getTokenMenuPaddingSize())
-        
-        // Fabled
-        let ids = []
-        for (let f of base_fabled.concat(game_state.fabled)) {
-            ids.push(f.id)
-        }
-        if (token_menu_info.valid_teams.includes('fabled') && ids.length > 0) {
-            while (ids.length > 7+7+7) {
-                ids.pop()
-            }
-            for (let i=0; i<3; i++) {
-                let fabled = token_menu.children[5 + i]
-                for (let j=0; j<7; j++) {
-                    let f = fabled.children[j]
-                    if (i * 7 + j < ids.length) {
-                        
-                        let path = getIconPath(ids[i*7 + j])
-                        f.children[1].src = path
-                        if (path == '') {
-                            f.children[1].style.visibility = 'hidden'
-                        }
-                        else {
-                            f.children[1].style.visibility = ''
-                        }
-                        if (ids[i*7 + j]) {
-                            f.children[2].children[1].children[0].textContent = getFabledFromID(ids[i*7 + j]).name
-                        }
-                        else {
-                            f.children[2].children[1].children[0].textContent = ''
-                        }
-                        
-                        if (token_menu_info.selected.includes(ids[i*7 + j])) {
-                            f.style.border = getTokenMenuBorderSize() + 'px solid ' + (!token_menu_info.type && getFabledFromID(ids[i*7 + j]).setup ? 'purple' : 'red')
-                            f.style.margin = -getTokenMenuBorderSize() + 'px'
-                        }
-                        else {
-                            f.style.margin = ''
-                            f.style.border = ''
-                        }
-                        f.style.visibility = ''
-                    }
-                    else {
-                        f.style.visibility = 'hidden'
-                    }
-                }
-                let row_length = Math.max(0, Math.min(7, ids.length - 7*i))
-                if (row_length > 0) {
-                    fabled.style.visibility = ''
-                    fabled.style.top = getTokenMenuSize()/2 + getTokenMenuButtonHeight() + rows * height + 'px'
-                    fabled.style.left = getTokenMenuSize()/2 + (total_columns - row_length) * width/(2 * total_columns) + 'px'
-                    rows++
-                }
-                else {
-                    fabled.style.visibility = 'hidden'
-                }
-            }
+    // Counting for positioning
+    if (token_menu_info.valid_teams.length == 0) {
+        token_menu_info.valid_teams = ['extra', 'traveler', 'townsfolk', 'outsider', 'minion', 'demon']
+    }
+    
+    let total_columns = 7 // Could be 0
+    for (let team of token_menu_info.valid_teams) {
+        if (team == 'fabled') {
+            total_columns = Math.max(total_columns, Math.min(7, base_fabled.concat(game_state.fabled).length))
         }
         else {
-            token_menu.children[5].style.visibility = 'hidden'
-            token_menu.children[6].style.visibility = 'hidden'
-            token_menu.children[7].style.visibility = 'hidden'
+            total_columns = Math.max(total_columns, Math.min(7, getTeamIDs(game_state.edition, team).length))
         }
-        
-        // Extras & Travelers
-        teams = ['extra', 'traveler']
-        lengths = [1, 7]
-        for (let k=0; k < teams.length; k++) {
-            let team = token_menu.children[8 + k]
-            let ids = getTeamIDs(game_state.edition, teams[k], token_menu_info.out_of_play)
-            if (token_menu_info.valid_teams.includes(teams[k]) && ids.length > 0) {
-                while (ids.length > lengths[k]) {
-                    ids.pop()
-                }
-                
-                for (let i=0; i<lengths[k]; i++) {
-                    let t = team.children[i]
-                    if (i < ids.length) {
-                        
-                        let path = getIconPath(ids[i])
-                        t.children[1].src = path
-                        if (path == '') {
-                            t.children[1].style.visibility = 'hidden'
-                        }
-                        else {
-                            t.children[1].style.visibility = ''
-                        }
-                        if (ids[i]) {
-                            t.children[2].children[1].children[0].textContent = getCharacterFromID(ids[i]).name
-                        }
-                        else {
-                            t.children[2].children[1].children[0].textContent = ''
-                        }
-                        
-                        if (token_menu_info.selected.includes(ids[i])) {
-                            t.style.border = getTokenMenuBorderSize() + 'px solid ' + (!token_menu_info.type && getCharacterFromID(ids[i]).setup ? 'purple' : 'red')
-                            t.style.margin = -getTokenMenuBorderSize() + 'px'
-                        }
-                        else {
-                            t.style.margin = ''
-                            t.style.border = ''
-                        }
-                        t.style.visibility = ''
+    }
+    
+    let rows = 0
+    
+    let width = total_columns * (getTokenMenuSize() + 2 * getTokenMenuPaddingSize())
+    let height = (getTokenMenuSize() + 2 * getTokenMenuPaddingSize())
+    
+    // Fabled
+    let ids = []
+    for (let f of base_fabled.concat(game_state.fabled)) {
+        ids.push(f.id)
+    }
+    if (token_menu_info.valid_teams.includes('fabled') && ids.length > 0) {
+        while (ids.length > 7+7+7) {
+            ids.pop()
+        }
+        for (let i=0; i<3; i++) {
+            let fabled = token_menu.children[5 + i]
+            for (let j=0; j<7; j++) {
+                let f = fabled.children[j]
+                if (i * 7 + j < ids.length) {
+                    
+                    let path = getIconPath(ids[i*7 + j])
+                    f.children[1].src = path
+                    f.children[1].icon_id = ids[i*7 + j]
+                    if (path == '') {
+                        f.children[1].style.visibility = 'hidden'
                     }
                     else {
-                        t.style.visibility = 'hidden'
+                        f.children[1].style.visibility = ''
                     }
+                    if (ids[i*7 + j]) {
+                        f.children[2].children[1].children[0].textContent = getFabledFromID(ids[i*7 + j]).name
+                    }
+                    else {
+                        f.children[2].children[1].children[0].textContent = ''
+                    }
+                    
+                    if (token_menu_info.selected.includes(ids[i*7 + j])) {
+                        f.style.border = getTokenMenuBorderSize() + 'px solid ' + (!token_menu_info.type && getFabledFromID(ids[i*7 + j]).setup ? 'purple' : 'red')
+                        f.style.margin = -getTokenMenuBorderSize() + 'px'
+                    }
+                    else {
+                        f.style.margin = ''
+                        f.style.border = ''
+                    }
+                    f.style.visibility = ''
                 }
-
-                team.style.top = getTokenMenuSize()/2 + getTokenMenuButtonHeight() + rows * height + 'px'
-                team.style.left = getTokenMenuSize()/2 + (total_columns - ids.length) * width/(2 * total_columns) + 'px'
-                
+                else {
+                    f.style.visibility = 'hidden'
+                }
+            }
+            let row_length = Math.max(0, Math.min(7, ids.length - 7*i))
+            if (row_length > 0) {
+                fabled.style.visibility = ''
+                fabled.style.top = getTokenMenuSize()/2 + getTokenMenuButtonHeight() + rows * height + 'px'
+                fabled.style.left = getTokenMenuSize()/2 + (total_columns - row_length) * width/(2 * total_columns) + 'px'
                 rows++
-                
-                team.style.visibility = ''
             }
             else {
-                team.style.visibility = 'hidden'
+                fabled.style.visibility = 'hidden'
             }
         }
-        
-        // Townsfolk
-        ids = getTeamIDs(game_state.edition, 'townsfolk', token_menu_info.out_of_play)
-        if (token_menu_info.valid_teams.includes('townsfolk') && ids.length > 0) {
-            while (ids.length > 7+7) {
+    }
+    else {
+        token_menu.children[5].style.visibility = 'hidden'
+        token_menu.children[6].style.visibility = 'hidden'
+        token_menu.children[7].style.visibility = 'hidden'
+    }
+    
+    // Extras & Travelers
+    teams = ['extra', 'traveler']
+    lengths = [1, 7]
+    for (let k=0; k < teams.length; k++) {
+        let team = token_menu.children[8 + k]
+        let ids = getTeamIDs(game_state.edition, teams[k], token_menu_info.out_of_play)
+        if (token_menu_info.valid_teams.includes(teams[k]) && ids.length > 0) {
+            while (ids.length > lengths[k]) {
                 ids.pop()
-            }
-            for (let i=0; i<2; i++) {
-                let townsfolk = token_menu.children[10 + i]
-                for (let j=0; j<7; j++) {
-                    let town = townsfolk.children[j]
-                    if (i * 7 + j < ids.length) {
-                        
-                        let path = getIconPath(ids[i*7 + j])
-                        town.children[1].src = path
-                        if (path == '') {
-                            town.children[1].style.visibility = 'hidden'
-                        }
-                        else {
-                            town.children[1].style.visibility = ''
-                        }
-                        if (ids[i*7 + j]) {
-                            town.children[2].children[1].children[0].textContent = getCharacterFromID(ids[i*7 + j]).name
-                        }
-                        else {
-                            town.children[2].children[1].children[0].textContent = ''
-                        }
-                        
-                        if (token_menu_info.selected.includes(ids[i*7 + j])) {
-                            town.style.border = getTokenMenuBorderSize() + 'px solid ' + (!token_menu_info.type && getCharacterFromID(ids[i*7 + j]).setup ? 'purple' : 'red')
-                            town.style.margin = -getTokenMenuBorderSize() + 'px'
-                        }
-                        else {
-                            town.style.margin = ''
-                            town.style.border = ''
-                        }
-                        town.style.visibility = ''
-                    }
-                    else {
-                        town.style.visibility = 'hidden'
-                    }
-                }
-                let row_length = i ? Math.max(0, ids.length - 7) : Math.min(ids.length, 7)
-                if (row_length > 0) {
-                    townsfolk.style.visibility = ''
-                    townsfolk.style.top = getTokenMenuSize()/2 + getTokenMenuButtonHeight() + rows * height + 'px'
-                    townsfolk.style.left = getTokenMenuSize()/2 + (total_columns - row_length) * width/(2 * total_columns) + 'px'
-                    rows++
-                }
-                else {
-                    townsfolk.style.visibility = 'hidden'
-                }
-            }
-        }
-        else {
-            token_menu.children[10].style.visibility = 'hidden'
-            token_menu.children[11].style.visibility = 'hidden'
-        }
-
-        // Outsiders / Minions / Demons
-        teams = ['outsider', 'minion', 'demon']
-        for (let k=0; k<3; k++) {
-            let team = token_menu.children[12 + k]
-            let ids = getTeamIDs(game_state.edition, teams[k], token_menu_info.out_of_play)
-            if (token_menu_info.valid_teams.includes(teams[k]) && ids.length > 0) {
-                while (ids.length > 7) {
-                    ids.pop()
-                }
-                
-                for (let i=0; i<7; i++) {
-                    let t = team.children[i]
-                    if (i < ids.length) {
-                        
-                        let path = getIconPath(ids[i])
-                        t.children[1].src = path
-                        if (path == '') {
-                            t.children[1].style.visibility = 'hidden'
-                        }
-                        else {
-                            t.children[1].style.visibility = ''
-                        }
-                        if (ids[i]) {
-                            t.children[2].children[1].children[0].textContent = getCharacterFromID(ids[i]).name
-                        }
-                        else {
-                            t.children[2].children[1].children[0].textContent = ''
-                        }
-                        
-                        if (token_menu_info.selected.includes(ids[i])) {
-                            t.style.border = getTokenMenuBorderSize() + 'px solid ' + (!token_menu_info.type && getCharacterFromID(ids[i]).setup ? 'purple' : 'red')
-                            t.style.margin = -getTokenMenuBorderSize() + 'px'
-                        }
-                        else {
-                            t.style.margin = ''
-                            t.style.border = ''
-                        }
-                        t.style.visibility = ''
-                    }
-                    else {
-                        t.style.visibility = 'hidden'
-                    }
-                }
-                
-                team.style.top = getTokenMenuSize()/2 + getTokenMenuButtonHeight() + rows * height + 'px'
-                team.style.left = getTokenMenuSize()/2 + (total_columns - ids.length) * width/(2 * total_columns) + 'px'
-                
-                rows++
-                
-                team.style.visibility = ''
-            }
-            else {
-                team.style.visibility = 'hidden'
-            }
-        }
-        
-        token_menu.style.width = getTokenMenuSize() + width + 'px'
-        token_menu.style.height = (rows + 1) * height + 2 * getTokenMenuButtonHeight() + 'px'
-        
-        token_menu.style.top = (size - parseFloat(token_menu.style.height))/2 - getBorderSize() + 'px'
-        token_menu.style.left = (size - parseFloat(token_menu.style.width))/2 - getBorderSize() + 'px'
-        
-        // Info
-        let info_bar = token_menu.children[0]
-        // info_bar.style.top = (size - rows * (getTokenMenuSize() + 2 * getTokenMenuPaddingSize()) - 2 * getTokenMenuButtonHeight())/2 + 'px'
-        // info_bar.style.left = (size - columns * getTokenMenuSize())/2 + 'px'
-        info_bar.style.top = getTokenMenuSize()/2 + 'px'
-        info_bar.style.left = getTokenMenuSize()/2 + 'px'
-        info_bar.style.width = width + 'px' // columns * getTokenMenuSize() + 'px'
-        
-        switch (token_menu_info.type) {
-            case 0:
-                info_bar.innerHTML = 'Choose ' + token_menu_info.choices + ' character(s) (' + (token_menu_info.choices - token_menu_info.selected.length) + ' remaining)'
-                break
-            case 1:
-                if (!token_menu_info.valid_teams.includes('fabled')) {
-                    info_bar.innerHTML = 'Choose ' + token_menu_info.choices + ' character(s) (' + (token_menu_info.choices - token_menu_info.selected.length) + ' remaining)'
-                }
-                else {
-                    info_bar.innerHTML = 'Choose the fabled to be in play'
-                }
-                break
-            case 2:
-                let up_to = ''
-                if (night_action_info.character_restrictions.includes("cancel")) {
-                    up_to = 'up to '
-                }
-                token_menu.children[0].innerHTML = 'Choose ' + up_to + token_menu_info.choices + ' character(s) (' + (token_menu_info.choices - token_menu_info.selected.length) + ' remaining)'
-                if (!client_type) {
-                    let time = (new Date()).getTime()
-                    remaining_time = Math.ceil(Math.max(0, night_action_info.time - (time - (night_action_info.start_time ? night_action_info.start_time : time))) / 1000)
-                    token_menu.children[0].innerHTML += ' in ' + remaining_time + ' seconds'
-                }
-                
-                break
-        }
-        
-        // Shuffle Characters
-        let shuffle_characters = token_menu.children[1]
-        // shuffle_characters.style.left = (size - columns * (getTokenMenuSize() + 2 * getTokenMenuPaddingSize()))/2 + 'px'
-        shuffle_characters.style.top = parseFloat(token_menu.style.height) - getTokenMenuButtonHeight() - getTokenMenuSize()/2 - getBorderSize() + 'px'
-        shuffle_characters.style.width = (width - 4 * getBorderSize()) / 3 + 'px'
-        shuffle_characters.style.left = getTokenMenuSize()/2 + 'px'
-        shuffle_characters.style.visibility = token_menu_info.type == 0 ? '' : 'hidden'
-        
-        
-        // Cancel Button
-        let cancel_button = token_menu.children[2]
-        cancel_button.style.left = getTokenMenuSize()/2 + ((1 - token_menu_info.type) * (1/6) + 0.5) * (width - getBorderSize()) + 'px'
-        cancel_button.style.top = parseFloat(token_menu.style.height) - getTokenMenuButtonHeight() - getTokenMenuSize()/2 - getBorderSize() + 'px'
-        cancel_button.style.width = (width * (2 + token_menu_info.type) - getBorderSize() * (8 - 2*token_menu_info.type)) / 6  + 'px'
-        cancel_button.style.visibility = token_menu_info.type == 2 ? 'hidden' : ''
-        
-        // Finish Button
-        let finish_button = token_menu.children[3]
-        finish_button.style.top = parseFloat(token_menu.style.height) - getTokenMenuButtonHeight() - getTokenMenuSize()/2 - getBorderSize() + 'px'
-        finish_button.style.left = getTokenMenuSize()/2 + 1/3 * (1 - Boolean(token_menu_info.type)) * (width - getBorderSize()) + 'px'
-        finish_button.style.width = (width - getBorderSize() * (4 - token_menu_info.type)) / (3 - token_menu_info.type) + 'px'
-        let t = getCornerRadius()
-        finish_button.style.borderRadius = `${token_menu_info.type ? t : 0}px ${token_menu_info.type == 2 ? t : 0}px ${token_menu_info.type == 2 ? t : 0}px ${token_menu_info.type ? t : 0}px`
-        if (token_menu_info.type == 2 && (night_action_info.character_restrictions.includes("cancel") || client_type)) {
-            finish_button.innerHTML = 'Finish Choosing'
-        }
-        else {
-            finish_button.innerHTML = 'Finish'
-        }
-        
-        // Team Selection
-        let team_selection = token_menu.children[4]
-        if (token_menu_info.type == 0) {
-            team_selection.style.top = getTokenMenuButtonHeight() + getTokenMenuSize()/2 + 'px'
-            // team_selection.style.left = (size - (columns + 1) * (getTokenMenuSize() + 2 * getTokenMenuPaddingSize()))/2 + 'px'
-            team_selection.children[0].style.height = (getTeamIDs(game_state.edition, 'townsfolk').length > 7 ? 2*height : height) + 'px'
-            for (let i=1; i<4; i++) {
-                team_selection.children[i].style.top = parseFloat(team_selection.children[i-1].style.top) + parseFloat(team_selection.children[i-1].style.height) + 'px'
             }
             
-            teams = ['townsfolk', 'outsider', 'minion', 'demon']
-            for (let i=0; i < 4; i++) {
-                let team = team_selection.children[i]
-                let count = 0
-                for (let id of getTeamIDs(game_state.edition, teams[i])) {
-                    if (token_menu_info.selected.includes(id)) {
-                        count++
+            for (let i=0; i<lengths[k]; i++) {
+                let t = team.children[i]
+                if (i < ids.length) {
+                    
+                    let path = getIconPath(ids[i])
+                    t.children[1].src = path
+                    t.children[1].icon_id = ids[i]
+                    if (path == '') {
+                        t.children[1].style.visibility = 'hidden'
                     }
-                }
-                let total = player_split[Math.min(15, token_menu_info.choices) - 5][teams[i]]   
-                team.innerHTML = count + '/' + total
-                if (count == total) {
-                    team.style.color = 'green'
-                }
-                else if (count > total) {
-                    team.style.color = 'red'
+                    else {
+                        t.children[1].style.visibility = ''
+                    }
+                    if (ids[i]) {
+                        t.children[2].children[1].children[0].textContent = getCharacterFromID(ids[i]).name
+                    }
+                    else {
+                        t.children[2].children[1].children[0].textContent = ''
+                    }
+                    
+                    if (token_menu_info.selected.includes(ids[i])) {
+                        t.style.border = getTokenMenuBorderSize() + 'px solid ' + (!token_menu_info.type && getCharacterFromID(ids[i]).setup ? 'purple' : 'red')
+                        t.style.margin = -getTokenMenuBorderSize() + 'px'
+                    }
+                    else {
+                        t.style.margin = ''
+                        t.style.border = ''
+                    }
+                    t.style.visibility = ''
                 }
                 else {
-                    team.style.color = 'orange'
+                    t.style.visibility = 'hidden'
                 }
-                
             }
-            team_selection.style.visibility = ''
+
+            team.style.top = getTokenMenuSize()/2 + getTokenMenuButtonHeight() + rows * height + 'px'
+            team.style.left = getTokenMenuSize()/2 + (total_columns - ids.length) * width/(2 * total_columns) + 'px'
+            
+            rows++
+            
+            team.style.visibility = ''
         }
         else {
-            team_selection.style.visibility = 'hidden'
+            team.style.visibility = 'hidden'
+        }
+    }
+    
+    // Townsfolk
+    ids = getTeamIDs(game_state.edition, 'townsfolk', token_menu_info.out_of_play)
+    if (token_menu_info.valid_teams.includes('townsfolk') && ids.length > 0) {
+        while (ids.length > 7+7) {
+            ids.pop()
+        }
+        for (let i=0; i<2; i++) {
+            let townsfolk = token_menu.children[10 + i]
+            for (let j=0; j<7; j++) {
+                let town = townsfolk.children[j]
+                if (i * 7 + j < ids.length) {
+                    
+                    let path = getIconPath(ids[i*7 + j])
+                    town.children[1].src = path
+                    town.children[1].icon_id = ids[i*7 + j]
+                    if (path == '') {
+                        town.children[1].style.visibility = 'hidden'
+                    }
+                    else {
+                        town.children[1].style.visibility = ''
+                    }
+                    if (ids[i*7 + j]) {
+                        town.children[2].children[1].children[0].textContent = getCharacterFromID(ids[i*7 + j]).name
+                    }
+                    else {
+                        town.children[2].children[1].children[0].textContent = ''
+                    }
+                    
+                    if (token_menu_info.selected.includes(ids[i*7 + j])) {
+                        town.style.border = getTokenMenuBorderSize() + 'px solid ' + (!token_menu_info.type && getCharacterFromID(ids[i*7 + j]).setup ? 'purple' : 'red')
+                        town.style.margin = -getTokenMenuBorderSize() + 'px'
+                    }
+                    else {
+                        town.style.margin = ''
+                        town.style.border = ''
+                    }
+                    town.style.visibility = ''
+                }
+                else {
+                    town.style.visibility = 'hidden'
+                }
+            }
+            let row_length = i ? Math.max(0, ids.length - 7) : Math.min(ids.length, 7)
+            if (row_length > 0) {
+                townsfolk.style.visibility = ''
+                townsfolk.style.top = getTokenMenuSize()/2 + getTokenMenuButtonHeight() + rows * height + 'px'
+                townsfolk.style.left = getTokenMenuSize()/2 + (total_columns - row_length) * width/(2 * total_columns) + 'px'
+                rows++
+            }
+            else {
+                townsfolk.style.visibility = 'hidden'
+            }
+        }
+    }
+    else {
+        token_menu.children[10].style.visibility = 'hidden'
+        token_menu.children[11].style.visibility = 'hidden'
+    }
+
+    // Outsiders / Minions / Demons
+    teams = ['outsider', 'minion', 'demon']
+    for (let k=0; k<3; k++) {
+        let team = token_menu.children[12 + k]
+        let ids = getTeamIDs(game_state.edition, teams[k], token_menu_info.out_of_play)
+        if (token_menu_info.valid_teams.includes(teams[k]) && ids.length > 0) {
+            while (ids.length > 7) {
+                ids.pop()
+            }
+            
+            for (let i=0; i<7; i++) {
+                let t = team.children[i]
+                if (i < ids.length) {
+                    
+                    let path = getIconPath(ids[i])
+                    t.children[1].src = path
+                    t.children[1].icon_id = ids[i]
+                    if (path == '') {
+                        t.children[1].style.visibility = 'hidden'
+                    }
+                    else {
+                        t.children[1].style.visibility = ''
+                    }
+                    if (ids[i]) {
+                        t.children[2].children[1].children[0].textContent = getCharacterFromID(ids[i]).name
+                    }
+                    else {
+                        t.children[2].children[1].children[0].textContent = ''
+                    }
+                    
+                    if (token_menu_info.selected.includes(ids[i])) {
+                        t.style.border = getTokenMenuBorderSize() + 'px solid ' + (!token_menu_info.type && getCharacterFromID(ids[i]).setup ? 'purple' : 'red')
+                        t.style.margin = -getTokenMenuBorderSize() + 'px'
+                    }
+                    else {
+                        t.style.margin = ''
+                        t.style.border = ''
+                    }
+                    t.style.visibility = ''
+                }
+                else {
+                    t.style.visibility = 'hidden'
+                }
+            }
+            
+            team.style.top = getTokenMenuSize()/2 + getTokenMenuButtonHeight() + rows * height + 'px'
+            team.style.left = getTokenMenuSize()/2 + (total_columns - ids.length) * width/(2 * total_columns) + 'px'
+            
+            rows++
+            
+            team.style.visibility = ''
+        }
+        else {
+            team.style.visibility = 'hidden'
+        }
+    }
+    
+    token_menu.style.width = getTokenMenuSize() + width + 'px'
+    token_menu.style.height = (rows + 1) * height + 2 * getTokenMenuButtonHeight() + 'px'
+    
+    token_menu.style.top = (size - parseFloat(token_menu.style.height))/2 - getBorderSize() + 'px'
+    token_menu.style.left = (size - parseFloat(token_menu.style.width))/2 - getBorderSize() + 'px'
+    
+    // Info
+    let info_bar = token_menu.children[0]
+    // info_bar.style.top = (size - rows * (getTokenMenuSize() + 2 * getTokenMenuPaddingSize()) - 2 * getTokenMenuButtonHeight())/2 + 'px'
+    // info_bar.style.left = (size - columns * getTokenMenuSize())/2 + 'px'
+    info_bar.style.top = getTokenMenuSize()/2 + 'px'
+    info_bar.style.left = getTokenMenuSize()/2 + 'px'
+    info_bar.style.width = width + 'px' // columns * getTokenMenuSize() + 'px'
+    
+    switch (token_menu_info.type) {
+        case 0:
+            info_bar.innerHTML = 'Choose ' + token_menu_info.choices + ' character(s) (' + (token_menu_info.choices - token_menu_info.selected.length) + ' remaining)'
+            break
+        case 1:
+            if (!token_menu_info.valid_teams.includes('fabled')) {
+                info_bar.innerHTML = 'Choose ' + token_menu_info.choices + ' character(s) (' + (token_menu_info.choices - token_menu_info.selected.length) + ' remaining)'
+            }
+            else {
+                info_bar.innerHTML = 'Choose the fabled to be in play'
+            }
+            break
+        case 2:
+            let up_to = ''
+            if (night_action_info.character_restrictions.includes("cancel")) {
+                up_to = 'up to '
+            }
+            token_menu.children[0].innerHTML = 'Choose ' + up_to + token_menu_info.choices + ' character(s) (' + (token_menu_info.choices - token_menu_info.selected.length) + ' remaining)'
+            if (!client_type) {
+                let time = (new Date()).getTime()
+                remaining_time = Math.ceil(Math.max(0, night_action_info.time - (time - (night_action_info.start_time ? night_action_info.start_time : time))) / 1000)
+                token_menu.children[0].innerHTML += ' in ' + remaining_time + ' seconds'
+            }
+            
+            break
+    }
+    
+    // Shuffle Characters
+    let shuffle_characters = token_menu.children[1]
+    // shuffle_characters.style.left = (size - columns * (getTokenMenuSize() + 2 * getTokenMenuPaddingSize()))/2 + 'px'
+    shuffle_characters.style.top = parseFloat(token_menu.style.height) - getTokenMenuButtonHeight() - getTokenMenuSize()/2 - getBorderSize() + 'px'
+    shuffle_characters.style.width = (width - 4 * getBorderSize()) / 3 + 'px'
+    shuffle_characters.style.left = getTokenMenuSize()/2 + 'px'
+    shuffle_characters.style.visibility = token_menu_info.type == 0 ? '' : 'hidden'
+    
+    
+    // Cancel Button
+    let cancel_button = token_menu.children[2]
+    cancel_button.style.left = getTokenMenuSize()/2 + ((1 - token_menu_info.type) * (1/6) + 0.5) * (width - getBorderSize()) + 'px'
+    cancel_button.style.top = parseFloat(token_menu.style.height) - getTokenMenuButtonHeight() - getTokenMenuSize()/2 - getBorderSize() + 'px'
+    cancel_button.style.width = (width * (2 + token_menu_info.type) - getBorderSize() * (8 - 2*token_menu_info.type)) / 6  + 'px'
+    cancel_button.style.visibility = token_menu_info.type == 2 ? 'hidden' : ''
+    
+    // Finish Button
+    let finish_button = token_menu.children[3]
+    finish_button.style.top = parseFloat(token_menu.style.height) - getTokenMenuButtonHeight() - getTokenMenuSize()/2 - getBorderSize() + 'px'
+    finish_button.style.left = getTokenMenuSize()/2 + 1/3 * (1 - Boolean(token_menu_info.type)) * (width - getBorderSize()) + 'px'
+    finish_button.style.width = (width - getBorderSize() * (4 - token_menu_info.type)) / (3 - token_menu_info.type) + 'px'
+    let t = getCornerRadius()
+    finish_button.style.borderRadius = `${token_menu_info.type ? t : 0}px ${token_menu_info.type == 2 ? t : 0}px ${token_menu_info.type == 2 ? t : 0}px ${token_menu_info.type ? t : 0}px`
+    if (token_menu_info.type == 2 && (night_action_info.character_restrictions.includes("cancel") || client_type)) {
+        finish_button.innerHTML = 'Finish Choosing'
+    }
+    else {
+        finish_button.innerHTML = 'Finish'
+    }
+    
+    // Team Selection
+    let team_selection = token_menu.children[4]
+    if (token_menu_info.type == 0 && token_menu_info.active) {
+        team_selection.style.top = getTokenMenuButtonHeight() + getTokenMenuSize()/2 + 'px'
+        // team_selection.style.left = (size - (columns + 1) * (getTokenMenuSize() + 2 * getTokenMenuPaddingSize()))/2 + 'px'
+        team_selection.children[0].style.height = (getTeamIDs(game_state.edition, 'townsfolk').length > 7 ? 2*height : height) + 'px'
+        for (let i=1; i<4; i++) {
+            team_selection.children[i].style.top = parseFloat(team_selection.children[i-1].style.top) + parseFloat(team_selection.children[i-1].style.height) + 'px'
         }
         
+        teams = ['townsfolk', 'outsider', 'minion', 'demon']
+        for (let i=0; i < 4; i++) {
+            let team = team_selection.children[i]
+            let count = 0
+            for (let id of getTeamIDs(game_state.edition, teams[i])) {
+                if (token_menu_info.selected.includes(id)) {
+                    count++
+                }
+            }
+            let total = player_split[Math.min(15, token_menu_info.choices) - 5][teams[i]]   
+            team.innerHTML = count + '/' + total
+            if (count == total) {
+                team.style.color = 'green'
+            }
+            else if (count > total) {
+                team.style.color = 'red'
+            }
+            else {
+                team.style.color = 'orange'
+            }
+            
+        }
+        team_selection.style.visibility = ''
+    }
+    else {
+        team_selection.style.visibility = 'hidden'
+    }
+    
+    if (token_menu_info.active) {
         token_menu.style.visibility = ''
     }
     else {
