@@ -74,7 +74,7 @@ function getTokenBorderSize(number_of_players) {
 
 function getYesVoteSize(number_of_players) {
     let t = getPlayerNumberFraction(number_of_players)
-    return t * size * 0.7 / (5 * 1.2)
+    return t * size * 0.7 / (5 * 1.6)
 }
 
 function getNoVoteSize(number_of_players) {
