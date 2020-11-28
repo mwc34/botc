@@ -2,17 +2,17 @@
 
 ## Features
 
-* Server side game hosting
-* Day/Night phases
-* Nomination tracking
-* Night Actions
-* Log tracking toggleable
-* Custom editions / characters
+- Server side game hosting
+- Day/Night phases
+- Nomination tracking
+- Night Actions
+- Log tracking toggleable
+- Custom editions / characters / fabled
 
-## Custom Edition/Characters
+## Custom Edition/Characters/Fabled
 
-* Accepts JSON produced by the [script tool](https://bloodontheclocktower.com/script/)
-* For custom characters, they should be in the following format:
+- Accepts JSON produced by the [script tool](https://bloodontheclocktower.com/script/)
+- For custom characters/fabled, they should be in the following format:
 
 ```json
 {
@@ -46,35 +46,35 @@
    }
 ```
 
-* Required properties are: *id* *name* *team* *ability* *icon*
-* *id*: the unique backend ID for this character
-* *name*: the name shown on the token
-* *team*: team of the character: *townsfolk* *outsider* *minion* *demon* *fabled*
-* *icon*: url to the picture (should be square with some border around it, see the default icons)
-* *setup*: whether the character affects which characters are chosen during setup, shown with a purple ring in game
-* *removesSelf*: whether they should be shown to a player (e.g. Drunk, Lunatic, Lil' Monsta) will give a warning message if chosen
-* *firstNight/otherNight*: position of when the character acts during the night
-* *firstNightReminder/otherNightReminder*: reminder text for the storyteller
-* *reminders/remindersGlobal*: arrays of reminder token text. Global is for when they aren't on the grimoire but are in the script (e.g. Drunk)
-* *nightActions/nightActionsScoped*: arrays of the character's night actions. Options are:
-    * *name*: Required. the name of the action which is shown to players
-    * *info*: Text with <> in place of the input text (e.g. You learn <>)
-    * *players/characters*: integers describing how many players/characters they have to pick
-    * *inPlayers/inCharacters*: integers describing how many players/characters the storyteller has to pick
-    * *playerRestrictions/characterRestrictions*: restrictions on what the storyteller/player can pick. Options are:
-        * *townsfolk/outsider/minion/demon/traveler*: will limit to the selected classes. If none are given, any are allowed
-        * *alive/dead*: only allows picking alive/dead players. If none are given, both are allowed
-        * *outOfPlay*: only shows out of play character (only for demon bluffs so far)
-        * *others*: can't target yourself (Monk)
-        * *cancel*: allows early finishing of the action. Used for when the numbers aren't known (minion info, Godfather info) or for once per game abilities (Seamstress)
-    * *scope*: for *nightActionsScoped*, either "local" (for only when the character is in play) or "global" (always)
-    * *scopeRestrictions*: for *nightActionsScoped*, an array of which teams to propagate the night action to. If none are given, it is propagated to all
+- Required properties are: **id** **name** **team** **ability** **icon**
+- **id**: the unique backend ID for this character
+- **name**: the name shown on the token
+- **team**: team of the character: **townsfolk** **outsider** **minion** **demon** **fabled**
+- **icon**: url to the picture (should be square with some border around it, see the default icons)
+- **setup**: whether the character affects which characters are chosen during setup, shown with a purple ring in game
+- **removesSelf**: whether they should be shown to a player (e.g. **Drunk** **Lunatic** **Lil' Monsta**) will give a warning message if chosen
+- **firstNight/otherNight**: position of when the character acts during the night
+- **firstNightReminder/otherNightReminder**: reminder text for the storyteller
+- **reminders/remindersGlobal**: arrays of reminder token text. Global is for when they aren't on the grimoire but are in the script (e.g. Drunk)
+- **nightActions/nightActionsScoped**: arrays of the character's night actions. Options are:
+    - **name**: Required. the name of the action which is shown to players
+    - **info**: Text with <> in place of the input text (e.g. You learn <>)
+    - **players/characters**: integers describing how many players/characters they have to pick
+    - **inPlayers/inCharacters**: integers describing how many players/characters the storyteller has to pick
+    - **playerRestrictions/characterRestrictions**: restrictions on what the storyteller/player can pick. Options are:
+        - **townsfolk/outsider/minion/demon/traveler**: will limit to the selected classes. If none are given, any are allowed
+        - **alive/dead**: only allows picking alive/dead players. If none are given, both are allowed
+        - **outOfPlay**: only shows out of play character (only for demon bluffs so far)
+        - **others**: can't target yourself (**Monk**)
+        - **cancel**: allows early finishing of the action. Used for when the numbers aren't known (**Minion Info** **Godfather info**) or for once per game abilities (**Seamstress**)
+    - **scope**: for **nightActionsScoped**, either "local" (for only when the character is in play) or "global" (always)
+    - **scopeRestrictions**: for **nightActionsScoped**, an array of which teams to propagate the night action to. If none are given, it is propagated to all
 
 ## Acknowledgements and Copyrights
 
-* Based heavily off of [bra1n's](https://github.com/bra1n/) [townsquare](https://github.com/bra1n/townsquare)
-* [Blood on the Clocktower](https://bloodontheclocktower.com/) is a trademark of Steven Medway and [The Pandemonium Institute](https://www.thepandemoniuminstitute.com/)
-* Night reminders and other auxiliary text written by [Ben Finney](http://bignose.whitetree.org/projects/botc/diy/)
-* Icons made by [Freepik](https://www.flaticon.com/authors/Freepik) from [Flatline](https://www.flaticon.com/)
-* Background image by [Ryan Maloney](https://www.artstation.com/maloney94)
-* All other images and icons are copyright to their respective owners
+- Based heavily off of [bra1n's](https://github.com/bra1n/) [townsquare](https://github.com/bra1n/townsquare)
+- [Blood on the Clocktower](https://bloodontheclocktower.com/) is a trademark of Steven Medway and [The Pandemonium Institute](https://www.thepandemoniuminstitute.com/)
+- Night reminders and other auxiliary text written by [Ben Finney](http://bignose.whitetree.org/projects/botc/diy/)
+- Icons made by [Freepik](https://www.flaticon.com/authors/Freepik) from [Flatline](https://www.flaticon.com/)
+- Background image by [Ryan Maloney](https://www.artstation.com/maloney94)
+- All other images and icons are copyright to their respective owners
