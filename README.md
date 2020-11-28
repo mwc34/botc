@@ -1,4 +1,8 @@
-# botc
+# Blood on the Clocktower
+
+Online application to help play BotC
+
+Available to use [here](https://evabs.soc.srcf.net)
 
 ## Features
 
