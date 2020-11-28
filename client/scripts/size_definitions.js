@@ -54,7 +54,7 @@ function getClockButtonTopOffset() {
 
 function getDeathFraction(number_of_players) {
     let t = getPlayerNumberFraction(number_of_players)
-    return t * size/(12.9 * 1.6);
+    return t * size/(12.9 * 1.3);
 }
 
 function getTokenSize(number_of_players) {

@@ -1072,6 +1072,7 @@ function setupSocketIcons() {
         socket_icon.style.zIndex = 'inherit'
         socket_icon.style.position = 'absolute'
         socket_icon.style.visibility = 'hidden'
+        socket_icon.src = 'assets/other/occupied.png'
         socket_icons.appendChild(socket_icon)
     }
 }

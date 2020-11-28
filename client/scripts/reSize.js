@@ -44,11 +44,10 @@ function reSizeMenu() {
 function reSizeClock() {
     clock.style.left = size/2 + 'px'
     clock.style.top = size/2 + 'px'
-    let hand_widths = [120, 67]
     for (let i=0; i<2; i++) {
         let hand = hands.children[i]
         hand.height = getClockHandLength()
-        hand.width = hand_widths[i] * getClockHandLength() / 832
+        hand.width = hand.naturalWidth * getClockHandLength() / hand.naturalHeight
         hand.style.top = -hand.height/2 + 'px'
         hand.style.left = -hand.width/2 + 'px'
     }
@@ -122,7 +121,7 @@ function reSizePlayers() {
         name.style.borderWidth = getBorderSize() + 'px'
         
         death_token.width = getDeathFraction(game_state.player_info.length)
-        death_token.height = 419 * death_token.width / 233
+        death_token.height = death_token.naturalHeight * death_token.width / death_token.naturalWidth
         death_token.style.top = top + 'px'
         death_token.style.left = left + (width/2) - (death_token.width/2) + 'px'
         
@@ -133,14 +132,14 @@ function reSizePlayers() {
             vote_icon.style.top = top + (height/2) - (vote_icon.height/2) + 'px'
             vote_icon.style.left = left + (width/2) - (vote_icon.width/2) + 'px'
         }
-        
+
         socket_icon.width = getSocketIconSize(game_state.player_info.length)
-        socket_icon.height = socket_icon.width * 218 / 127
+        socket_icon.height = socket_icon.width * socket_icon.naturalHeight / socket_icon.naturalWidth
         socket_icon.style.left = left + 'px'
         socket_icon.style.top = top + height - socket_icon.height + 'px'
         
         dead_vote.width = getSocketIconSize(game_state.player_info.length)
-        dead_vote.height = dead_vote.width * 381 / 467
+        dead_vote.height = dead_vote.width * dead_vote.naturalHeight / dead_vote.naturalWidth
         dead_vote.style.left = left + width - dead_vote.width + 'px'
         dead_vote.style.top = top + height - dead_vote.height + 'px'
         
