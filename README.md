@@ -6,7 +6,7 @@
 - Day/Night phases
 - Nomination tracking
 - Night Actions
-- Log tracking toggleable
+- Toggleable log tracking
 - Custom editions / characters / fabled
 
 ## Custom Edition/Characters/Fabled
@@ -17,6 +17,9 @@
 ```json
 {
       "id":"lunatic",
+      "name":"Lunatic",
+      "team":"outsider",
+      "ability":"You think you are a Demon, but your abilities malfunction. The Demon knows who you are and who you attack.",
       "firstNight":2,
       "firstNightReminder":"If 7 or more players: Show the Lunatic a number of arbitrary \u201cMinion\u201c, players equal to the number of Minions in play. Show 3 character tokens of arbitrary Good characters. If the token received by the Lunatic is a Demon that would wake tonight: \u2022 Allow the Lunatic to do the Demon actions. Place their \u201cattack\u201d markers. Wake the Demon. Show the Demon\u2019s real character token. Show them the Lunatic player. \u2022 If the Lunatic attacked players: Show the real demon each marked player. Remove any Lunatic \u201cattack\u201d markers.",
       "otherNight":16,
@@ -24,9 +27,6 @@
       "remindersGlobal":["Lunatic", "Attack 1", "Attack 2", "Attack 3", "Decoy"],
       "setup":true,
       "removesSelf":true,
-      "name":"Lunatic",
-      "team":"outsider",
-      "ability":"You think you are a Demon, but your abilities malfunction. The Demon knows who you are and who you attack.",
       "nightActions":[],
       "nightActionsScoped":[
          {
@@ -69,6 +69,10 @@
         - **cancel**: allows early finishing of the action. Used for when the numbers aren't known (**Minion Info** **Godfather info**) or for once per game abilities (**Seamstress**)
     - **scope**: for **nightActionsScoped**, either "local" (for only when the character is in play) or "global" (always)
     - **scopeRestrictions**: for **nightActionsScoped**, an array of which teams to propagate the night action to. If none are given, it is propagated to all
+    - **create**: If true, the game will bring up a customisable menu each night. For ever changing abilities (e.g. **Cannibal** **Amnesiac**)
+    - **confirm**: Text that is given as a prompt for a confirm box for the player (e.g. **Harlot**)
+
+For further guidance, the [roles](https://github.com/mwc34/botc/blob/main/client/json/roles.json) file shows how the base characters have been implemented
 
 ## Acknowledgements and Copyrights
 
