@@ -148,7 +148,6 @@ function censorState(state, socket_id = false) { // undefined clashes with playe
     delete state.roles_by_id
     delete state.ip
     state.group_night_action = {'name' : null, 'data' : {}}
-    state.roles = roles.concat(state.roles)
     
     return state
 }
@@ -165,6 +164,33 @@ function getCharacterFromID(state, id) {
     }
     if (id in state.roles_by_id) {
         return state.roles_by_id[id]
+    }
+    return null
+}
+
+function getEditionFromID(state, id) {
+    if (id in editions_by_id) {
+        return editions_by_id[id]
+    }
+    
+    for (let edition of state.editions) {
+        if (edition.id == id) {
+            return edition
+        }
+    }
+    
+    return null
+}
+
+function getFabledFromID(state, id) {
+    if (id in fabled_by_id) {
+        return fabled_by_id[id]
+    }
+    
+    for (let fabled of state.fabled) {
+        if (fabled.id == id) {
+            return fabled
+        }
     }
     return null
 }
@@ -369,15 +395,27 @@ const requests_timer = {
 
 const roles_by_id = {}
 
-var roles = JSON.parse(fs.readFileSync('/home/societies/evabs/public_html/roles.json', 'utf8'));
+const base_roles = JSON.parse(fs.readFileSync('/home/societies/evabs/public_html/json/roles.json', 'utf8'));
 
-for (let role of roles) {
+for (let role of base_roles) {
     roles_by_id[role.id] = role
 }
 
-var editions = JSON.parse(fs.readFileSync('/home/societies/evabs/public_html/editions.json', 'utf8'));
+const editions_by_id = {}
 
-var fabled = JSON.parse(fs.readFileSync('/home/societies/evabs/public_html/fabled.json', 'utf8'));
+const base_editions = JSON.parse(fs.readFileSync('/home/societies/evabs/public_html/json/editions.json', 'utf8'));
+
+for (let edition of base_editions) {
+    editions_by_id[edition.id] = edition
+}
+
+const fabled_by_id = {}
+
+const base_fabled = JSON.parse(fs.readFileSync('/home/societies/evabs/public_html/json/fabled.json', 'utf8'));
+
+for (let fabled of base_fabled) {
+    fabled_by_id[fabled.id] = fabled
+}
 
 // Game Data, one for each channel id
 
@@ -397,11 +435,11 @@ const base_state = {
         'data' : {}, // seat_id : {'players' : []}
     },
     'next_seat_id' : 0,
-    'log_status' : 0, // 0 full, 1 last night, 2 only clock, 3 none
+    'log_status' : 0,
     'edition' : 'tb',
-    'editions' : copy(editions),
+    'editions' : [],
     'roles' : [],
-    'fabled' : copy(fabled),
+    'fabled' : [],
     'fabled_in_play' : [],
     'demon_bluffs' : [],
     'player_info' : [],
@@ -730,14 +768,12 @@ io.on('connection', (socket) => {
     socket.on('edition update', (channel_id, edition_update) => {
         if (!rateLimit(socket)) {return}
         if (channel_id in game_states && socket.id == game_states[channel_id].host_socket_id) {
-            for (let edition of game_states[channel_id].editions) {
-                if (edition.id == edition_update) {
-                    game_states[channel_id].edition = edition.id
-                    channelEmit(channel_id, 'edition update', game_states[channel_id].edition)
-                    game_states[channel_id].fabled_in_play = edition.fabled || []
-                    channelEmit(channel_id, 'fabled in play update', game_states[channel_id].fabled_in_play)
-                    break
-                }
+            let edition = getEditionFromID(game_states[channel_id], edition_update)
+            if (edition) {
+                game_states[channel_id].edition = edition.id
+                channelEmit(channel_id, 'edition update', game_states[channel_id].edition)
+                game_states[channel_id].fabled_in_play = edition.fabled || []
+                channelEmit(channel_id, 'fabled in play update', game_states[channel_id].fabled_in_play)
             }
         }
     })
@@ -746,12 +782,8 @@ io.on('connection', (socket) => {
     socket.on('reference sheet update', (channel_id, edition_id, reference_sheet) => {
         if (!rateLimit(socket)) {return}
         if (channel_id in game_states && socket.id == game_states[channel_id].host_socket_id && reference_sheet) {
-            let edition = null
-            for (let e of game_states[channel_id].editions) {
-                if (e.id == edition_id) {
-                    edition = e
-                }
-            }
+            let edition = getEditionFromID(game_states[channel_id], edition_id)
+            
             if (edition && !edition.reference_sheet) {
                 edition.reference_sheet = String(reference_sheet).slice(0, 1000)
                 if (edition.reference_sheet) {
@@ -765,11 +797,10 @@ io.on('connection', (socket) => {
     socket.on('new edition', (channel_id, edition) => {
         if (!rateLimit(socket)) {return}
         if (channel_id in game_states && socket.id == game_states[channel_id].host_socket_id && edition) {
-            if (game_states[channel_id].editions.length == editions.length + max_new_editions) {
+            if (game_states[channel_id].editions.length == max_new_editions) {
                 socket.emit('server message', 'You have already added the maximum amount (${max_new_editions}) of new editions to this game. <br> Please restart the session to add another custom edition')
                 return
             }
-            
             edition = {
                 'id' : edition.id, 
                 'name' : edition.name, 
@@ -789,11 +820,12 @@ io.on('connection', (socket) => {
                 return
             }
             // Check unique
-            for (let e of game_states[channel_id].editions) {
+            for (let e of game_states[channel_id].editions.concat(base_editions)) {
                 if (e.id == edition.id || e.name == edition.name) {
                     return
                 }
             }
+            
             let max_counts = {
                 'townsfolk' : 14,
                 'outsider' : 7,
@@ -921,20 +953,15 @@ io.on('connection', (socket) => {
             }
 
             // Check fabled
-            let ids = []
             let fabled_checked = []
             let new_fabled = []
-            for (let f of game_states[channel_id].fabled) {
-                ids.push(f.id)
-            }
             for (let i=0; i < edition.fabled.length; i++) {
                 let f = edition.fabled[i]
                 
-                if (ids.includes(f) && fabled_checked.includes(f)) {
+                if (getFabledFromID(game_states[channel_id], f) && fabled_checked.includes(f)) {
                     return
                 }
-                
-                if (!ids.includes(f)) {
+                if (!getFabledFromID(game_states[channel_id], f)) {
                     if (!f || f.constructor != Object) {
                         return
                     }
@@ -971,7 +998,7 @@ io.on('connection', (socket) => {
                         }
                     }
                     
-                    if (ids.includes(new_f.id)) {
+                    if (getFabledFromID(game_states[channel_id], new_f.id)) {
                         socket.emit('server message', `The fabled with id ${new_f.id} already exists`) 
                         return
                     }
@@ -983,7 +1010,6 @@ io.on('connection', (socket) => {
                     if (fabled_checked.includes(new_f.id)) {
                         return
                     }
-                    
                     edition.fabled[i] = new_f.id
                     new_fabled.push(new_f)
                     f = new_f     
@@ -999,6 +1025,7 @@ io.on('connection', (socket) => {
             // Valid new edition
             game_states[channel_id].fabled = game_states[channel_id].fabled.concat(new_fabled)
             game_states[channel_id].roles = game_states[channel_id].roles.concat(new_chars)
+            game_states[channel_id].roles_by_id = {}
             game_states[channel_id].editions.push(edition)
             channelEmit(channel_id, 'new edition', {'edition' : edition, 'new_roles' : new_chars, 'new_fabled' : new_fabled})
             game_states[channel_id].edition = edition.id
@@ -1012,13 +1039,8 @@ io.on('connection', (socket) => {
     socket.on('fabled in play update', (channel_id, fabled_in_play) => {
         if (!rateLimit(socket)) {return}
         if (channel_id in game_states && socket.id == game_states[channel_id].host_socket_id && Array.isArray(fabled_in_play)) {
-            game_states[channel_id].fabled_in_play = fabled_in_play.slice(0, game_states[channel_id].fabled.length).filter((e) => {
-                for (let i of game_states[channel_id].fabled) {
-                    if (i.id == e) {
-                        return true
-                    }
-                }
-                return false
+            game_states[channel_id].fabled_in_play = fabled_in_play.slice(0, base_fabled.length + game_states[channel_id].fabled.length).filter((e) => {
+                return getFabledFromID(game_states[channel_id], e)
             })
             channelEmit(channel_id, 'fabled in play update', game_states[channel_id].fabled_in_play)
         }
@@ -1427,22 +1449,20 @@ io.on('connection', (socket) => {
                 state.nominations_open = state.day_phase ? Boolean(recovery_state.nominations_open) : false
 
                 // Edition
-                for (let edition of state.editions) {
-                    if (edition.id == recovery_state.edition) {
-                        state.edition = edition.id
-                        break
-                    }
+                let e = getEditionFromID(state, recovery_state.edition)
+                if (e) {
+                    state.edition = e.id
                 }
-                if (state.edition != recovery_state.edition) {return}
+                else {
+                    return
+                }
 
                 // Fabled in play
                 if (!Array.isArray(recovery_state.fabled_in_play)) {return}
                 for (let fabled of recovery_state.fabled_in_play) {
-                    for (let f of state.fabled) {
-                        if (fabled == f.id) {
-                            state.fabled_in_play.push(f.id)
-                            break
-                        }
+                    let f = getFabledFromID(state, fabled)
+                    if (f) {
+                        state.fabled_in_play.push(f.id)
                     }
                 }
 

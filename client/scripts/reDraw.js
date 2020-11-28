@@ -417,11 +417,7 @@ function reDrawTokenMenu() {
         let total_columns = 7 // Could be 0
         for (let team of token_menu_info.valid_teams) {
             if (team == 'fabled') {
-                let ids = []
-                for (let f of game_state.fabled) {
-                    ids.push(f.id)
-                }
-                total_columns = Math.max(total_columns, Math.min(7, ids.length))
+                total_columns = Math.max(total_columns, Math.min(7, base_fabled.concat(game_state.fabled).length))
             }
             else {
                 total_columns = Math.max(total_columns, Math.min(7, getTeamIDs(game_state.edition, team).length))
@@ -435,7 +431,7 @@ function reDrawTokenMenu() {
         
         // Fabled
         let ids = []
-        for (let f of game_state.fabled) {
+        for (let f of base_fabled.concat(game_state.fabled)) {
             ids.push(f.id)
         }
         if (token_menu_info.valid_teams.includes('fabled') && ids.length > 0) {
@@ -1170,9 +1166,11 @@ function reDrawEditionMenu() {
     let clip_height = 0.5 * width // MAGIC NUMBER
     let height = clip_height + getEditionMenuTextHeight()
     
-    for (let i=0; i < Math.max(game_state.editions.length, e.childElementCount); i++) {
-        if (i < game_state.editions.length) {
-            let edition = game_state.editions[i]
+    let editions = base_editions.concat(game_state.editions)
+    
+    for (let i=0; i < Math.max(editions.length, e.childElementCount); i++) {
+        if (i < editions.length) {
+            let edition = editions[i]
             while (e.childElementCount <= i) {
                 e.appendChild(makeNewEditionDiv())
             }

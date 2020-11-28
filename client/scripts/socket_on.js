@@ -38,6 +38,9 @@ socket.on('new host', (msg, extra) => {
         channel_id = sessionStorage.channel_id
         if (sessionStorage.saved_channel_id != sessionStorage.channel_id) {
             wipeSessionStorage()
+            for (let key in created_night_actions) {
+                delete created_night_actions[key]
+            }
         }
         
         if (sessionStorage.log) {
@@ -55,6 +58,7 @@ socket.on('new host', (msg, extra) => {
         for (let key in roles_by_id) {
             delete roles_by_id[key]
         }
+        
         token_click_type = 0
         your_seat_id = null
         token_menu_info.active = false
@@ -145,6 +149,9 @@ socket.on('new player', (msg, reason) => {
         channel_id = sessionStorage.channel_id
         if (sessionStorage.saved_channel_id != sessionStorage.channel_id) {
             wipeSessionStorage()
+            for (let key in created_night_actions) {
+                delete created_night_actions[key]
+            }
         }
         
         if (sessionStorage.log) {
@@ -162,6 +169,7 @@ socket.on('new player', (msg, reason) => {
         for (let key in roles_by_id) {
             delete roles_by_id[key]
         }
+        
         token_click_type = 0
         your_seat_id = null
         token_menu_info.active = false
@@ -505,7 +513,6 @@ socket.on('group night action update', (group_night_action) => {
 socket.on('night action', (night_action) => {
     if (client_type) {
         let msg = getLogNightActionStyle('Received Night Action from ' + getLogPlayerStyle(getPlayerBySeatID(night_action.seat_id).name) + ':<br>' + nightAlert(night_action))
-        console.log(night_action)
         // Only log if had info
         if (night_action.server_response ||
                 night_action.timed_out ||
@@ -577,6 +584,9 @@ socket.on('reset game', (state) => {
     let game_recovery = game_state.player_info.length == 0
 
     game_state = state
+    for (let key in created_night_actions) {
+        delete created_night_actions[key]
+    }
     
     token_click_type = 0
     token_menu_info.active = false

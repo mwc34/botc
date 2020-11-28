@@ -64,8 +64,15 @@ const max_players = 20
 const max_new_fabled_per_edition = 5
 const max_reminders = 5
 const deselected_opacity = 0.5
+const created_night_actions = {}
 const roles_by_id = {}
 const website_url = 'https://evabs.soc.srcf.net'
+const base_roles = []
+window.fetch(website_url + '/json/roles.json').then(x => x.json()).then(x => {for (let role of x) {base_roles.push(role)}})
+const base_editions = []
+window.fetch(website_url + '/json/editions.json').then(x => x.json()).then(x => {for (let edition of x) {base_editions.push(edition)}})
+const base_fabled = []
+window.fetch(website_url + '/json/fabled.json').then(x => x.json()).then(x => {for (let fabled of x) {base_fabled.push(fabled)}})
 const socket = io(website_url, {autoConnect: false})
 Notification.requestPermission()
 var size = Math.min(window.innerWidth, window.innerHeight)
@@ -170,7 +177,7 @@ var night_action_info = {
                 getPlayerBySeatID(to_send.seat_id).night_action = msg
             }
             else if (game_state.log_status == 0 && (to_send.info.players.length > 0 || to_send.info.characters.length > 0 || to_send.info.info.length > 0)) {
-                appendLog()
+                appendLog(msg)
             }   
             
             socket.emit('night action', channel_id, to_send)
@@ -296,7 +303,7 @@ function getScopedNightActions(c) {
 }
 
 function getFabledFromID(id) {
-    for (let f of game_state.fabled) {
+    for (let f of base_fabled.concat(game_state.fabled)) {
         if (f.id == id) {
             return f
         }
@@ -306,7 +313,7 @@ function getFabledFromID(id) {
 
 function getCharacterFromID(id) {
     if (Object.keys(roles_by_id).length == 0) {
-        for (let role of game_state.roles) {
+        for (let role of base_roles.concat(game_state.roles)) {
             roles_by_id[role.id] = role
         }
     }
@@ -317,7 +324,7 @@ function getCharacterFromID(id) {
 }
 
 function getEditionFromID(id) {
-    for (let e of game_state.editions) {
+    for (let e of base_editions.concat(game_state.editions)) {
         if (e.id == id) {
             return e
         }
@@ -326,7 +333,7 @@ function getEditionFromID(id) {
 }
 
 function getEditionFromName(name) {
-    for (let e of game_state.editions) {
+    for (let e of base_editions.concat(game_state.editions)) {
         if (e.name == name) {
             return e
         }

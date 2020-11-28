@@ -293,6 +293,9 @@ function setupMenu() {
                     
                     // For ever changing night actions
                     if (night_action.create) {
+                        
+                        night_action = created_night_actions[night_action.name] = created_night_actions[night_action.name] || night_action
+                        
                         // Pop up form to calculate data
                         night_action_menu.children[1].children[1].children[1].innerHTML = night_action.in_players || 0
                         night_action_menu.children[2].children[1].children[1].innerHTML = night_action.in_characters || 0
@@ -1389,9 +1392,6 @@ function setupOpenReferenceSheet() {
                     // }
 
                     // let filecontent = evt.target.result;
-                    // console.log(typeof filecontent)
-                    // console.log(filecontent.length)
-                    // console.log(filecontent)
                     // socket.emit('reference sheet update', channel_id, game_state.edition, filecontent)
                 // };
 
@@ -1745,27 +1745,7 @@ function setupNightActionMenu() {
                 // Finish
                 if (j==0) {
                     div.children[j].onclick = () => {
-                        // Find night action in roles
-                        let night_action = null
-                        role_loop:
-                        for (let r of game_state.roles) {
-                            if (r.night_actions) {
-                                for (let n_a of r.night_actions) {
-                                    if (n_a.name == night_action_info.name) {
-                                        night_action = n_a
-                                        break role_loop
-                                    }
-                                }
-                            }
-                            if (r.night_actions_scoped) {
-                                for (let n_a of r.night_actions_scoped) {
-                                    if (n_a.name == night_action_info.name) {
-                                        night_action = n_a
-                                        break role_loop
-                                    }
-                                }
-                            }
-                        }
+                        let night_action = created_night_actions[night_action_info.name]
                         
                         // Assign values to night action
                         night_action.in_players = night_action_menu.children[1].children[1].children[1].innerHTML
