@@ -124,6 +124,7 @@ function styleVotes() {
         for (let j=0; j < 2; j++) {
             let vote_icon = (j ? yes_votes : no_votes).children[i]
             vote_icon.style.pointerEvents = 'none'
+            vote_icon.style.opacity = 0.9
         }
     }
 }
