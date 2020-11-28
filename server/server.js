@@ -24,28 +24,28 @@ app.use(function(req, res, next) {
 
 // // Serving Client Side
 
-const getAllFiles = function(dirPath, arrayOfFiles) {
-  files = fs.readdirSync(dirPath)
+// const getAllFiles = function(dirPath, arrayOfFiles) {
+  // files = fs.readdirSync(dirPath)
 
-  arrayOfFiles = arrayOfFiles || []
+  // arrayOfFiles = arrayOfFiles || []
 
-  files.forEach(function(file) {
-    if (fs.statSync(dirPath + "/" + file).isDirectory()) {
-      arrayOfFiles = getAllFiles(dirPath + "/" + file, arrayOfFiles)
-    } else {
-      arrayOfFiles.push(path.join(dirPath, "/", file))
-    }
-  })
+  // files.forEach(function(file) {
+    // if (fs.statSync(dirPath + "/" + file).isDirectory()) {
+      // arrayOfFiles = getAllFiles(dirPath + "/" + file, arrayOfFiles)
+    // } else {
+      // arrayOfFiles.push(path.join(dirPath, "/", file))
+    // }
+  // })
 
-  return arrayOfFiles
-}
+  // return arrayOfFiles
+// }
 
-for (let page of getAllFiles('/home/societies/evabs/public_html/')) {
-    page = page.replace('/home/societies/evabs/public_html','')
-    app.get(page, (req, res) => {
-        res.sendFile('/home/societies/evabs/public_html' + page)
-    })
-}
+// for (let page of getAllFiles('/home/societies/evabs/public_html/')) {
+    // page = page.replace('/home/societies/evabs/public_html','')
+    // app.get(page, (req, res) => {
+        // res.sendFile('/home/societies/evabs/public_html' + page)
+    // })
+// }
 
 // app.get('/Reference%20Sheet', (req, res) => {
     // let channel_id = req.query.channel_id
@@ -461,6 +461,11 @@ io.on('connection', (socket) => {
         socket.disconnect()
     }, 5000) // Time to join before kick
     printInfo()
+    
+    socket.on('manual ping', () => {
+        if (!rateLimit(socket)) {return}
+        socket.emit('manual pong', (new Date()).getTime())
+    })
     
     // Host connecting
     socket.on('new host', (channel_id) => {

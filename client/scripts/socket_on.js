@@ -11,6 +11,14 @@ socket.on('pong', (ping) => {
     reDrawHUD()
 })
 
+socket.on('manual pong', (time) => {
+    let ping = (new Date()).getTime() - ping_test_time
+    let time_diff = (new Date()).getTime() - time
+    console.log(ping, time_diff)
+    latency = Math.min(ping, Math.abs(time_diff*2))
+    reDrawHUD()
+})
+
 socket.on('new host', (msg, extra) => {
     // Host rejected
     if (!msg) {
@@ -117,6 +125,8 @@ socket.on('new host', (msg, extra) => {
         else {
             delete sessionStorage.game_recovery
         }
+        
+        // calculatePing()
     }
 })
 
@@ -195,6 +205,7 @@ socket.on('new player', (msg, reason) => {
         non_square.style.visibility = ''
         game_menu.style.visibility = 'hidden'
         
+        // calculatePing()
     }
 })
 
