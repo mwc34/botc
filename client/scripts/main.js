@@ -725,7 +725,6 @@ function calculatePing(repeat) {
 
 function showDisconnectedState() {
     
-    
     if (sessionStorage.game_recovery && sessionStorage.saved_channel_id == sessionStorage.channel_id) {
         let state = JSON.parse(sessionStorage.game_recovery)
         game_state = state
@@ -742,7 +741,10 @@ function main() {
     setup()
     style()
     reSize()
-    game_menu.style.visibility = ''
+    
+    if (socket) {
+        game_menu.style.visibility = ''
+    }
     
     // Rescue channel_id, client_type from params
     if (sessionStorage.channel_id == null && urlParams.get('id')) {

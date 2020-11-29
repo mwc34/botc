@@ -1673,7 +1673,7 @@ function setupLeaveGame() {
         client_type = null
         delete sessionStorage.client_type
         delete sessionStorage.channel_id
-        game_menu.style.visibility = ''
+        if (socket) {game_menu.style.visibility = ''}
         game.style.visibility = 'hidden'
         non_square.style.visibility = 'hidden'
         socket.disconnect()
