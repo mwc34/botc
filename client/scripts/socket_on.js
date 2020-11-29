@@ -135,7 +135,7 @@ socket.on('new host', (msg, extra) => {
             delete sessionStorage.game_recovery
         }
         
-        if (localStorage.log_status) {
+        if (localStorage.log_status && localStorage.log_status != game_state.log_status) {
             socket.emit('log status update', channel_id, parseInt(localStorage.log_status))
         }
         

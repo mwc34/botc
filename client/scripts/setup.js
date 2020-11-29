@@ -1438,7 +1438,7 @@ function setupAddPlayer() {
         else if (!game_state.clock_info.active && !getMenuOpen()) {
             if (client_type) {
                 alert_box_info.push({
-                    'text' : 'Enter the new name(s)',
+                    'text' : 'Enter the new name(s) (Shift Enter for newline)',
                     'type' : 'prompt',
                     'multi_line' : true,
                     'func' : (res) => {
