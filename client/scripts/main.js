@@ -63,6 +63,7 @@ const urlParams = new URLSearchParams(window.location.search);
 const max_players = 20
 const max_new_fabled_per_edition = 5
 const max_reminders = 5
+const log_status_count = 4
 const deselected_opacity = 0.5
 const created_night_actions = {}
 const roles_by_id = {}
@@ -176,7 +177,7 @@ var night_action_info = {
             if (client_type) {
                 getPlayerBySeatID(to_send.seat_id).night_action = msg
             }
-            else if (game_state.log_status == 0 && (to_send.info.players.length > 0 || to_send.info.characters.length > 0 || to_send.info.info.length > 0)) {
+            else if (game_state.log_status < 2 && (to_send.info.players.length > 0 || to_send.info.characters.length > 0 || to_send.info.info.length > 0)) {
                 appendLog(msg)
             }   
             

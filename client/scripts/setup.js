@@ -1582,7 +1582,9 @@ function setupChangeLogStatus() {
     change_log_status.style.position = 'absolute'
     change_log_status.onclick = () => {
         if (client_type) {
-            socket.emit('log status update', channel_id, (game_state.log_status + 1) % 3)
+            let next_status = (game_state.log_status + 1) % log_status_count
+            socket.emit('log status update', channel_id, next_status)
+            localStorage.log_status = next_status
         }
     }
 }

@@ -886,6 +886,7 @@ function reDrawHUD() {
     
     log_status_list = [
         'Night + Votes',
+        'Night',
         'Votes',
         'Base',
     ]

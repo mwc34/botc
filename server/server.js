@@ -353,6 +353,7 @@ function rateLimit(socket) {
     
     return true
 }
+const log_status_count = 4
 
 const max_new_editions = 5
 
@@ -1390,7 +1391,7 @@ io.on('connection', (socket) => {
     socket.on('log status update', (channel_id, status) => {
         if (!rateLimit(socket)) {return}
         if (channel_id in game_states && socket.id == game_states[channel_id].host_socket_id) {
-            if (Number.isInteger(status) && status >= 0 && status <= 2 && status != game_states[channel_id].log_status) {
+            if (Number.isInteger(status) && status >= 0 && status < log_status_count && status != game_states[channel_id].log_status) {
                 game_states[channel_id].log_status = parseInt(status)
                 channelEmit(channel_id, 'log status update', game_states[channel_id].log_status)
             }
@@ -1443,7 +1444,7 @@ io.on('connection', (socket) => {
             else {
 
                 // Base
-                state.log_status = Number.isInteger(recovery_state.log_status) && recovery_state.log_status <= 2 && recovery_state.log_status >= 0 ? recovery_state.log_status : 0
+                state.log_status = Number.isInteger(recovery_state.log_status) && recovery_state.log_status < log_status_count && recovery_state.log_status >= 0 ? recovery_state.log_status : 0
                 state.day_phase = Boolean(recovery_state.day_phase)
                 state.phase_counter = Number.isInteger(recovery_state.phase_counter) && (recovery_state.phase_counter > 0 || (recovery_state.phase_counter == 0 && !state.day_phase)) ? recovery_state.phase_counter : 0
                 state.nominations_open = state.day_phase ? Boolean(recovery_state.nominations_open) : false

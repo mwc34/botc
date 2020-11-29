@@ -135,6 +135,10 @@ socket.on('new host', (msg, extra) => {
             delete sessionStorage.game_recovery
         }
         
+        if (localStorage.log_status) {
+            socket.emit('log status update', channel_id, parseInt(localStorage.log_status))
+        }
+        
         calculatePing()
     }
 })
@@ -373,7 +377,7 @@ socket.on('finish vote update', () => {
     }
     
     let clock_info = game_state.clock_info
-    if (client_type || game_state.log_status < 2) {
+    if (client_type || game_state.log_status % 2 == 0) {
         appendLog(getLogNominationStyle(
             getLogPlayerStyle(getPlayerBySeatID(clock_info.nominator).name) 
             + (clock_info.free ? " free" : "") 
@@ -536,7 +540,7 @@ socket.on('night action', (night_action) => {
         alert_box_info.push({'text' : msg, 'func' : () => {
             
             // Only log if had info
-            if (game_state.log_status == 0 && (night_action.info.players.length > 0 || night_action.info.characters.length > 0 || night_action.info.info.length > 0)) {
+            if (game_state.log_status < 2 && (night_action.info.players.length > 0 || night_action.info.characters.length > 0 || night_action.info.info.length > 0)) {
                 appendLog(msg)
             }
             
