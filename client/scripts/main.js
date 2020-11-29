@@ -74,7 +74,7 @@ const base_editions = []
 window.fetch(website_url + '/json/editions.json').then(x => x.json()).then(x => {for (let edition of x) {base_editions.push(edition)}})
 const base_fabled = []
 window.fetch(website_url + '/json/fabled.json').then(x => x.json()).then(x => {for (let fabled of x) {base_fabled.push(fabled)}})
-const socket = io(website_url, {autoConnect: false})
+const socket = typeof io != 'undefined' ? io(website_url, {autoConnect: false}) : null
 Notification.requestPermission()
 var size = Math.min(window.innerWidth, window.innerHeight)
 var game_state = {
@@ -723,6 +723,21 @@ function calculatePing(repeat) {
     }
 }
 
+function showDisconnectedState() {
+    
+    
+    if (sessionStorage.game_recovery && sessionStorage.saved_channel_id == sessionStorage.channel_id) {
+        let state = JSON.parse(sessionStorage.game_recovery)
+        game_state = state
+        reSize()
+        reDraw()
+        
+        game.style.visibility = ''
+        non_square.style.visibility = ''
+        game_menu.style.visibility = 'hidden'
+    }
+}
+
 function main() {
     setup()
     style()
@@ -740,6 +755,15 @@ function main() {
     
     // Try to connect
     if (sessionStorage.channel_id != null && sessionStorage.client_type != null) {
-        socket.open()
+        showDisconnectedState()
+        if (socket) {
+            socket.open()
+        }
+        else {
+            alert_box_info.push({
+                'text' : 'You are unable to connect.<br>The server may not be started.<br>Refresh to try again.'
+            })
+            alert_box.check()
+        }
     }
 }

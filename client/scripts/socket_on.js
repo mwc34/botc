@@ -91,7 +91,7 @@ socket.on('new host', (msg, extra) => {
                     if (res) {
                         let state = JSON.parse(sessionStorage.game_recovery)
                         
-                        let new_e = state.curr_edition
+                        let new_e = base_editions.concat(state.editions).filter(e => e.id == state.edition)[0]
                         for (let team in new_e.characters) {
                             for (let i=0; i<new_e.characters[team].length; i++) {
                                 let role = new_e.characters[team][i]
@@ -740,23 +740,7 @@ socket.on('disconnect', () => {
         alert_box.check()
     }
     
-    if (client_type) {
-        let state = {
-            'log_status' : game_state.log_status,
-            'edition' : game_state.edition,
-            'curr_edition' : getEditionFromID(game_state.edition),
-            'roles' : game_state.roles,
-            'fabled' : game_state.fabled,
-            'fabled_in_play' : game_state.fabled_in_play,
-            'demon_bluffs' : game_state.demon_bluffs,
-            'day_phase' : game_state.day_phase,
-            'phase_counter' : game_state.phase_counter,
-            'nominations_open' : game_state.nominations_open,
-            'player_info' : game_state.player_info,
-        }
-        
-        sessionStorage.game_recovery = JSON.stringify(state)
-    }
+    sessionStorage.game_recovery = JSON.stringify(game_state)
     
     client_type = null
     channel_id = null

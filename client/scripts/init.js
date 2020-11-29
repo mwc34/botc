@@ -20,14 +20,12 @@ function loadScript(src){
 
 }
 
+let server = true
+
 Promise.resolve()
 .then(loadScript("socket.io/socket.io.js"))
 .catch((e) => {
-    document.body.style.backgroundImage = 'url("assets/other/night.jpg")'
-    document.body.style.backgroundRepeat = 'no-repeat'
-    document.body.style.backgroundAttachment = 'fixed'
-    document.body.style.backgroundSize = 'cover'
-    alert("Server not started")
+    
 })
 .then(loadScript("scripts/main.js"))
 .then(loadScript("scripts/style.js"))
@@ -36,4 +34,6 @@ Promise.resolve()
 .then(loadScript("scripts/socket_on.js"))
 .then(loadScript("scripts/reDraw.js"))
 .then(loadScript("scripts/size_definitions.js"))
-.then(() => {main()})
+.then(() => {
+    main()
+})

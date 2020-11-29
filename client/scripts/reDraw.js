@@ -882,7 +882,7 @@ function reDrawHUD() {
     reset_game.style.visibility = client_type || client_type == null ? reset_game.style.visibility : 'hidden'
     change_nomination_status.style.visibility = client_type || client_type == null ? change_nomination_status.style.visibility : 'hidden'
     
-    current_ping.innerHTML = `Ping: ${socket.connected ? (latency == null ? 'Calculating' : latency + 'ms') : '<span style="color:red">DISCONNECTED</span>'}`
+    current_ping.innerHTML = `Ping: ${socket && socket.connected ? (latency == null ? 'Calculating' : latency + 'ms') : '<span style="color:red">DISCONNECTED</span>'}`
     
     log_status_list = [
         'Night + Votes',
@@ -892,7 +892,7 @@ function reDrawHUD() {
     ]
     log_status.innerHTML = `Log Status: ${log_status_list[game_state.log_status]}`
     host_connected.innerHTML = 'Host Status: ' + (game_state.host_socket_id ? (client_type ? 'You are the Host' : 'Hosted') : 'Hostless')
-    channel_ID.innerHTML = 'Channel: ' + (channel_id || '')
+    channel_ID.innerHTML = 'Channel: ' + (channel_id || sessionStorage.channel_id || '')
     let t = getEditionFromID(game_state.edition)
     current_edition.innerHTML = 'Edition: ' + (t ? t.name : '')
     

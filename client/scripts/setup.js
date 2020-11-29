@@ -1174,6 +1174,7 @@ function setupGameMenu() {
                     sessionStorage.channel_id = res
                     sessionStorage.client_type = 1
                     if (socket.disconnected) {
+                        showDisconnectedState()
                         socket.open()
                     }
                     else {
@@ -1196,6 +1197,7 @@ function setupGameMenu() {
                     sessionStorage.channel_id = res
                     sessionStorage.client_type = 0
                     if (socket.disconnected) {
+                        showDisconnectedState()
                         socket.open()
                     }
                     else {
