@@ -1439,6 +1439,8 @@ io.on('connection', (socket) => {
                     
                     state.player_info.push(player)
                 }
+                
+                state.fabled_in_play = getEditionFromID(state, state.edition).fabled || []
             }
             // From recovery state
             else {

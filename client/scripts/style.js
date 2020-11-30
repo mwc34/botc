@@ -155,6 +155,7 @@ function styleReminders() {
             reminder_text.style.justifyContent = 'center'
             reminder_text.style.alignItems = 'center'
             reminder_text.style.textAlign = 'center'
+            reminder_text.style.userSelect = 'none'
             // reminder_text.style.wordWrap = 'break-word'
             // reminder_text.style.wordBreak = 'break-all'
         }

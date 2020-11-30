@@ -101,7 +101,7 @@ function getClockHandLength() {
 }
 
 function getHUDRowWidth() {
-    return size/4.1
+    return size/3.7
 }
 
 function getHUDRowHeight() {
@@ -180,7 +180,7 @@ function getReminderMenuTextFontSize() {
 }
 
 function getReminderXFraction() {
-    return 0.9
+    return 0.9/3.2
 }
 
 function getTokenMenuSize() {

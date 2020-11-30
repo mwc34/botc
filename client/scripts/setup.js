@@ -1138,10 +1138,56 @@ function setupReminders() {
             }
             
             reminder.onmouseenter = () => {
+                let new_size = getTokenSize(game_state.player_info.length)
+                let reminder_size = getReminderSize(game_state.player_info.length)
+                
+                reminder.style.width = reminder.style.height = new_size + 'px'
+                reminder.style.top = parseFloat(reminder.style.top) + (reminder_size/2) - (new_size/2) + 'px'
+                reminder.style.left = parseFloat(reminder.style.left) + (reminder_size/2) - (new_size/2) + 'px'
+                
+                bg_image.width = bg_image.height = new_size
+                
+                icon_image.width = icon_image.height = new_size * getReminderIconFraction()
+                icon_image.style.left = new_size/2 - icon_image.width/2 + 'px'
+                
+                reminder_text.style.width = reminder_text.style.height = new_size / Math.sqrt(2) + 'px'
+                reminder_text.style.top = new_size/2 - parseFloat(reminder_text.style.width)/2 + 'px'
+                reminder_text.style.left = new_size/2 - parseFloat(reminder_text.style.width)/2 + 'px'
+                reminder_text.style.fontSize = new_size * getReminderTextFontSize(game_state.player_info.length)/reminder_size + 'px'
+                
+                x_image.width = x_image.height = getReminderXFraction() * new_size
+                // x_image.style.top = new_size/2 - x_image.height/2 + 'px'
+                x_image.style.left = new_size - x_image.width/2 + 'px'
+                
+                reDrawReminders()
+                
                 x_image.style.visibility = ''
             }
             
             reminder.onmouseleave = () => {
+                let reminder_size = getReminderSize(game_state.player_info.length)
+                let new_size = getTokenSize(game_state.player_info.length)
+                
+                reminder.style.width = reminder.style.height = reminder_size + 'px'
+                reminder.style.top = parseFloat(reminder.style.top) - (reminder_size/2) + (new_size/2) + 'px'
+                reminder.style.left = parseFloat(reminder.style.left) - (reminder_size/2) + (new_size/2) + 'px'
+                
+                bg_image.width = bg_image.height = reminder_size
+                
+                icon_image.width = icon_image.height = reminder_size * getReminderIconFraction()
+                icon_image.style.left = reminder_size/2 - icon_image.width/2 + 'px'
+                
+                reminder_text.style.width = reminder_text.style.height = reminder_size / Math.sqrt(2) + 'px'
+                reminder_text.style.top = reminder_size/2 - parseFloat(reminder_text.style.width)/2 + 'px'
+                reminder_text.style.left = reminder_size/2 - parseFloat(reminder_text.style.width)/2 + 'px'
+                reminder_text.style.fontSize = getReminderTextFontSize(game_state.player_info.length) + 'px'
+                
+                x_image.width = x_image.height = getReminderXFraction() * reminder_size
+                // x_image.style.top = reminder_size/2 - x_image.height/2 + 'px'
+                x_image.style.left = reminder_size - x_image.width/2 + 'px'
+                
+                reDrawReminders()
+                
                 x_image.style.visibility = 'hidden'
             }
             

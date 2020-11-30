@@ -200,8 +200,8 @@ function reSizeReminders() {
             let x_image = reminder.children[3]
             
             x_image.width = x_image.height = getReminderXFraction() * reminder_size
-            x_image.style.top = reminder_size/2 - x_image.height/2 + 'px'
-            x_image.style.left = reminder_size/2 - x_image.width/2 + 'px'
+            // x_image.style.top = reminder_size/2 - x_image.height/2 + 'px'
+            x_image.style.left = reminder_size - x_image.width/2 + 'px'
         }
     }
 }

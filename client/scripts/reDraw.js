@@ -258,6 +258,7 @@ function reDrawReminders() {
                 }
                 
                 
+                
                 let icon_image = reminder.children[1]
                 let t = getIconPath(player.reminders[j].icon)
                 icon_image.src = t
@@ -925,14 +926,32 @@ function reDrawHUD() {
         }
     }
     
-    let alive_count = 0
+    let alive_normal_count = 0
+    let alive_traveler_count = 0
     let vote_count = 0
+    let player_normal_count = 0
+    let player_traveler_count = 0
     for (let p of game_state.player_info) {
-        if (p.alive) { alive_count++ }
+        let c = getCharacterFromID(p.character)
+        if (p.alive) {
+            if (c && c.team == 'traveler') {
+                alive_traveler_count++
+            }
+            else {
+                alive_normal_count++
+            }
+            
+        }
         if (p.dead_vote) {vote_count++}
+        if (c && c.team == 'traveler') {
+            player_traveler_count++
+        }
+        else {
+            player_normal_count++
+        }
     }
     
-    alive_vote_info.innerHTML = 'Players: ' + game_state.player_info.length + ', Alive: ' + alive_count + ', Votes: ' + vote_count
+    alive_vote_info.innerHTML = 'Players: ' + player_normal_count + (player_traveler_count ? `(${player_traveler_count})` : '') + ', Alive: ' + alive_normal_count + (alive_traveler_count ? `(${alive_traveler_count})` : '') + ', Votes: ' + vote_count
     
     
     sync_characters.innerHTML = 'Characters\' Synced'
