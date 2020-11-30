@@ -870,17 +870,18 @@ function reDrawChangePhase() {
 
 function reDrawHUD() {
     reDrawChangePhase()
-    add_player.style.visibility = client_type || client_type == null ? add_player.style.visibility : 'hidden'
-    finish_game.style.visibility = client_type || client_type == null ? finish_game.style.visibility : 'hidden'
-    choose_characters.style.visibility = client_type || client_type == null ? choose_characters.style.visibility : 'hidden'
-    shuffle_players.style.visibility = client_type || client_type == null ? shuffle_players.style.visibility : 'hidden'
-    change_edition.style.visibility = client_type || client_type == null ? change_edition.style.visibility : 'hidden'
-    choose_fabled.style.visibility = client_type || client_type == null ? choose_fabled.style.visibility : 'hidden'
-    change_log_status.style.visibility = client_type || client_type == null ? change_log_status.style.visibility : 'hidden'
-    change_phase.style.visibility = client_type || client_type == null ? change_phase.style.visibility : 'hidden'
-    reveal_grimoire.style.visibility = client_type || client_type == null ? reveal_grimoire.style.visibility : 'hidden'
-    reset_game.style.visibility = client_type || client_type == null ? reset_game.style.visibility : 'hidden'
-    change_nomination_status.style.visibility = client_type || client_type == null ? change_nomination_status.style.visibility : 'hidden'
+    add_player.style.visibility = client_type ? add_player.style.visibility : 'hidden'
+    finish_game.style.visibility = client_type ? finish_game.style.visibility : 'hidden'
+    choose_characters.style.visibility = client_type ? choose_characters.style.visibility : 'hidden'
+    shuffle_players.style.visibility = client_type ? shuffle_players.style.visibility : 'hidden'
+    change_edition.style.visibility = client_type ? change_edition.style.visibility : 'hidden'
+    choose_fabled.style.visibility = client_type ? choose_fabled.style.visibility : 'hidden'
+    change_log_status.style.visibility = client_type ? change_log_status.style.visibility : 'hidden'
+    change_phase.style.visibility = client_type ? change_phase.style.visibility : 'hidden'
+    reveal_grimoire.style.visibility = client_type ? reveal_grimoire.style.visibility : 'hidden'
+    reset_game.style.visibility = client_type ? reset_game.style.visibility : 'hidden'
+    change_nomination_status.style.visibility = client_type ? change_nomination_status.style.visibility : 'hidden'
+    sync_characters.style.visibility = client_type ? sync_characters.style.visibility : 'hidden'
     
     current_ping.innerHTML = `Ping: ${socket && socket.connected ? (latency == null ? 'Calculating' : latency + 'ms') : '<span style="color:red">DISCONNECTED</span>'}`
     
@@ -933,7 +934,7 @@ function reDrawHUD() {
     
     alive_vote_info.innerHTML = 'Players: ' + game_state.player_info.length + ', Alive: ' + alive_count + ', Votes: ' + vote_count
     
-    sync_characters.style.visibility = client_type || client_type == null ? sync_characters.style.visibility : 'hidden'
+    
     sync_characters.innerHTML = 'Characters\' Synced'
     for (let player of game_state.player_info) {
         if (!player.synced) {
