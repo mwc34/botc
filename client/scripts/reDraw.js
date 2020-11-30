@@ -892,7 +892,7 @@ function reDrawHUD() {
         'Votes',
         'Base',
     ]
-    log_status.innerHTML = `Log Status: ${log_status_list[game_state.log_status]}`
+    log_status.innerHTML = `Log Info: ${log_status_list[game_state.log_status]}`
     host_connected.innerHTML = 'Host Status: ' + (game_state.host_socket_id ? (client_type ? 'You are the Host' : 'Hosted') : 'Hostless')
     channel_ID.innerHTML = 'Channel: ' + (channel_id || sessionStorage.channel_id || '')
     let t = getEditionFromID(game_state.edition)
