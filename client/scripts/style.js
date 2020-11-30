@@ -89,6 +89,7 @@ function styleTokens() {
         let token = tokens.children[i]
         token.style.borderRadius = '50%'
         token.children[2].children[1].style.fontFamily = getFontFamily()
+        token.children[1].style.borderRadius = '50%'
     }
 }
 
@@ -147,6 +148,8 @@ function styleReminders() {
             let reminder = reminders.children[i*max_reminders + j]
             
             reminder.style.borderRadius = '50%'
+            
+            reminder.children[1].style.borderRadius = '50%'
             
             let reminder_text = reminder.children[2]
             
@@ -230,6 +233,7 @@ function styleTokenMenu() {
             let t = team.children[i]
             t.children[2].children[1].style.fontFamily = getFontFamily()
             t.style.borderRadius = '50%'
+            t.children[1].style.borderRadius = '50%'
         }
     }
 }
@@ -266,6 +270,8 @@ function styleReminderMenu() {
         for (let j=0; j < max_columns; j++) {
             let reminder = row.children[j]
             
+            reminder.style.borderRadius = '50%'
+            reminder.children[1].style.borderRadius = '50%'
             
             let reminder_text = reminder.children[2]
             

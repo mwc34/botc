@@ -728,6 +728,11 @@ function showDisconnectedState() {
     if (sessionStorage.game_recovery && sessionStorage.saved_channel_id == sessionStorage.channel_id) {
         let state = JSON.parse(sessionStorage.game_recovery)
         game_state = state
+        
+        for (let key in roles_by_id) {
+            delete roles_by_id[key]
+        }
+        
         reSize()
         reDraw()
         
