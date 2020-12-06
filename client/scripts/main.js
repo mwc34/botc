@@ -766,11 +766,11 @@ function main() {
         if (socket) {
             socket.open()
         }
-        else {
-            alert_box_info.push({
-                'text' : 'You are unable to connect.<br>The server may not be started.<br>Refresh to try again.'
-            })
-            alert_box.check()
-        }
+    }
+    if (!socket) {
+        alert_box_info.push({
+            'text' : 'You are unable to connect.<br>The server may not be started.<br>Refresh to try again.'
+        })
+        alert_box.check()
     }
 }
