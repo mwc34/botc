@@ -857,7 +857,7 @@ io.on('connection', (socket) => {
                         essential_keys = {
                             'id' : (e) => {return String(e).slice(0, 20)},
                             'name' : (e) => {return String(e).slice(0, 20)},
-                            'ability' : (e) => {return String(e).slice(0, 200)},
+                            'ability' : (e) => {return String(e).slice(0, 500)},
                             'team' : (e) => {return String(e).slice(0, 20)},
                             'icon' : (e) => {return String(e).slice(0, 1000)},
                         }
@@ -872,22 +872,29 @@ io.on('connection', (socket) => {
                             'reminders' : (e) => {return Array.isArray(e) ? e.slice(0, 20).map((x) => {return String(x).slice(0, 50)}) : []},
                             'remindersGlobal' : (e) => {return Array.isArray(e) ? e.slice(0, 20).map((x) => {return String(x).slice(0, 50)}) : []},
                             'nightActions' : (e) => {return Array.isArray(e) ? e.slice(0, 20).map((x) => {
-                                for (let key of x) {
+                                if (!x || x.constructor != Object) {
+                                    return {}
+                                }
+                                for (let key in x) {
                                     if (String(key).length > 50) {
                                         delete x[key]
                                     }
                                     else {
                                         if (Array.isArray(x[key])) {
-                                            x[key] = x[key].slice(0, 10).map((y) => {return String(y).slice(0, 20)})
+                                            x[key] = x[key].slice(0, 10).map((y) => {return String(y).slice(0, 200)})
                                         }
                                         else {
-                                            x[key] = String(x[key]).slice(0, 50)
+                                            x[key] = String(x[key]).slice(0, 200)
                                         }
                                     }
                                 }
+                                return x
                             }) : []},
                             'nightActionsScoped' : (e) => {return Array.isArray(e) ? e.slice(0, 20).map((x) => {
-                                for (let key of x) {
+                                if (!x || x.constructor != Object) {
+                                    return {}
+                                }
+                                for (let key in x) {
                                     if (String(key).length > 50) {
                                         delete x[key]
                                     }
@@ -900,6 +907,7 @@ io.on('connection', (socket) => {
                                         }
                                     }
                                 }
+                                return x
                             }) : []},
                         }
                         
