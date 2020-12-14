@@ -101,7 +101,7 @@ function getClockHandLength() {
 }
 
 function getHUDRowWidth() {
-    return size/3.7
+    return size/3.6
 }
 
 function getHUDRowHeight() {
