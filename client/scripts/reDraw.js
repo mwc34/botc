@@ -825,7 +825,7 @@ function reDrawClock() {
             if (p.voting && (progress >= temp/game_state.player_info.length || !clock_info.start_time)) {
                 votes.push(p.name)
             }
-            if (p.alive && (!p.character || getCharacterFromID(p.character).team != 'traveler')) {
+            if (p.alive) {// && (!p.character || getCharacterFromID(p.character).team != 'traveler')) {
                 alive++
             }
         }
