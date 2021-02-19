@@ -1704,7 +1704,7 @@ function setupShufflePlayers() {
             let to_choose = [...Array(game_state.player_info.length).keys()]
             for (let i=0; i < game_state.player_info.length; i++) {
                 let idx = Math.floor(Math.random() * to_choose.length)
-                new_seats[i] = to_choose[idx]
+                new_seats[game_state.player_info[i].seat_id] = to_choose[idx]
                 to_choose.splice(idx, 1)
             }
             socket.emit('seat update', channel_id, new_seats)
