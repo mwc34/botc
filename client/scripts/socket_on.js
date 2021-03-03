@@ -533,7 +533,11 @@ socket.on('night action', (night_action) => {
         
     }
     else {
-        new Notification(`BotC: ${channel_id}`, { "body": `Night Action: ${night_action.name}`});
+        try {
+            new Notification(`BotC: ${channel_id}`, { "body": `Night Action: ${night_action.name}`})
+        } catch (e) {
+            
+        }
         let timer = (new Date()).getTime()
         let delay_response = night_action.players || night_action.characters || night_action.confirm
         let msg = getLogNightActionStyle('Received Night Action from ' + getLogPlayerStyle('The Host') + ':<br>' + nightAlert(night_action))
