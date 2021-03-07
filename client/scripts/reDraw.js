@@ -424,6 +424,16 @@ function reDrawTokenMenu() {
         }
     }
     
+    let in_play = []
+    let out_of_play_opacity = 0.5
+    if (token_menu_info.out_of_play) {
+        for (let p of game_state.player_info) {
+            if (p.character && !in_play.includes(p.character)) {
+                in_play.push(p.character)
+            }
+        }
+    }
+    
     let rows = 0
     
     let width = total_columns * (getTokenMenuSize() + 2 * getTokenMenuPaddingSize())
@@ -468,6 +478,7 @@ function reDrawTokenMenu() {
                         f.style.margin = ''
                         f.style.border = ''
                     }
+                    f.style.opacity = in_play.includes(ids[i*7 + j]) ? out_of_play_opacity : 1
                     f.style.visibility = ''
                 }
                 else {
@@ -497,7 +508,7 @@ function reDrawTokenMenu() {
     lengths = [1, 7]
     for (let k=0; k < teams.length; k++) {
         let team = token_menu.children[8 + k]
-        let ids = getTeamIDs(game_state.edition, teams[k], token_menu_info.out_of_play)
+        let ids = getTeamIDs(game_state.edition, teams[k])
         if (token_menu_info.valid_teams.includes(teams[k]) && ids.length > 0) {
             while (ids.length > lengths[k]) {
                 ids.pop()
@@ -531,6 +542,7 @@ function reDrawTokenMenu() {
                         t.style.margin = ''
                         t.style.border = ''
                     }
+                    t.style.opacity = in_play.includes(ids[i]) ? out_of_play_opacity : 1
                     t.style.visibility = ''
                 }
                 else {
@@ -551,7 +563,7 @@ function reDrawTokenMenu() {
     }
     
     // Townsfolk
-    ids = getTeamIDs(game_state.edition, 'townsfolk', token_menu_info.out_of_play)
+    ids = getTeamIDs(game_state.edition, 'townsfolk')
     if (token_menu_info.valid_teams.includes('townsfolk') && ids.length > 0) {
         while (ids.length > 7+7) {
             ids.pop()
@@ -586,6 +598,7 @@ function reDrawTokenMenu() {
                         town.style.margin = ''
                         town.style.border = ''
                     }
+                    town.style.opacity = in_play.includes(ids[i*7 + j]) ? out_of_play_opacity : 1
                     town.style.visibility = ''
                 }
                 else {
@@ -613,7 +626,7 @@ function reDrawTokenMenu() {
     teams = ['outsider', 'minion', 'demon']
     for (let k=0; k<3; k++) {
         let team = token_menu.children[12 + k]
-        let ids = getTeamIDs(game_state.edition, teams[k], token_menu_info.out_of_play)
+        let ids = getTeamIDs(game_state.edition, teams[k])
         if (token_menu_info.valid_teams.includes(teams[k]) && ids.length > 0) {
             while (ids.length > 7) {
                 ids.pop()
@@ -647,6 +660,7 @@ function reDrawTokenMenu() {
                         t.style.margin = ''
                         t.style.border = ''
                     }
+                    t.style.opacity = in_play.includes(ids[i]) ? out_of_play_opacity : 1
                     t.style.visibility = ''
                 }
                 else {

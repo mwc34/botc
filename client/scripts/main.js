@@ -248,7 +248,7 @@ function getTeamIDs(edition, team, out_of_play = false) {
         }
     }
     
-    if (out_of_play) {
+    if (out_of_play) { // No longer used
         let in_play = []
         for (let p of game_state.player_info) {
             if (p.character && !in_play.includes(p.character)) {
