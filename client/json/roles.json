@@ -2259,7 +2259,7 @@
             {
                 "name":"Widow In Play",
                 "scope":"local",
-                "info":"The Widow is in play<>"
+                "info":"The <> is in play."
             }
         ]
     },
