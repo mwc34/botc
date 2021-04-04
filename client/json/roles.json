@@ -2636,5 +2636,22 @@
                 ]
             }
         ]
+    },
+    {
+        "id":"heretic",
+        "name":"Heretic",
+        "team":"outsider",
+        "firstNight":0,
+        "firstNightReminder":"",
+        "otherNight":0,
+        "otherNightReminder":"",
+        "reminders":[
+        
+        ],
+        "setup":false,
+        "ability":"Whoever wins, loses & whoever loses, wins, even if you are dead.",
+        "nightActions":[
+        
+        ]
     }
 ]
