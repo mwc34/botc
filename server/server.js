@@ -1303,18 +1303,20 @@ io.on('connection', (socket) => {
                             'player_restrictions' : night_action.player_restrictions,
                             'character_restrictions' : night_action.character_restrictions})
                         game_states[channel_id].night_actions[player.seat_id] = setTimeout(() => {
-                                let data = game_states[channel_id].group_night_action.data
-                                if (player.seat_id in data) {
-                                    delete data[player.seat_id]
-                                    io.to(player.socket_id).emit('group night action update', {'name' : null, 'data' : {}})
-                                    if (Object.keys(data).length == 0) {
-                                        game_states[channel_id].group_night_action.name = null
-                                        io.to(game_states[channel_id].host_socket_id).emit('group night action update', {'name' : null, 'data' : {}})
+                                if (channel_id in game_states) {
+                                    let data = game_states[channel_id].group_night_action.data
+                                    if (player.seat_id in data) {
+                                        delete data[player.seat_id]
+                                        io.to(player.socket_id).emit('group night action update', {'name' : null, 'data' : {}})
+                                        if (Object.keys(data).length == 0) {
+                                            game_states[channel_id].group_night_action.name = null
+                                            io.to(game_states[channel_id].host_socket_id).emit('group night action update', {'name' : null, 'data' : {}})
+                                        }
                                     }
+                                    delete game_states[channel_id].night_actions[player.seat_id]
+                                    
+                                    io.to(game_states[channel_id].host_socket_id).emit('night action', {'seat_id' : player.seat_id, 'name' : night_action.name, 'server_response' : true, 'info' : {'info' : [player.name + ' didn\'t respond', '']}})
                                 }
-                                delete game_states[channel_id].night_actions[player.seat_id]
-                                
-                                io.to(game_states[channel_id].host_socket_id).emit('night action', {'seat_id' : player.seat_id, 'name' : night_action.name, 'server_response' : true, 'info' : {'info' : [player.name + ' didn\'t respond', '']}})
                             }, wait_time + 5000) // MAGIC NUMBER
 
                         // Demon Bluffs
