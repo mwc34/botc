@@ -77,6 +77,7 @@ Available to use [here](https://evabs.soc.srcf.net)
     - **scopeRestrictions**: for **nightActionsScoped**, an array of which teams to propagate the night action to. If none are given, it is propagated to all
     - **create**: If true, the game will bring up a customisable menu each night. For ever changing abilities (e.g. **Cannibal** **Amnesiac**)
     - **confirm**: Text that is given as a prompt for a confirm box for the player (e.g. **Harlot**)
+    - **group**: All players simultaneously using the night action will be able to see each other's' choices (e.g. **Lil' Monsta**)
 
 For further guidance, the [roles](https://github.com/mwc34/botc/blob/main/client/json/roles.json) file shows how the base characters have been implemented
 

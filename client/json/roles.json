@@ -2435,6 +2435,14 @@
                 "scopeRestrictions":[
                     "minion"
                 ]
+            },
+            {
+                "name":"Choose Sitter Alone (PG)",
+                "confirm":"Would you like to become the Lil' Monsta Babysitter?",
+                "scope":"global",
+                "scopeRestrictions":[
+                    "minion"
+                ]
             }
         ]
     },
