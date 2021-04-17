@@ -2680,6 +2680,9 @@
         "setup":true,
         "removesSelf":true,
         "ability":"You think you are a good character. You are poisoned & the Demon knows who you are. [You neighbour the Demon]",
+        "nightActions":[
+        
+        ],
         "nightActionsScoped":[
             {
                 "name":"Marionette Info",
