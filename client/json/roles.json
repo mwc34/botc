@@ -122,9 +122,9 @@
         "id":"fortune_teller",
         "name":"Fortune Teller",
         "team":"townsfolk",
-        "firstNight":45,
+        "firstNight":31,
         "firstNightReminder":"The Fortune Teller points to two players. Give the head signal (nod yes, shake no) for whether one of those players is the Demon.",
-        "otherNight":0,
+        "otherNight":47,
         "otherNightReminder":"The Fortune Teller points to two players. Show the head signal (nod \u201cyes\u201d, shake \u201cno\u201d) for whether one of those players is the Demon.",
         "reminders":[
             "Decoy"
@@ -448,9 +448,9 @@
         "id":"scarlet_woman",
         "name":"Scarlet Woman",
         "team":"minion",
-        "firstNight":45,
+        "firstNight":0,
         "firstNightReminder":"",
-        "otherNight":0,
+        "otherNight":18,
         "otherNightReminder":"If the Scarlet Woman became the Demon today: Show the \u201cYou are\u201d card, then the demon token.",
         "reminders":[
             "Demon"
@@ -740,7 +740,7 @@
     },
     {
         "id":"tea_lady",
-        "firstNight":45,
+        "firstNight":0,
         "firstNightReminder":"",
         "otherNight":0,
         "otherNightReminder":"",
@@ -925,9 +925,9 @@
     },
     {
         "id":"devils_advocate",
-        "firstNight":45,
+        "firstNight":19,
         "firstNightReminder":"The Devil\u2019s Advocate points to a living player. That player survives execution tomorrow.",
-        "otherNight":0,
+        "otherNight":13,
         "otherNightReminder":"The Devil\u2019s Advocate points to a living player, different from the previous night. That player survives execution tomorrow.",
         "reminders":[
             "Survives execution"
@@ -1214,9 +1214,9 @@
     },
     {
         "id":"snake_charmer",
-        "firstNight":45,
+        "firstNight":17,
         "firstNightReminder":"The Snake Charmer points to a player. If that player is the Demon: \u2022 Swap the Snake Charmer and Demon character tokens. \u2022 Wake the new Demon. Show the \u201cYou are\u201d card, then the thumb-down \u201cevil\u201d sign. Show the \u201cYou are\u201d card, then the Demon token. \u2022 The new Snake Charmer is poisoned . Wake the new Snake Charmer. Show the \u201cYou are\u201d card, then the thumb-up \u201cgood\u201d sign. Show the \u201cYou are\u201d card, then the Snake Charmer token.",
-        "otherNight":0,
+        "otherNight":11,
         "otherNightReminder":"The Snake Charmer points to a player. If that player is the Demon: \u2022 Swap the Snake Charmer and Demon character tokens. Wake the new Demon. Show the \u201cYou are\u201d card, then the thumb-down \u201cevil\u201d sign. Show the \u201cYou are\u201d card, then the Demon token. \u2022 The new Snake Charmer is poisoned . Wake the new Snake Charmer. Show the \u201cYou are\u201d card, then the thumb-up \u201cgood\u201d sign. Show the \u201cYou are\u201d card, then the Snake Charmer token.",
         "reminders":[
             "Poisoned"
@@ -1278,9 +1278,9 @@
     },
     {
         "id":"town_crier",
-        "firstNight":45,
+        "firstNight":0,
         "firstNightReminder":"Place the \u201cMinions did not nominate\u201d marker.",
-        "otherNight":0,
+        "otherNight":52,
         "otherNightReminder":"Show the head signal (nod \u201cyes\u201d, shake \u201cno\u201d) for whether any Minion nominated today. Place the \u201cMinions did not nominate\u201d marker (remove \u201cMinion nominated\u201d, if any).",
         "reminders":[
             "No Minion nominated",
@@ -1528,7 +1528,7 @@
     },
     {
         "id":"evil_twin",
-        "firstNight":45,
+        "firstNight":20,
         "firstNightReminder":"Wake the Evil Twin and their twin. Confirm that they have acknowledged each other. Point to the Evil Twin. Show their Evil Twin token to the twin player. Point to the twin. Show their character token to the Evil Twin player.",
         "otherNight":0,
         "otherNightReminder":"",
@@ -1641,9 +1641,9 @@
     },
     {
         "id":"pit-hag",
-        "firstNight":45,
+        "firstNight":0,
         "firstNightReminder":"",
-        "otherNight":0,
+        "otherNight":16,
         "otherNightReminder":"",
         "reminders":[
             
@@ -1673,9 +1673,9 @@
     },
     {
         "id":"fang_gu",
-        "firstNight":45,
+        "firstNight":0,
         "firstNightReminder":"",
-        "otherNight":0,
+        "otherNight":27,
         "otherNightReminder":"The Fang Gu points to a player. That player dies . Or, if that player was an Outsider: \u2022 The Fang Gu dies instead of the chosen player. The chosen player is now an evil Fang Gu. \u2022 Wake the new Fang Gu. Show the \u201cYou are\u201d card, then the Fang Gu token. Show the \u201cYou are\u201d card, then the thumb-down \u201cevil\u201d hand sign.",
         "reminders":[
             "Die"
@@ -1741,9 +1741,9 @@
     },
     {
         "id":"no_dashii",
-        "firstNight":45,
+        "firstNight":0,
         "firstNightReminder":"",
-        "otherNight":0,
+        "otherNight":28,
         "otherNightReminder":"The No Dashii points to a player. That player dies.",
         "reminders":[
             "Die",
@@ -2019,9 +2019,9 @@
     },
     {
         "id":"bone_collector",
-        "firstNight":45,
+        "firstNight":0,
         "firstNightReminder":"",
-        "otherNight":0,
+        "otherNight":1,
         "otherNightReminder":"The Bone Collector either shake their head no or point at any dead player. If they pointed at any dead player, put the Bone Collector's \"Has Ability\" reminder by the chosen player's character token. (They may need to be woken tonight to use it.)",
         "reminders":[
             "Used",
@@ -2316,9 +2316,9 @@
     },
     {
         "id":"bounty_hunter",
-        "firstNight":45,
+        "firstNight":38,
         "firstNightReminder":"Point to a player that is evil.",
-        "otherNight":0,
+        "otherNight":58,
         "otherNightReminder":"If the evil player that was known by the Bounty Hunter died since the previous night: Point to another player that is evil.",
         "reminders":[
             "Known"
@@ -2336,9 +2336,9 @@
     },
     {
         "id":"cult_leader",
-        "firstNight":45,
+        "firstNight":39,
         "firstNightReminder":"The Cult Leader becomes the alignment of an alive neighbor: Show the \u201cYou are\u201d card. Show the hand signal (thumb-up \u201cgood\u201d, thumb-down \u201cevil\u201d) for the Cult Leader's current alignment.",
-        "otherNight":0,
+        "otherNight":59,
         "otherNightReminder":"The Cult Leader becomes the alignment of an alive neighbor: Show the \u201cYou are\u201d card. Show the hand signal (thumb-up \u201cgood\u201d, thumb-down \u201cevil\u201d) for the Cult Leader's current alignment.",
         "reminders":[
             
@@ -2400,9 +2400,9 @@
     },
     {
         "id":"lil_monsta",
-        "firstNight":45,
+        "firstNight":13,
         "firstNightReminder":"Wake all Minions. The Minions point to a player that receives the Lil' Monsta token and becomes the Demon.",
-        "otherNight":0,
+        "otherNight":32,
         "otherNightReminder":"Wake all Minions. The Minions point to a player that receives the Lil' Monsta token and becomes the Demon. Choose a player that dies.",
         "reminders":[
             
@@ -2619,9 +2619,9 @@
         "id":"poppy_grower",
         "name":"Poppy Grower",
         "team":"townsfolk",
-        "firstNight":45,
+        "firstNight":3,
         "firstNightReminder":"Do not inform the Demon/Minions who each other are",
-        "otherNight":0,
+        "otherNight":3,
         "otherNightReminder":"If the Poppy Grower has died, show the Minions/Demon who each other are.",
         "reminders":[
             "Evil wakes"
