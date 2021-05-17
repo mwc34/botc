@@ -30,7 +30,7 @@
     "ability": "For the first 2 minutes of each day, veteran players may not talk."
   },
   {
-    "id": "hellslibrarian",
+    "id": "hells_librarian",
     "firstNightReminder": "",
     "otherNightReminder": "",
     "reminders": ["Punish"],
@@ -100,7 +100,7 @@
     "ability": "There might be 1 extra or 1 fewer Outsider in play."
   },
   {
-    "id": "spiritofivory",
+    "id": "spirit_of_ivory",
     "firstNightReminder": "",
     "otherNightReminder": "",
     "reminders": ["No extra evil"],
@@ -120,7 +120,7 @@
     "ability": "Jinxed characters are not both in-play, but evil players know which ones are. Or, use the Djinn's \"Special Rule\"."
   },
   {
-    "id": "stormcatcher",
+    "id": "storm_catcher",
     "firstNightReminder": "Mark a good player as \"Safe\". Wake each evil player and show them the marked player.",
     "otherNightReminder": "",
     "reminders": ["Safe"],
