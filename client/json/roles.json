@@ -371,11 +371,14 @@
         "nightActions":[
             {
                 "name":"Minion Info: Demon",
-                "inPlayers":1
+                "inPlayers":3,
+                "playerRestrictions":[
+                    "cancel"
+                ]
             },
             {
                 "name":"Minion Info: Minions",
-                "inPlayers":3,
+                "inPlayers":6,
                 "playerRestrictions":[
                     "cancel"
                 ]
@@ -402,11 +405,14 @@
             },
             {
                 "name":"Minion Info: Demon",
-                "inPlayers":1
+                "inPlayers":3,
+                "playerRestrictions":[
+                    "cancel"
+                ]
             },
             {
                 "name":"Minion Info: Minions",
-                "inPlayers":3,
+                "inPlayers":6,
                 "playerRestrictions":[
                     "cancel"
                 ]
@@ -433,11 +439,14 @@
             },
             {
                 "name":"Minion Info: Demon",
-                "inPlayers":1
+                "inPlayers":3,
+                "playerRestrictions":[
+                    "cancel"
+                ]
             },
             {
                 "name":"Minion Info: Minions",
-                "inPlayers":3,
+                "inPlayers":6,
                 "playerRestrictions":[
                     "cancel"
                 ]
@@ -460,11 +469,14 @@
         "nightActions":[
             {
                 "name":"Minion Info: Demon",
-                "inPlayers":1
+                "inPlayers":3,
+                "playerRestrictions":[
+                    "cancel"
+                ]
             },
             {
                 "name":"Minion Info: Minions",
-                "inPlayers":3,
+                "inPlayers":6,
                 "playerRestrictions":[
                     "cancel"
                 ]
@@ -491,7 +503,7 @@
             },
             {
                 "name":"Demon Info",
-                "inPlayers":3,
+                "inPlayers":6,
                 "playerRestrictions":[
                     "cancel"
                 ],
@@ -912,11 +924,14 @@
             },
             {
                 "name":"Minion Info: Demon",
-                "inPlayers":1
+                "inPlayers":3,
+                "playerRestrictions":[
+                    "cancel"
+                ]
             },
             {
                 "name":"Minion Info: Minions",
-                "inPlayers":3,
+                "inPlayers":6,
                 "playerRestrictions":[
                     "cancel"
                 ]
@@ -946,11 +961,14 @@
             },
             {
                 "name":"Minion Info: Demon",
-                "inPlayers":1
+                "inPlayers":3,
+                "playerRestrictions":[
+                    "cancel"
+                ]
             },
             {
                 "name":"Minion Info: Minions",
-                "inPlayers":3,
+                "inPlayers":6,
                 "playerRestrictions":[
                     "cancel"
                 ]
@@ -981,11 +999,14 @@
             },
             {
                 "name":"Minion Info: Demon",
-                "inPlayers":1
+                "inPlayers":3,
+                "playerRestrictions":[
+                    "cancel"
+                ]
             },
             {
                 "name":"Minion Info: Minions",
-                "inPlayers":3,
+                "inPlayers":6,
                 "playerRestrictions":[
                     "cancel"
                 ]
@@ -1008,11 +1029,14 @@
         "nightActions":[
             {
                 "name":"Minion Info: Demon",
-                "inPlayers":1
+                "inPlayers":3,
+                "playerRestrictions":[
+                    "cancel"
+                ]
             },
             {
                 "name":"Minion Info: Minions",
-                "inPlayers":3,
+                "inPlayers":6,
                 "playerRestrictions":[
                     "cancel"
                 ]
@@ -1049,7 +1073,7 @@
             },
             {
                 "name":"Demon Info",
-                "inPlayers":3,
+                "inPlayers":6,
                 "playerRestrictions":[
                     "cancel"
                 ],
@@ -1083,7 +1107,7 @@
             },
             {
                 "name":"Demon Info",
-                "inPlayers":3,
+                "inPlayers":6,
                 "playerRestrictions":[
                     "cancel"
                 ],
@@ -1117,7 +1141,7 @@
             },
             {
                 "name":"Demon Info",
-                "inPlayers":3,
+                "inPlayers":6,
                 "playerRestrictions":[
                     "cancel"
                 ],
@@ -1152,7 +1176,7 @@
             },
             {
                 "name":"Demon Info",
-                "inPlayers":3,
+                "inPlayers":6,
                 "playerRestrictions":[
                     "cancel"
                 ],
@@ -1542,11 +1566,14 @@
         "nightActions":[
             {
                 "name":"Minion Info: Demon",
-                "inPlayers":1
+                "inPlayers":3,
+                "playerRestrictions":[
+                    "cancel"
+                ]
             },
             {
                 "name":"Minion Info: Minions",
-                "inPlayers":3,
+                "inPlayers":6,
                 "playerRestrictions":[
                     "cancel"
                 ]
@@ -1581,11 +1608,14 @@
             },
             {
                 "name":"Minion Info: Demon",
-                "inPlayers":1
+                "inPlayers":3,
+                "playerRestrictions":[
+                    "cancel"
+                ]
             },
             {
                 "name":"Minion Info: Minions",
-                "inPlayers":3,
+                "inPlayers":6,
                 "playerRestrictions":[
                     "cancel"
                 ]
@@ -1617,11 +1647,14 @@
             },
             {
                 "name":"Minion Info: Demon",
-                "inPlayers":1
+                "inPlayers":3,
+                "playerRestrictions":[
+                    "cancel"
+                ]
             },
             {
                 "name":"Minion Info: Minions",
-                "inPlayers":3,
+                "inPlayers":6,
                 "playerRestrictions":[
                     "cancel"
                 ]
@@ -1660,11 +1693,14 @@
             },
             {
                 "name":"Minion Info: Demon",
-                "inPlayers":1
+                "inPlayers":3,
+                "playerRestrictions":[
+                    "cancel"
+                ]
             },
             {
                 "name":"Minion Info: Minions",
-                "inPlayers":3,
+                "inPlayers":6,
                 "playerRestrictions":[
                     "cancel"
                 ]
@@ -1691,7 +1727,7 @@
             },
             {
                 "name":"Demon Info",
-                "inPlayers":3,
+                "inPlayers":6,
                 "playerRestrictions":[
                     "cancel"
                 ],
@@ -1726,7 +1762,7 @@
             },
             {
                 "name":"Demon Info",
-                "inPlayers":3,
+                "inPlayers":6,
                 "playerRestrictions":[
                     "cancel"
                 ],
@@ -1760,7 +1796,7 @@
             },
             {
                 "name":"Demon Info",
-                "inPlayers":3,
+                "inPlayers":6,
                 "playerRestrictions":[
                     "cancel"
                 ],
@@ -1793,7 +1829,7 @@
             },
             {
                 "name":"Demon Info",
-                "inPlayers":3,
+                "inPlayers":6,
                 "playerRestrictions":[
                     "cancel"
                 ],
@@ -2212,11 +2248,14 @@
         "nightActions":[
             {
                 "name":"Minion Info: Demon",
-                "inPlayers":1
+                "inPlayers":3,
+                "playerRestrictions":[
+                    "cancel"
+                ]
             },
             {
                 "name":"Minion Info: Minions",
-                "inPlayers":3,
+                "inPlayers":6,
                 "playerRestrictions":[
                     "cancel"
                 ]
@@ -2245,11 +2284,14 @@
             },
             {
                 "name":"Minion Info: Demon",
-                "inPlayers":1
+                "inPlayers":3,
+                "playerRestrictions":[
+                    "cancel"
+                ]
             },
             {
                 "name":"Minion Info: Minions",
-                "inPlayers":3,
+                "inPlayers":6,
                 "playerRestrictions":[
                     "cancel"
                 ]
@@ -2284,7 +2326,7 @@
         "nightActions":[
             {
                 "name":"Demon Info",
-                "inPlayers":3,
+                "inPlayers":6,
                 "playerRestrictions":[
                     "cancel"
                 ],
@@ -2604,11 +2646,14 @@
             },
             {
                 "name":"Minion Info: Demon",
-                "inPlayers":1
+                "inPlayers":3,
+                "playerRestrictions":[
+                    "cancel"
+                ]
             },
             {
                 "name":"Minion Info: Minions",
-                "inPlayers":3,
+                "inPlayers":6,
                 "playerRestrictions":[
                     "cancel"
                 ]
@@ -2757,5 +2802,18 @@
         "ability": "If you die at night, an alive good player becomes a Farmer.",
         "nightActions":[
         ]
+    },
+    {
+        "id": "magician",
+        "name": "Magician",
+        "team": "townsfolk",
+        "firstNight": 0,
+        "firstNightReminder": "",
+        "otherNight": 0,
+        "otherNightReminder": "",
+        "reminders": [],
+        "setup": false,
+        "ability": "The Demon thinks you are a Minion. Minions think you are a Demon.",
+        "nightActions":[]
     }
 ]
