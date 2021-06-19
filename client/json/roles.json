@@ -2840,7 +2840,10 @@
         "nightActions":[
             {
                 "name":"Lleech Poison",
-                "players":1
+                "players":1,
+                "playerRestrictions":[
+                    "alive"
+                ]
             },
             {
                 "name":"Lleech Kill",
