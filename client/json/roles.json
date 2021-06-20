@@ -2839,6 +2839,19 @@
         "ability":"Each night*, choose a player: they die. You start by choosing an alive player: they are poisoned - you die if & only if they die.",
         "nightActions":[
             {
+                "name":"Demon Info",
+                "inPlayers":6,
+                "playerRestrictions":[
+                    "cancel"
+                ],
+                "inCharacters":3,
+                "characterRestrictions":[
+                    "townsfolk",
+                    "outsider",
+                    "outOfPlay"
+                ]
+            },
+            {
                 "name":"Lleech Poison",
                 "players":1,
                 "playerRestrictions":[
