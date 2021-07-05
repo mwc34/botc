@@ -2863,5 +2863,33 @@
                 "players":1
             }
         ]
+    },
+    {
+        "id": "boomdandy",
+        "name": "Boomdandy",
+        "team": "minion",
+        "firstNight": 0,
+        "firstNightReminder": "",
+        "otherNight": 0,
+        "otherNightReminder": "",
+        "reminders": [],
+        "setup": false,
+        "ability": "If you are executed, all but 3 players die. 1 minute later, the player with the most players pointing at them dies.",
+        "nightActions":[
+            {
+                "name":"Minion Info: Demon",
+                "inPlayers":3,
+                "playerRestrictions":[
+                    "cancel"
+                ]
+            },
+            {
+                "name":"Minion Info: Minions",
+                "inPlayers":6,
+                "playerRestrictions":[
+                    "cancel"
+                ]
+            }
+        ]
     }
 ]
