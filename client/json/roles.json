@@ -1936,7 +1936,7 @@
         "setup":false,
         "name":"Butcher",
         "team":"traveler",
-        "ability":"Each day, after the 1st execution, you nominate again.",
+        "ability":"Each day, after the 1st execution, you may nominate again.",
         "nightActions":[]
     },
     {
@@ -2836,5 +2836,20 @@
                 "confirm":"Would you like to live?"
             }
         ]
+    },
+    {
+        "id":"golem",
+        "name":"Golem",
+        "team":"outsider",
+        "firstNight":0,
+        "firstNightReminder":"",
+        "otherNight":0,
+        "otherNightReminder":"",
+        "reminders":[
+            "Can not nominate"
+        ],
+        "setup":false,
+        "ability":"You may only nominate once per game. When you do, if the nominee is not the Demon, they die.",
+        "nightActions":[]
     }
 ]
