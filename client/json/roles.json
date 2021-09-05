@@ -2851,5 +2851,18 @@
         "setup":false,
         "ability":"You may only nominate once per game. When you do, if the nominee is not the Demon, they die.",
         "nightActions":[]
+    },
+    {
+        "id": "gangster",
+        "name": "Gangster",
+        "team": "traveler",
+        "firstNight": 0,
+        "firstNightReminder": "",
+        "otherNight": 0,
+        "otherNightReminder": "",
+        "reminders": [],
+        "setup": false,
+        "ability": "Once per day, you may choose to kill an alive neighbour, if your other alive neighbour agrees.",
+        "nightActions":[]
     }
 ]
