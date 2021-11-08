@@ -2944,5 +2944,32 @@
                 ]
             }
         ]
+    },
+    {
+        "id":"riot",
+        "name":"Riot",
+        "team":"demon",
+        "firstNight":0,
+        "firstNightReminder":"",
+        "otherNight":0,
+        "otherNightReminder":"",
+        "reminders":[],
+        "setup":true,
+        "ability":"Nominees die, but may nominate again immediately (on day 3, they must). After day 3, evil wins. [All Minions are Riot]",
+        "nightActions":[
+            {
+                "name":"Demon Info",
+                "inPlayers":6,
+                "playerRestrictions":[
+                    "cancel"
+                ],
+                "inCharacters":3,
+                "characterRestrictions":[
+                    "townsfolk",
+                    "outsider",
+                    "outOfPlay"
+                ]
+            }
+        ]
     }
 ]
