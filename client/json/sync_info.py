@@ -7,7 +7,7 @@ path = os.path.dirname(os.path.abspath(__file__))
 
 roles = json.load(open(os.path.join(path, 'roles.json'), encoding='utf-8'))
 
-ref = {r['id'] : r for r in requests.get("https://raw.githubusercontent.com/bra1n/townsquare/main/src/roles.json").json()}
+ref = {r['id'] : r for r in requests.get("https://raw.githubusercontent.com/bra1n/townsquare/develop/src/roles.json").json()}
 
 for r in roles:
     mutated_id = re.sub(r'-_', '', r['id'])

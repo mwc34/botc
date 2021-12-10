@@ -2972,19 +2972,19 @@
             }
         ]
     },
-	{
-		"id": "psychopath",
-		"name": "Psychopath",
-		"team": "minion",
-		"firstNight": 0,
-		"firstNightReminder": "",
-		"otherNight": 0,
-		"otherNightReminder": "",
-		"reminders": [],
-		"setup": false,
-		"ability": "Each day, before nominations, you may publicly choose a player: they die. If executed, you only die if you lose roshambo.",
-		"nightActions":[
-			{
+    {
+        "id":"psychopath",
+        "name":"Psychopath",
+        "team":"minion",
+        "firstNight":0,
+        "firstNightReminder":"",
+        "otherNight":0,
+        "otherNightReminder":"",
+        "reminders":[],
+        "setup":false,
+        "ability":"Each day, before nominations, you may publicly choose a player: they die. If executed, you only die if you lose roshambo.",
+        "nightActions":[
+            {
                 "name":"Minion Info: Demon",
                 "inPlayers":3,
                 "playerRestrictions":[
@@ -2998,6 +2998,19 @@
                     "cancel"
                 ]
             }
-		]
-	}
+        ]
+    },
+    {
+        "id":"atheist",
+        "name":"Atheist",
+        "team":"townsfolk",
+        "firstNight":0,
+        "firstNightReminder":"",
+        "otherNight":0,
+        "otherNightReminder":"",
+        "reminders":[],
+        "setup":true,
+        "ability":"The Storyteller can break the game rules & if executed, good wins, even if you are dead. [No evil characters]",
+        "nightActions":[]
+    }
 ]
