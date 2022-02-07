@@ -391,9 +391,9 @@
         "id":"spy",
         "name":"Spy",
         "team":"minion",
-        "firstNight":47,
+        "firstNight":48,
         "firstNightReminder":"Show the Grimoire to the Spy for as long as they need.",
-        "otherNight":67,
+        "otherNight":68,
         "otherNightReminder":"Show the Grimoire to the Spy for as long as they need.",
         "reminders":[],
         "setup":false,
@@ -529,9 +529,9 @@
     },
     {
         "id":"chambermaid",
-        "firstNight":49,
+        "firstNight":50,
         "firstNightReminder":"The Chambermaid points to two players. Show the number signal (0, 1, 2, \u2026) for how many of those players wake tonight for their ability.",
-        "otherNight":69,
+        "otherNight":70,
         "otherNightReminder":"The Chambermaid points to two players. Show the number signal (0, 1, 2) for how many of those players wake tonight for their ability.",
         "reminders":[],
         "setup":false,
@@ -1199,9 +1199,9 @@
     },
     {
         "id":"mathematician",
-        "firstNight":50,
+        "firstNight":51,
         "firstNightReminder":"Show the hand signal for the number (0, 1, 2, etc.) of \u201cAbnormal Effect\u201d markers. Remove markers",
-        "otherNight":70,
+        "otherNight":71,
         "otherNightReminder":"Show the hand signal for the number (0, 1, 2, etc.) of \u201cAbnormal Effect\u201d markers. Remove markers.",
         "reminders":[
             "Abnormal effect"
@@ -2183,9 +2183,9 @@
     },
     {
         "id":"leviathan",
-        "firstNight":52,
+        "firstNight":53,
         "firstNightReminder":"Place the Leviathan \u201cDay 1\u201d marker. Announce \u201cThe Leviathan is in play; this is Day 1.\u201d.",
-        "otherNight":72,
+        "otherNight":73,
         "otherNightReminder":"Place the next Leviathan \u201cDay n\u201d marker, where \u201cn\u201d is the day number. Announce \u201cThe Leviathan is in play; this is Day n.\u201d.",
         "reminders":[
             "Good executed",
@@ -2353,9 +2353,9 @@
     },
     {
         "id":"general",
-        "firstNight":48,
+        "firstNight":49,
         "firstNightReminder":"Show the hand signal (thumb-up \u201cgood\u201d, thumb-down \u201cevil\u201d, thumb-sideways \u201cneither\u201d) for the alignment that you believe is winning.",
-        "otherNight":68,
+        "otherNight":69,
         "otherNightReminder":"Show the hand signal (thumb-up \u201cgood\u201d, thumb-down \u201cevil\u201d, thumb-sideways \u201cneither\u201d) for the alignment that you believe is winning.",
         "reminders":[],
         "remindersGlobal":[],
@@ -3012,5 +3012,39 @@
         "setup":true,
         "ability":"The Storyteller can break the game rules & if executed, good wins, even if you are dead. [No evil characters]",
         "nightActions":[]
+    },
+    {
+        "id":"nightwatchman",
+        "name":"Nightwatchman",
+        "team":"townsfolk",
+        "firstNight":46,
+        "firstNightReminder":"The Nightwatchman may point to a player. Wake that player, show the 'This character selected you' card and the Nightwatchman token, then point to the Nightwatchman player.",
+        "otherNight":66,
+        "otherNightReminder":"The Nightwatchman may point to a player. Wake that player, show the 'This character selected you' card and the Nightwatchman token, then point to the Nightwatchman player.",
+        "reminders":[
+            "No ability"
+        ],
+        "setup":false,
+        "ability":"Once per game, at night, choose a player: they learn who you are.",
+        "nightActions":[
+            {
+                "name":"Nightwatchman Choice",
+                "players":1,
+                "playerRestrictions":[
+                    "cancel"
+                ]
+            }
+        ],
+        "nightActionsScoped":[
+            {
+                "name":"Nightwatchman Chosen",
+                "inPlayers":1,
+                "inCharacters":1,
+                "characterRestrictions":[
+                    "townsfolk"
+                ],
+                "scope":"local"
+            }
+        ]
     }
 ]
