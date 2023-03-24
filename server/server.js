@@ -7,7 +7,7 @@ const io = require('socket.io')(server, {
     maxHttpBufferSize: 50000,
 })
 
-const client_path = '/home/mwc34/public_html/botc/'
+const client_path = '../../public_html/botc/'
 const fs = require("fs")
 const path = require("path")
 

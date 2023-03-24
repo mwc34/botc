@@ -67,13 +67,12 @@ const log_status_count = 4
 const deselected_opacity = 0.5
 const created_night_actions = {}
 const roles_by_id = {}
-const website_url = 'https://mwc34.user.srcf.net/botc'
 const base_roles = []
-window.fetch(website_url + '/json/roles.json').then(x => x.json()).then(x => {for (let role of x) {base_roles.push(role)}})
+window.fetch('json/roles.json').then(x => x.json()).then(x => {for (let role of x) {base_roles.push(role)}})
 const base_editions = []
-window.fetch(website_url + '/json/editions.json').then(x => x.json()).then(x => {for (let edition of x) {base_editions.push(edition)}})
+window.fetch('json/editions.json').then(x => x.json()).then(x => {for (let edition of x) {base_editions.push(edition)}})
 const base_fabled = []
-window.fetch(website_url + '/json/fabled.json').then(x => x.json()).then(x => {for (let fabled of x) {base_fabled.push(fabled)}})
+window.fetch('json/fabled.json').then(x => x.json()).then(x => {for (let fabled of x) {base_fabled.push(fabled)}})
 const socket = typeof io != 'undefined' ? io({autoConnect: false}) : null
 Notification.requestPermission()
 var size = Math.min(window.innerWidth, window.innerHeight)
