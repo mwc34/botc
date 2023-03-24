@@ -23,7 +23,7 @@ function loadScript(src){
 let server = true
 
 Promise.resolve()
-.then(loadScript("socket.io/socket.io.js"))
+.then(loadScript("https://" + document.domain + "/socket.io/socket.io.js"))
 .catch((e) => {
     
 })
