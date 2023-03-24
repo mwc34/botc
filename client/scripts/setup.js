@@ -1457,7 +1457,7 @@ function setupOpenReferenceSheet() {
                 alert_box.check()
                 return
             }
-            if (url.includes('http')) {
+            if (!url.includes('http')) {
                 window.open(url)
             }
             else {
