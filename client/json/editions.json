@@ -3,7 +3,7 @@
       "id":"tb",
       "name":"Trouble Brewing",
       "icon":"assets/editions/tb.png",
-      "reference_sheet":"https://evabs.soc.srcf.net/reference_sheets/tb.pdf",
+      "reference_sheet":"botc/reference_sheets/tb.pdf",
       "characters":{
          "traveler":[
             "scapegoat",
@@ -48,7 +48,7 @@
       "id":"bmr",
       "name":"Bad Moon Rising",
       "icon":"assets/editions/bmr.png",
-      "reference_sheet":"https://evabs.soc.srcf.net/reference_sheets/bmr.pdf",
+      "reference_sheet":"botc/reference_sheets/bmr.pdf",
       "characters":{
          "traveler":[
             "apprentice",
@@ -96,7 +96,7 @@
       "id":"snv",
       "name":"Sects & Violets",
       "icon":"assets/editions/snv.png",
-      "reference_sheet":"https://evabs.soc.srcf.net/reference_sheets/snv.pdf",
+      "reference_sheet":"botc/reference_sheets/snv.pdf",
       "characters":{
          "traveler":[
             "butcher",
@@ -144,7 +144,7 @@
       "id":"luf",
       "name":"Laissez un Faire",
       "icon":"assets/editions/luf.png",
-      "reference_sheet":"https://evabs.soc.srcf.net/reference_sheets/luf.pdf",
+      "reference_sheet":"botc/reference_sheets/luf.pdf",
       "characters":{
          "townsfolk":[
             "balloonist",
@@ -171,7 +171,7 @@
       "id":"dpd",
       "name":"Deadly Penance Day",
       "icon":"assets/editions/custom.png",
-      "reference_sheet":"https://evabs.soc.srcf.net/reference_sheets/dpd.pdf",
+      "reference_sheet":"botc/reference_sheets/dpd.pdf",
       "characters":{
          "townsfolk":[
             "bounty_hunter",
@@ -209,7 +209,7 @@
       "id":"cf9",
       "name":"Catfishing 9.0",
       "icon":"assets/editions/custom.png",
-      "reference_sheet":"https://evabs.soc.srcf.net/reference_sheets/cf9.pdf",
+      "reference_sheet":"botc/reference_sheets/cf9.pdf",
       "characters":{
          "traveler":[
             "beggar"
@@ -253,7 +253,7 @@
       "id":"oti",
       "name":"On Thin Ice",
       "icon":"assets/editions/custom.png",
-      "reference_sheet":"https://evabs.soc.srcf.net/reference_sheets/oti.pdf",
+      "reference_sheet":"botc/reference_sheets/oti.pdf",
       "characters":{
          "townsfolk":[
             "artist",
@@ -283,7 +283,7 @@
       "id":"rttb",
       "name":"Race to the Bottom",
       "icon":"assets/editions/custom.png",
-      "reference_sheet":"https://evabs.soc.srcf.net/reference_sheets/rttb.pdf",
+      "reference_sheet":"botc/reference_sheets/rttb.pdf",
       "characters":{
          "townsfolk":[
             "clockmaker",
@@ -314,7 +314,7 @@
       "id":"fmbt",
       "name":"Frankenstein's Mayor by Ted",
       "icon":"assets/editions/custom.png",
-      "reference_sheet":"https://evabs.soc.srcf.net/reference_sheets/fmbt.pdf",
+      "reference_sheet":"botc/reference_sheets/fmbt.pdf",
       "characters":{
          "townsfolk":[
             "chef",
@@ -344,7 +344,7 @@
       "id":"vhs",
       "name":"Vigormortis High School",
       "icon":"assets/editions/custom.png",
-      "reference_sheet":"https://evabs.soc.srcf.net/reference_sheets/vhs.pdf",
+      "reference_sheet":"botc/reference_sheets/vhs.pdf",
       "characters":{
          "townsfolk":[
             "chef",

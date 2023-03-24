@@ -7,6 +7,7 @@ const io = require('socket.io')(server, {
     maxHttpBufferSize: 50000,
 })
 
+const client_path = '/home/mwc34/public_html/botc/'
 const fs = require("fs")
 const path = require("path")
 
@@ -17,66 +18,6 @@ app.use(function(req, res, next) {
   res.setHeader('Pragma', 'no-cache')
   next();
 });
-
-// app.use('/', express.static('~/public_html/'))
-// app.use('/tokens/', express.static('~/public_html/tokens/'))
-// app.use('/icons/', express.static('~/public_html/icons/'))
-
-// // Serving Client Side
-
-// const getAllFiles = function(dirPath, arrayOfFiles) {
-  // files = fs.readdirSync(dirPath)
-
-  // arrayOfFiles = arrayOfFiles || []
-
-  // files.forEach(function(file) {
-    // if (fs.statSync(dirPath + "/" + file).isDirectory()) {
-      // arrayOfFiles = getAllFiles(dirPath + "/" + file, arrayOfFiles)
-    // } else {
-      // arrayOfFiles.push(path.join(dirPath, "/", file))
-    // }
-  // })
-
-  // return arrayOfFiles
-// }
-
-// for (let page of getAllFiles('/home/societies/evabs/public_html/')) {
-    // page = page.replace('/home/societies/evabs/public_html','')
-    // app.get(page, (req, res) => {
-        // res.sendFile('/home/societies/evabs/public_html' + page)
-    // })
-// }
-
-// app.get('/Reference%20Sheet', (req, res) => {
-    // let channel_id = req.query.channel_id
-    // let edition_id = req.query.edition_id
-    // if (channel_id in game_states && edition_id) {
-        // let edition = null
-        // for (let e of game_states[channel_id].editions) {
-            // if (e.id == edition_id) {
-                // edition = e
-                // break
-            // }
-        // }
-        // if (edition && edition.reference_sheet) {
-            // // Custom
-            // if (edition.id in game_states[channel_id].edition_reference_sheets) {
-                // let pdfData = game_states[channel_id].edition_reference_sheets[edition.id]
-                // res.writeHead(200, {
-                // 'Content-Length': Buffer.byteLength(pdfData),
-                // 'Content-Type': 'application/pdf',})
-                // //'Content-disposition': 'inline;filename=test.pdf',})
-                // .end(pdfData);
-            // }
-            // else {
-                // res.sendFile(`/home/societies/evabs/public_html/reference_sheets/${edition.id}.pdf`)
-            // }
-        // }
-    // }
-// })
-
-// Useful functions
-
 
 // Copy state
 function copy(state) {
@@ -396,7 +337,7 @@ const requests_timer = {
 
 const roles_by_id = {}
 
-const base_roles = JSON.parse(fs.readFileSync('/home/societies/evabs/public_html/json/roles.json', 'utf8'));
+const base_roles = JSON.parse(fs.readFileSync(client_path + 'json/roles.json', 'utf8'));
 
 for (let role of base_roles) {
     roles_by_id[role.id] = role
@@ -404,7 +345,7 @@ for (let role of base_roles) {
 
 const editions_by_id = {}
 
-const base_editions = JSON.parse(fs.readFileSync('/home/societies/evabs/public_html/json/editions.json', 'utf8'));
+const base_editions = JSON.parse(fs.readFileSync(client_path + 'json/editions.json', 'utf8'));
 
 for (let edition of base_editions) {
     editions_by_id[edition.id] = edition
@@ -412,7 +353,7 @@ for (let edition of base_editions) {
 
 const fabled_by_id = {}
 
-const base_fabled = JSON.parse(fs.readFileSync('/home/societies/evabs/public_html/json/fabled.json', 'utf8'));
+const base_fabled = JSON.parse(fs.readFileSync(client_path + 'json/fabled.json', 'utf8'));
 
 for (let fabled of base_fabled) {
     fabled_by_id[fabled.id] = fabled

@@ -67,7 +67,7 @@ const log_status_count = 4
 const deselected_opacity = 0.5
 const created_night_actions = {}
 const roles_by_id = {}
-const website_url = 'https://evabs.soc.srcf.net'
+const website_url = 'https://mwc34.user.srcf.net/botc'
 const base_roles = []
 window.fetch(website_url + '/json/roles.json').then(x => x.json()).then(x => {for (let role of x) {base_roles.push(role)}})
 const base_editions = []
