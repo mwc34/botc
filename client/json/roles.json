@@ -3109,5 +3109,43 @@
         "ability": "All players know who you are. You can not die during the day. If good voted, you may choose to execute immediately.",
         "nightActions":[],
         "nightActionsScoped":[]
+    },
+	{
+        "id": "knight",
+		"name": "Knight",
+        "team": "townsfolk",
+        "firstNight": 33.5,
+        "firstNightReminder": "Point to two players, neither of whom are the Demon.",
+		"otherNight":0,
+        "otherNightReminder":"",
+        "reminders":[],
+        "setup":false,
+        "ability": "You start knowing 2 players that are not the Demon.",
+        "nightActions":[
+			{
+                "name":"Knight Info",
+                "inPlayers":2
+            }
+		],
+        "nightActionsScoped":[]
+    },
+	{
+        "id": "steward",
+		"name": "Steward",
+        "team": "townsfolk",
+        "firstNight": 34.5,
+        "firstNightReminder": "Point to the chosen good player.",
+		"otherNight":0,
+        "otherNightReminder":"",
+        "reminders":[],
+        "setup":false,
+        "ability": "You start knowing 1 good player.",
+        "nightActions":[
+			{
+                "name":"Steward Info",
+                "inPlayers":1
+            }
+		],
+        "nightActionsScoped":[]
     }
 ]
