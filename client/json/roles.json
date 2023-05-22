@@ -3118,7 +3118,9 @@
         "firstNightReminder": "Point to two players, neither of whom are the Demon.",
 		"otherNight":0,
         "otherNightReminder":"",
-        "reminders":[],
+        "reminders":[
+			"Knows"
+		],
         "setup":false,
         "ability": "You start knowing 2 players that are not the Demon.",
         "nightActions":[
@@ -3137,7 +3139,9 @@
         "firstNightReminder": "Point to the chosen good player.",
 		"otherNight":0,
         "otherNightReminder":"",
-        "reminders":[],
+        "reminders":[
+			"Knows"
+		],
         "setup":false,
         "ability": "You start knowing 1 good player.",
         "nightActions":[
