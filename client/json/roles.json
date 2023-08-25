@@ -3177,7 +3177,10 @@
         "firstNightReminder": "Wake the Harpy; they point at one player, then another. Wake the 1st player the Harpy pointed to, show them the 'This character has selected you' card, show them the Harpy token, then point at the 2nd player the Harpy pointed to.",
         "otherNight": 14.2,
         "otherNightReminder": "Wake the Harpy; they point at one player, then another. Wake the 1st player the Harpy pointed to, show them the 'This character has selected you' card, show them the Harpy token, then point at the 2nd player the Harpy pointed to.",
-        "reminders": ["Mad", "2nd"],
+        "reminders": [
+			"Mad", 
+			"2nd"
+		],
         "setup": false,
         "name": "Harpy",
         "team": "minion",
@@ -3188,5 +3191,20 @@
                 "players":2
             }
         ]
+    },
+	{
+        "id": "plaguedoctor",
+		"firstNight": 0,
+        "firstNightReminder": "",
+        "otherNight": 0,
+        "otherNightReminder": "",
+        "reminders": [
+			"Storyteller Ability"
+		],
+        "setup": false,
+        "name": "Plague Doctor",
+        "team": "outsider",
+        "ability": "If you die, the Storyteller gains a not-in-play Minion ability.",
+		"nightActions": []
     }
 ]
