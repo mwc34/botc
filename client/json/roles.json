@@ -3193,7 +3193,7 @@
         ]
     },
 	{
-        "id": "plaguedoctor",
+        "id": "plague_doctor",
 		"firstNight": 0,
         "firstNightReminder": "",
         "otherNight": 0,
