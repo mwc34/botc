@@ -3224,5 +3224,25 @@
                 "info":"You learn that your closest evil player is <>."
             }
 		]
+    },
+	{
+        "id": "ojo",
+        "firstNight": 0,
+		"firstNightReminder": "",
+        "otherNight": 32.2,
+        "otherNightReminder": "The Ojo points to a character on the sheet; if in play, that player dies. If it is not in play, the Storyteller chooses who dies instead.",
+        "reminders": [
+			"Dead"
+		],
+		"setup": false,
+        "name": "Ojo",
+        "team": "demon",
+        "ability": "Each night*, choose a character: they die. If they are not in play, the Storyteller chooses who dies.",
+		"nightActions": [
+			{
+                "name":"Ojo Kill",
+                "characters":1
+            },
+		]
     }
 ]
